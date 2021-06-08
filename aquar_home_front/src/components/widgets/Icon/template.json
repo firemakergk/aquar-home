@@ -1,0 +1,14 @@
+{
+  "name": "Icon",
+  "widget": "IconWidget",
+  "href": "#",
+  "layout": {
+    "w": 1,
+    "h": 1 
+  },
+  "data": {
+    "img_path": null
+  },
+  "required_params": [
+  ]
+}

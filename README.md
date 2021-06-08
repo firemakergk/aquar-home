@@ -1,0 +1,2 @@
+# aquar_home_front
+Aquar Home，水瓶座个人云的服务Home页。将Aquar系统中不同的开源服务进行整合，提取最核心的信息或功能，以小部件的形式展示在web端。

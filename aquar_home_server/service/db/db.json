@@ -1,0 +1,32 @@
+{
+  "widgets": [
+    {
+      "id": "cbaf8dda-8e77-4ab4-a328-c13f78b2c386",
+      "sort": 1,
+      "name": "syncthing文件同步",
+      "href": "http://localhost:8384",
+      "widget": "SyncthingWidget",
+      "data": {
+        "server": "http://localhost:8384",
+        "app_key": "mESCgd6imiPvTfVGojshHRSwcAd9SYzp"
+      }
+    },
+    {
+      "id": "76768895-7570-4e9f-bf48-4e50caff63ef",
+      "sort": 2,
+      "name": "文件增量归档",
+      "href": null,
+      "widget": "ArchivePhaseWidget",
+      "data": {
+        "script_path": "/opt/aquar/src/sh/rsync_phase.sh",
+        "items": [
+          {
+            "source": "images/finetu_meme",
+            "archive_dir_name": "finetu_meme_archive",
+            "phase_name": null
+          }
+        ]
+      }
+    }
+  ]
+}

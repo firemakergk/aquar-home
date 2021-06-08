@@ -1,0 +1,22 @@
+{
+  "name": "NextCloud",
+  "widget": "NextCloudWidget",
+  "href": "",
+  "layout": {
+    "w": 6,
+    "h": 8
+  },
+  "data": {
+    "server": null,
+    "view_type": "list",
+    "user_name": "",
+    "app_password": "",
+    "default_path": "/"
+  },
+  "required_params": [
+    [
+      "server",
+      "text"
+    ] 
+  ]
+}

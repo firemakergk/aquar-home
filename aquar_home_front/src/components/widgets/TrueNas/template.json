@@ -1,0 +1,23 @@
+{
+  "name": "TrueNas",
+  "widget": "TrueNasWidget",
+  "href": "",
+  "layout": {
+    "w": 4,
+    "h": 1
+  },
+  "data": {
+    "server": null,
+    "api_key": null 
+  },
+  "required_params": [
+    [
+      "server",
+      "text"
+    ],
+    [
+      "api_key",
+      "text"
+    ]
+  ]
+}

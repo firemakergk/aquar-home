@@ -1,0 +1,14 @@
+{
+  "name": "文件增量归档",
+  "widget": "ArchivePhaseWidget",
+  "href": "",
+  "layout": {
+    "w": 6,
+    "h": 3
+  },
+  "data": {
+    "script_path": "/opt/aquar/src/sh/rsync_phase.sh",
+    "items": [] 
+  },
+  "required_params": []
+}

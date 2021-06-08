@@ -1,0 +1,23 @@
+{
+  "name": "Syncthing",
+  "widget": "SyncthingWidget",
+  "href": "",
+  "layout": {
+    "w": 3,
+    "h": 3
+  },
+  "data": {
+    "server": null,
+    "app_key": null 
+  },
+  "required_params": [
+    [
+      "server",
+      "text"
+    ],
+    [
+      "app_key",
+      "text"
+    ]
+  ]
+}

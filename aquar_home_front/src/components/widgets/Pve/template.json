@@ -1,0 +1,28 @@
+{
+  "name": "Proxmox VE",
+  "widget": "PveWidget",
+  "href": "",
+  "layout": {
+    "w": 4,
+    "h": 5
+  },
+  "data": {
+    "server": null,
+    "node": null,
+    "api_token": null
+  },
+  "required_params": [
+    [
+      "server",
+      "text"
+    ],
+    [
+      "node",
+      "text"
+    ],
+    [
+      "api_token",
+      "text"
+    ]
+  ]
+}
