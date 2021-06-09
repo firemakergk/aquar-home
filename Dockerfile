@@ -6,7 +6,7 @@ RUN npm install --registry ${NPM_REGISTR}
 RUN npm run build
 WORKDIR /app/aquar_home/aquar_home_server
 COPY package*.json ./
-RUN npm install --registry ${NPM_REGISTR}
+RUN npm install --unsafe-perm --registry ${NPM_REGISTR}
 COPY . .
 COPY /app/aquar_home/aquar_home_front/dist/ ./public/
 
