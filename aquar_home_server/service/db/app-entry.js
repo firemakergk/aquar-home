@@ -1,7 +1,15 @@
 var appEntryDao = (function() {
   const lowdb = require('lowdb')
+  const fs = require('fs')
   const FileSync = require('lowdb/adapters/FileSync')
-  const adapter = new FileSync('/var/aquar_data/db/db.json')
+  const DB_PATH = '/var/aquar_data/db/'
+  if (!fs.existsSync(DB_PATH+'db.json')){
+    var defaultConfig = fs.readFileSync('./db.json','utf8')
+    fs.mkdirSync(DB_PATH, { recursive: true });
+    fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
+  }
+  const adapter = new FileSync(DB_PATH+'db.json')
+  
   var db = lowdb(adapter)
   // db.defaults({ widgets: [] }).write()
 
