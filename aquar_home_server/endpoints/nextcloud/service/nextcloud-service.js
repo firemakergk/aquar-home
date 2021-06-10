@@ -5,7 +5,7 @@ const sharp = require('sharp')
 const stream = require('stream')
 const fs = require('fs')
 const sha256 = require('crypto-js/sha256')
-const CACHE_PATH = '/var/aquar_data/cache/nextcloud/thumb/'
+const CACHE_PATH = '/var/aquardata/cache/nextcloud/thumb/'
 
 if (!fs.existsSync(CACHE_PATH)){
   fs.mkdirSync(CACHE_PATH, { recursive: true });

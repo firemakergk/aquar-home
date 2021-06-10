@@ -27,7 +27,7 @@ app.use(json())
 app.use(logger())
 console.log(__dirname)
 app.use(static(__dirname + '/public'))
-app.use(static('/var/aquar_data'))
+app.use(static('/var/aquardata'))
 
 app.use(views(__dirname + '/views', {
   extension: 'pug'

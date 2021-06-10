@@ -1,7 +1,7 @@
 const appEntryDao = require('../../../service/db/app-entry')
 const exec = require('child_process').execSync
 const path = require("path")
-const baseDir = '/opt/aquar/storages/aquarpool/'
+const baseDir = '/opt/aquarpool/'
 
 class RsyncphaseController {
   async prepareArchive(ctx, next) {

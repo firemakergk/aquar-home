@@ -2,7 +2,7 @@ var appEntryDao = (function() {
   const lowdb = require('lowdb')
   const fs = require('fs')
   const FileSync = require('lowdb/adapters/FileSync')
-  const DB_PATH = '/var/aquar_data/db/'
+  const DB_PATH = '/var/aquardata/db/'
   if (!fs.existsSync(DB_PATH+'db.json')){
     var defaultConfig = fs.readFileSync('./db.json','utf8')
     fs.mkdirSync(DB_PATH, { recursive: true });

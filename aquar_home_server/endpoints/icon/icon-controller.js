@@ -1,6 +1,6 @@
 const multer = require('@koa/multer')
 const sha256 = require('crypto-js/sha256')
-const ICON_PATH = '/var/aquar_data/icon_img/'
+const ICON_PATH = '/var/aquardata/icon_img/'
 const fs = require('fs')
 
 if (!fs.existsSync(ICON_PATH)){
