@@ -1,14 +1,15 @@
-ARG NPM_REGISTR=http://registry.npmjs.org
+ARG NPM_REGISTRY=http://registry.npmjs.org
 FROM node:14 as builder
+ARG NPM_REGISTRY
 WORKDIR /app/aquar_home/aquar_home_front
-COPY package*.json ./
-RUN npm install --registry ${NPM_REGISTR}
+COPY ./aquar_home_front/ ./
+RUN npm install --registry ${NPM_REGISTRY}
 RUN npm run build
 WORKDIR /app/aquar_home/aquar_home_server
-COPY package*.json ./
-RUN npm install --unsafe-perm --registry ${NPM_REGISTR}
-COPY . .
-COPY /app/aquar_home/aquar_home_front/dist/ ./public/
+COPY ./aquar_home_server/ ./
+RUN npm install --unsafe-perm --registry ${NPM_REGISTRY}
+WORKDIR /app/aquar_home
+RUN cp -r ./aquar_home_front/dist/* ./aquar_home_server/public/
 
 FROM node:14
 WORKDIR /app/aquar_home
