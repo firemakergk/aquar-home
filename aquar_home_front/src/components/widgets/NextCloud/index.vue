@@ -383,7 +383,7 @@ input {
   bottom: 0;
   position: absolute;
   background-color: rgba(0,0,0,0.75);
-  font-size: 14px;
+  font-size: 12px;
   z-index: 3;
 }
 .float_config::-webkit-scrollbar {

@@ -266,7 +266,7 @@ input {
   z-index: 3;
   overflow-y: auto;
   background-color: rgba(0,0,0,0.75);
-  font-size: 14px;
+  font-size: 12px;
   color: white;
 }
 .float_config::-webkit-scrollbar {

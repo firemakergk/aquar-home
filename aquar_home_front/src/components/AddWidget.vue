@@ -170,13 +170,14 @@ export default {
   margin: 0;
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   border-top: solid #ccc thin;
 }
 .icon_panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 16px;
+  margin: 28px;
 }
 .img_span {
   display: flex;

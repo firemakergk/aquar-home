@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import logo_syncthing from '../Syncthing/img/syncthing.png'
 import axios from 'axios'
 import { VueCropper } from 'vue-cropper'
 import logo_icon from './img/aquar.png'
@@ -105,11 +104,10 @@ export default {
       logo_icon,
       showConfigIcon: false,
       showConfig: false,
-      logo_syncthing,
       showCropper: false,
       showUpload: false,
       option: {
-        img: 'http://localhost:9528/img/nextcloud.jpg',
+        img: '',
         size: 1,
         full: false,
         outputType: 'webp',

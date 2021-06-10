@@ -261,7 +261,7 @@ export default {
   position: relative;
 }
 .add_layer {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
