@@ -32,6 +32,12 @@
             </div>
           </div>
           <div class="config_row">
+            <div style="width:80px; text-align: right; padding: 0 2px;">node：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="configData.data.node" type="text" name="server" style="display: inline-block; width: 100%;">
+            </div>
+          </div>
+          <div class="config_row">
             <div style="width:80px; text-align: right; padding: 0 2px;">api token：</div>
             <div style="flex-grow: 1;">
               <input v-model="configData.data.api_token" type="text" name="app_key" disabled="disabled" style="display: inline-block; width: 100%;">
