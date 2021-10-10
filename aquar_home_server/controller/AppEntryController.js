@@ -2,6 +2,7 @@ const appEntryDao = require('../service/db/app-entry')
 const { v4: uuidv4 } = require('uuid')
 class AppEntryController {
   async list(ctx, next) {
+    var index = ctx.query.index
     var resStr = await appEntryDao.findAllBySort()
     ctx.body = resStr
   }
