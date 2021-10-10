@@ -1,64 +1,57 @@
 <template>
-  <div class="container">
-    <div class="config_header">
-      <span style="flex-grow: 1; margin: 0 10px;">添加组件</span>
-      <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
-    </div>
-    <div class="config_content">
-      <div v-show="!configDetail" class="config_panel">
-        <div style="height: 24px; margin: 0 20px;">1/2 选择组件:</div>
-        <div class="widget_list">
-          <a v-for="(widget,index) in widgets" :key="index" class="icon_panel" @click="toConfigDetail(widget)">
-            <div class="img_span">
-              <img v-if="widget.widget === 'SyncthingWidget'" :src="logo_syncthing" style="width: 60px;">
-              <img v-if="widget.widget === 'ArchivePhaseWidget'" :src="logo_archivephase" style="width: 60px;">
-              <img v-if="widget.widget === 'NextCloudWidget'" :src="logo_nextcloud" style="width: 60px;">
-              <img v-if="widget.widget === 'IconWidget'" :src="logo_icon" style="width: 60px;">
-              <img v-if="widget.widget === 'TrueNasWidget'" :src="logo_truenas" style="width: 60px;">
-              <img v-if="widget.widget === 'PveWidget'" :src="logo_pve" style="width: 60px;">
-            </div>
-            <div>{{ widget.name }}</div>
-          </a>
-        </div>
+  <div class="config_content">
+    <div v-show="!configDetail" class="config_panel">
+      <div style="height: 24px; margin: 0 20px;">选择组件(1/2):</div>
+      <div class="widget_list">
+        <a v-for="(widget,index) in widgets" :key="index" class="icon_panel" @click="toConfigDetail(widget)">
+          <div class="img_span">
+            <img v-if="widget.widget === 'SyncthingWidget'" :src="logo_syncthing" style="width: 60px;">
+            <img v-if="widget.widget === 'ArchivePhaseWidget'" :src="logo_archivephase" style="width: 60px;">
+            <img v-if="widget.widget === 'NextCloudWidget'" :src="logo_nextcloud" style="width: 60px;">
+            <img v-if="widget.widget === 'IconWidget'" :src="logo_icon" style="width: 60px;">
+            <img v-if="widget.widget === 'TrueNasWidget'" :src="logo_truenas" style="width: 60px;">
+            <img v-if="widget.widget === 'PveWidget'" :src="logo_pve" style="width: 60px;">
+          </div>
+          <div>{{ widget.name }}</div>
+        </a>
       </div>
-      <div v-show="configDetail" class="config_panel">
-        <div style="height: 24px; margin: 0 20px;">2/2 设置组件参数:</div>
-        <div class="param_panel">
-          <div v-if="curWidget" class="param_warp">
-            <div class="param_row">
-              <span class="param_name">
-                组件名称：
-              </span>
-              <div class="param_form">
-                <input v-model="curWidget.name" type="text" style="width: 100%;">
-              </div>
+    </div>
+    <div v-show="configDetail" class="config_panel">
+      <div style="height: 24px; margin: 0 20px;">设置组件参数(2/2):</div>
+      <div class="param_panel">
+        <div v-if="curWidget" class="param_warp">
+          <div class="param_row">
+            <span class="param_name">
+              组件名称：
+            </span>
+            <div class="param_form">
+              <input v-model="curWidget.name" type="text" style="width: 100%;">
             </div>
-            <div class="param_row">
-              <span class="param_name">
-                链接地址：
-              </span>
-              <div class="param_form">
-                <input v-model="curWidget.href" type="text" style="width: 100%;">
-              </div>
+          </div>
+          <div class="param_row">
+            <span class="param_name">
+              链接地址：
+            </span>
+            <div class="param_form">
+              <input v-model="curWidget.href" type="text" style="width: 100%;">
             </div>
-            <div v-for="(param,index) in curWidget.required_params" :key="index" class="param_row">
-              <span class="param_name">
-                <label style="color: red;">*</label>{{ param[0] }}：
-              </span>
-              <div v-if="param[1]==='text'" class="param_form">
-                <input v-model="curWidget.data[param[0]]" type="text" style="width: 100%;">
-              </div>
+          </div>
+          <div v-for="(param,index) in curWidget.required_params" :key="index" class="param_row">
+            <span class="param_name">
+              <label style="color: red;">*</label>{{ param[0] }}：
+            </span>
+            <div v-if="param[1]==='text'" class="param_form">
+              <input v-model="curWidget.data[param[0]]" type="text" style="width: 100%;">
             </div>
           </div>
         </div>
-        <div class="submit_panel">
-          <a class="submit_button iconfont icon-reply icon" title="返回" @click="toChoose" />
-          <a class="submit_button iconfont icon-check icon" style="color: #67C23A;" title="提交" @click="submit" />
-        </div>
+      </div>
+      <div class="submit_panel">
+        <a class="submit_button iconfont icon-reply icon" title="返回" @click="toChoose" />
+        <a class="submit_button iconfont icon-check icon" style="color: #67C23A;" title="提交" @click="submit" />
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -145,23 +138,8 @@ export default {
   width: 100%;
   display: block;
 }
-.container {
-  border-radius: 2px;
-  margin: 4px;
-  background-color: rgba(255,255,255,1);
-  color: rgb(44,44,44)
-}
-.config_header {
-  display: flex;
-  align-items: center;
-  height: 24px;
-  border-radius: 2px;
-  background-color: rgb(44,44,44);
-  color: white;
-}
 .config_content {
-  padding: 20px;
-  min-height: 400px;
+  padding: 10px;
 }
 .config_panel {
   margin: 0;
@@ -194,7 +172,7 @@ export default {
   border-top: solid #ccc thin;
 }
 .param_warp {
-  width: 480px;
+  width: 400px;
 }
 .param_row {
   display: flex;

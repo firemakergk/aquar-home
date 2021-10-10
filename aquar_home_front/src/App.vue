@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="app-main">
+  <div id="app" :style="{'--bgUrl': bgUrl,'--bgColor': bgColor,'--blurNum':blurNum}" class="app-main" >
     <div>
       <grid-table />
     </div>
@@ -7,12 +7,51 @@
 </template>
 
 <script>
+import axios from 'axios'
 import GridTable from './views/Gridtable.vue'
-
+import defaultBgImg from '@/assets/bg_images/bg2.jpg'
 export default {
   name: 'App',
   components: {
     GridTable
+  },
+  data() {
+    return {
+      configData: {},
+      bgUrl: null,
+      blurNum: "blur(0px)",
+      bgColor: '#42433E'
+    }
+  },
+  created: function() {
+    this.$bus.on('renderBg', this.renderBg)
+  },
+  mounted: function() {
+    axios
+      .get('/api/config')
+      .then(response => {
+        this.configData = response.data
+        this.renderBg(this.configData)
+        this.$forceUpdate()
+      })
+  },
+  beforeDestroy() {
+    this.$bus.off('renderBg', this.renderBg)
+  },
+  methods: {
+    renderBg: function(config) {
+      this.configData = config
+      if(config.appearance.bgImg){
+        this.bgUrl = 'url(' + config.appearance.bgImg + ')';
+        if(config.appearance.bgBlur){
+          this.blurNum = 'blur(' + config.appearance.bgBlur + 'px)';
+        }
+      }else{
+        this.bgUrl = null;
+        this.blurNum = 0;
+        this.bgColor = config.appearance.bgColor
+      }
+    }
   }
 }
 </script>
@@ -79,12 +118,15 @@ div:focus {
     left:0;
     width:100%;
     height:100%;
-    background:transparent url("~@/assets/bg_images/bg1.jpg") center center no-repeat fixed;
+    background:transparent center center no-repeat fixed;
+    background-image: var(--bgUrl,null);
+    background-color: var(--bgColor);
     overflow:hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-    filter:blur(80px);
+    filter:var(--blurNum);
     z-index:-1;
     background-size: 100% 100%;
+    
 }
 </style>

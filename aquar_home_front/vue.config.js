@@ -58,6 +58,12 @@ module.exports = {
         target: 'http://localhost:3000',
         changeOrigin: true,
         disableHostCheck: true
+      },
+      '/bg_img': {
+        // target: 'http://39.100.115.231:8130',
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        disableHostCheck: true
       }
     },
     overlay: {

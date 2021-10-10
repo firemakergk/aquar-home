@@ -360,10 +360,12 @@ input {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 20px;
+  bottom: 0px;
   position: absolute;
   background-color: rgb(0,0,0);
   z-index: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 .console_top {
@@ -380,7 +382,11 @@ input {
 }
 .console_area {
   width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0px;
+  position: absolute;
   outline: none;
   border: none;
   overflow-y: auto;
@@ -390,7 +396,6 @@ input {
   color: white;
   background-color: rgb(0,0,0);
   top: 20px;
-  bottom: 20px;
   position: absolute;
 }
 .exec_enabled {

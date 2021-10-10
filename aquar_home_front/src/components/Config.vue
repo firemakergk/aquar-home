@@ -1,0 +1,175 @@
+<template>
+  <div class="container">
+    <div class="config_header">
+      <span style="flex-grow: 1; margin: 0 10px;">设置</span>
+      <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
+    </div>
+    <div class="config_content">
+      <div class="config_sidebar">
+        <a v-for="(menu,index) in menus" :key="index" class="menu_item" 
+        @click="toTab(index)" :class="{menu_active: index == curMenu}">{{menu.name}}</a>
+      </div>
+      <div class="config_panel">
+        <keep-alive>
+          <component v-bind:is="menus[curMenu].component"></component>
+        </keep-alive>
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import AddWidget from './AddWidget.vue' 
+import ConfigAppearance from './ConfigAppearance.vue'
+
+export default {
+  name: 'Config',
+  components: {
+    AddWidget,
+    ConfigAppearance
+  },
+  data: function() {
+    return {
+      menus:[
+        {'name':'外观设置',component:'ConfigAppearance'},
+        {'name':'添加组件',component:'AddWidget'}
+      ],
+      curMenu: 0
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
+  },
+  created: function() {
+  },
+  mounted: function() {
+  },
+  beforeDestroy() {
+  },
+  methods: {
+    close() {
+      this.curWidget = null
+      this.configDetail = false
+      this.$bus.emit('closeAddPanel', null)
+    },
+    toTab(index) {
+      this.curMenu = index
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.button {
+    padding: 0;
+    float: right;
+  }
+
+.image {
+  width: 100%;
+  display: block;
+}
+.container {
+  border-radius: 2px;
+  margin: 4px;
+  background-color: rgba(255,255,255,1);
+  color: rgb(44,44,44);
+  display: flex;
+  flex-direction: column;
+}
+.config_header {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  border-radius:2px 2px 0 0 ;
+  background-color: rgb(44,44,44);
+  color: white;
+}
+.config_content {
+  // min-height: 200px;
+  height: 400px;
+  flex-grow: 1;
+  display: flex;
+  position: relative;
+}
+.config_sidebar {
+  margin: 0;
+  flex: 0 0 80px;
+  font-size: 16px;
+  background: rgb(243,243,243);
+  color:rgb(44,44,44);
+  display: flex;
+  flex-direction: column;
+}
+.menu_item {
+  padding: 8px 4px;
+}
+.menu_active {
+  background-color: rgb(44,44,44);
+  color: rgb(243,243,243);
+}
+.config_panel {
+  margin: 0;
+  width:100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.widget_list {
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-top: solid #ccc thin;
+}
+.icon_panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 28px;
+}
+.img_span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+}
+.param_panel {
+  display: flex;
+  // flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-top: solid #ccc thin;
+}
+.param_warp {
+  width: 480px;
+}
+.param_row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.param_name {
+  width: 120px;
+  margin: 10px;
+  text-align: right;
+}
+.param_form {
+  width: 100%;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+
+</style>

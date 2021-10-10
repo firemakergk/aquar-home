@@ -7,6 +7,13 @@
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
     </div>
     <div class="widget_body">
+      <div v-show="showErrorInfo" class="error_info">
+        <span v-show="isError">
+          <span  class="iconfont icon-times-circle-fill icon" style="font-size: 12px;"></span>
+          <span  style=" margin: 0 4px; font-size: 12px;">连接失败</span>
+        </span>
+        <span>{{ errorInfo }}</span>
+      </div>
       <div v-show="showConfig" class="float_config">
         <div class="config_top">
           <span style="float:left;">设置</span>
@@ -70,6 +77,9 @@ export default {
     return {
       poolInfoTimer: null,
       showConfig: false,
+      showErrorInfo: false,
+      isError: false,
+      errorInfo: null,
       poolInfo: []
     }
   },
@@ -98,19 +108,31 @@ export default {
         .then(response => {
           const resData = response.data
           this.poolInfo = resData.data
-          for (var i = 0; i < this.poolInfo.length; i++) {
-            var item = this.poolInfo[i]
-            if (item.healthy === true) {
-              item.healthClass = 'stat_ok'
-            } else {
-              item.healthClass = 'stat_alert'
+          if(this.poolInfo){
+            for (var i = 0; i < this.poolInfo.length; i++) {
+              var item = this.poolInfo[i]
+              if (item.healthy === true) {
+                item.healthClass = 'stat_ok'
+              } else {
+                item.healthClass = 'stat_alert'
+              }
+              if (item.status === 'ONLINE') {
+                item.statusClass = 'stat_ok'
+              } else {
+                item.statusClass = 'stat_alert'
+              }
             }
-            if (item.status === 'ONLINE') {
-              item.statusClass = 'stat_ok'
-            } else {
-              item.statusClass = 'stat_alert'
-            }
+          }else{
+            this.showErrorInfo = true
+            this.errorInfo = "无信息"
+            this.isError = false
           }
+        })
+        .catch(error => {
+          this.isError = false
+          this.showErrorInfo = true
+          this.errorInfo = error.message
+          console.log('url:'+error.request.responseURL+',message:'+error.message)
         })
     },
     toggleConfig() {
@@ -205,6 +227,22 @@ input {
   display: flex;
   align-items: center;
   padding: 2px 2px;
+}
+.error_info {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  z-index: 3;
+  word-wrap:break-word;
+  background-color: rgba(0,0,0,0.75);
+  font-size: 12px;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 // trueNasWidget
 .item_row {

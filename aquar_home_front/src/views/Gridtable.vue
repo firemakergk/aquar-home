@@ -5,11 +5,14 @@
         <img style="height: 20px;" :src="logo_aquar">
         <span style="margin: 4px;">Aquar</span>
       </div>
+      <div class="page_tabs">
+        <div class="page_tab tab_selected">sdafa</div>
+        <div class="add_tab">+</div>
+      </div>
       <div style="flex-grow: 1" />
-      <!-- TODO 多tab页 -->
       <a v-if="!editing" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
       <a v-else style="margin: 0 4px;" class="iconfont icon-check icon" title="确定布局" @click="comfirmLayout()" />
-      <a style="margin: 0 4px;" class="iconfont icon-plus icon" title="添加组件" @click="toggleAddWidget()" />
+      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleAddWidget()" />
     </div>
     <grid-layout
       :layout.sync="layout"
@@ -61,7 +64,7 @@
     </grid-layout>
     <div v-show="showAddPanel" class="add_layer">
       <div class="add_panel">
-        <add-widget />
+        <config />
       </div>
     </div>
   </div>
@@ -79,7 +82,9 @@ import NextCloudWidget from '../components/widgets/NextCloud'
 import IconWidget from '../components/widgets/Icon'
 import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
-import AddWidget from '../components/AddWidget.vue' 
+// import AddWidget from '../components/AddWidget.vue' 
+import Config from '../components/Config.vue' 
+
 export default {
   name: 'GridTable',
   components: {
@@ -91,7 +96,7 @@ export default {
     IconWidget,
     TrueNasWidget,
     PveWidget,
-    AddWidget
+    Config
   },
   data() {
     return {
@@ -248,6 +253,42 @@ export default {
   justify-content: space-between;
   padding: 0px;
   background-color: rgba(44, 44, 44, 1);
+  color: white;
+}
+.page_tabs {
+  padding: 0 20px;
+  height: 28px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.page_tab {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top: 0.5px solid rgb(100,100,100);
+  border-left: 0.5px solid rgb(100,100,100);
+  font-size: 18px;
+  height: 24px;
+  padding: 0 6px;
+  mask-image: linear-gradient (black 0%,  white 0%,transparent 100%);
+  background-color: rgb(49,54,64);
+  color: rgba(221, 221, 221, 1);
+}
+.add_tab {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-left: 0.5px solid rgb(100,100,100);
+  border-top: 0.5px solid rgb(100,100,100);
+  border-right: 0.5px solid rgb(100,100,100);
+  font-size: 18px;
+  height: 24px;
+  padding: 0 6px;
+  mask-image: linear-gradient (black 0%,  white 0%,transparent 100%);
+  background-color: rgb(49,54,64);
+  color: rgba(221, 221, 221, 1);
+}
+.tab_selected {
+  background-color: rgb(96,96,96);
   color: white;
 }
 .logo {

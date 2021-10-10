@@ -29,6 +29,15 @@
           </div>
         </div>
       </div>
+      <div v-show="showErrorInfo" class="error_info">
+        <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
+          <span  class="iconfont icon-times-circle-fill icon" style="font-size: 24px;"></span>
+          <span  style="font-size: 24px;">连接失败</span>
+        </div>
+        <div style="padding: 0 2px; word-wrap:break-word; display: flex; flex-direction: column; justify-content: center;align-items: center;">
+          <span>{{ errorInfo }}</span>
+        </div>
+      </div>
       <div v-show="showConfig" class="float_config">
         <div class="config_top">
           <span style="float:left; flex-grow: 1;">设置</span>
@@ -139,6 +148,8 @@ export default {
     return {
       showInit: true,
       showConfig: false,
+      showErrorInfo: false,
+      errorInfo: null,
       loginData: null,
       showPoll: false,
       queryData: [],
@@ -239,6 +250,11 @@ export default {
           if (this.viewType === 'block') {
             this.getThumbnailBatch()
           }
+        })
+        .catch(error => {
+          this.showErrorInfo = true
+          this.errorInfo = error.message
+          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
         })
     },
     async getThumbnailBatch() {
@@ -395,6 +411,21 @@ input {
 .float_config::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 0.5px solid slategrey;
+}
+.error_info {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  z-index: 3;
+  word-wrap:break-word;
+  background-color: rgba(0,0,0,0.75);
+  font-size: 12px;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction:column;
 }
 .init_config{
   position: relative;

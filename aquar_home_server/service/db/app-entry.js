@@ -46,6 +46,15 @@ var appEntryDao = (function() {
     deleteById: function(id) {
       db.get('widgets').remove({'id':id}).write()
     },
+    updateConfig: function(config) {
+      db.get('config')
+      .assign(config)
+      .write()
+    },
+    getConfig: function() {
+      var res = db.get('config').value()
+      return res
+    },
     getDbInstance: function() {
       return db
     }
