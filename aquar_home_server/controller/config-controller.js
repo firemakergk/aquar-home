@@ -1,8 +1,8 @@
-const multer = require('@koa/multer')
-const sha256 = require('crypto-js/sha256')
-const fs = require('fs')
+import multer from '@koa/multer'
+import sha256 from 'crypto-js/sha256.js'
+import fs from 'fs'
+import appEntryDao from '../service/db/app-entry.js'
 const BG_PATH = '/var/aquardata/bg_img/'
-const appEntryDao = require('../service/db/app-entry')
 
 if (!fs.existsSync(BG_PATH)){
   fs.mkdirSync(BG_PATH, { recursive: true });
@@ -37,5 +37,5 @@ class ConfigController {
   }
 }
 
-configController = new ConfigController()
-module.exports = configController
+var configController = new ConfigController()
+export default configController

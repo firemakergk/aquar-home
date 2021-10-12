@@ -1,7 +1,7 @@
-const multer = require('@koa/multer')
-const sha256 = require('crypto-js/sha256')
+import multer from '@koa/multer'
+import sha256 from 'crypto-js/sha256.js'
+import fs from 'fs'
 const ICON_PATH = '/var/aquardata/icon_img/'
-const fs = require('fs')
 
 if (!fs.existsSync(ICON_PATH)){
   fs.mkdirSync(ICON_PATH, { recursive: true });
@@ -25,5 +25,5 @@ class IconController {
   }
 }
 
-iconController = new IconController()
-module.exports = iconController
+var iconController = new IconController()
+export default iconController

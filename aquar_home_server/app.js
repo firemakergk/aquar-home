@@ -1,14 +1,15 @@
-const Koa = require('koa')
+import Koa from 'koa'
+import views from 'koa-views'
+import json from 'koa-json'
+import onerror from 'koa-onerror'
+import bodyparser from 'koa-bodyparser'
+import logger from 'koa-logger'
+import koastatic from 'koa-static'
+import path from 'path';
+import index from './routes/index.js'
+import users from './routes/users.js'
 const app = new Koa()
-const views = require('koa-views')
-const json = require('koa-json')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
-const logger = require('koa-logger')
-const static = require('koa-static')
-const index = require('./routes/index')
-const users = require('./routes/users')
-
+const __dirname = path.resolve();
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -26,8 +27,8 @@ app.use(bodyparser({
 app.use(json())
 app.use(logger())
 console.log(__dirname)
-app.use(static(__dirname + '/public'))
-app.use(static('/var/aquardata'))
+app.use(koastatic(__dirname + '/public'))
+app.use(koastatic('/var/aquardata'))
 
 app.use(views(__dirname + '/views', {
   extension: 'pug'
@@ -50,4 +51,4 @@ app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
-module.exports = app
+export default app

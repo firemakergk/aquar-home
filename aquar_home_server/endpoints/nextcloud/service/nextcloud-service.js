@@ -1,10 +1,11 @@
-const axios = require("axios");
-const xpath = require('xpath');
-const dom = require('xmldom').DOMParser
-const sharp = require('sharp')
-const stream = require('stream')
-const fs = require('fs')
-const sha256 = require('crypto-js/sha256')
+import axios from "axios"
+import xpath from 'xpath'
+import xmldom from 'xmldom'
+import sharp from 'sharp'
+import stream from 'stream'
+import fs from 'fs'
+import sha256 from 'crypto-js/sha256.js'
+const dom = xmldom.DOMParser
 const CACHE_PATH = '/var/aquardata/cache/nextcloud/thumb/'
 
 if (!fs.existsSync(CACHE_PATH)){
@@ -197,7 +198,7 @@ async function thumbnail(url, username, apppassword) {
   return thumb.toString('base64')
 }
 
-module.exports = {
+export default {
     login,
     poll,
     query,

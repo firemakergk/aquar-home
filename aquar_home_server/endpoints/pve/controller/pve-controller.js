@@ -1,5 +1,5 @@
-const axios = require("axios")
-const https = require("https")
+import axios from "axios"
+import https from "https"
 class PveController {
   async queryStatus(ctx, next) {
     var server = ctx.query.server
@@ -62,5 +62,5 @@ async function query(server, node, apiToken){
 }
 
 
-pveController = new PveController()
-module.exports = pveController
+var pveController = new PveController()
+export default pveController

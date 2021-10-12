@@ -1,6 +1,7 @@
-const appEntryDao = require('../../../service/db/app-entry')
-const exec = require('child_process').execSync
-const path = require("path")
+import appEntryDao from '../../../service/db/app-entry.js'
+import childprocess from 'child_process'
+import path from "path"
+const exec = childprocess.execSync
 const baseDir = '/opt/aquarpool/'
 
 class RsyncphaseController {
@@ -94,5 +95,5 @@ class RsyncphaseController {
 }
 
 
-rsyncphaseController = new RsyncphaseController()
-module.exports = rsyncphaseController
+var rsyncphaseController = new RsyncphaseController()
+export default rsyncphaseController

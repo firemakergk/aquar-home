@@ -1,4 +1,4 @@
-const nextcloudService = require('../service/nextcloud-service')
+import nextcloudService from '../service/nextcloud-service.js'
 
 class NextCloudController {
   async login(ctx, next) {
@@ -38,5 +38,5 @@ class NextCloudController {
   }
 }
 
-nextCloudController = new NextCloudController()
-module.exports = nextCloudController
+var nextCloudController = new NextCloudController()
+export default nextCloudController

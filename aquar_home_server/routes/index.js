@@ -1,13 +1,14 @@
-const router = require('koa-router')()
-const appEntryController = require('../controller/AppEntryController')
-const configController = require('../controller/config-controller')
-const syncThingController = require('../endpoints/syncthing/controller/syncthing-controller')
-const rsyncphaseController = require('../endpoints/rsync-phase/controller/rsyncphase-controller')
-const NextCloudController = require('../endpoints/nextcloud/controller/nextcloud-controller')
-const iconController = require('../endpoints/icon/icon-controller')
-const trueNasController = require('../endpoints/truenas/controller/truenas-controller')
-const pveController = require('../endpoints/pve/controller/pve-controller')
+import koarouter from 'koa-router'
+import appEntryController from '../controller/AppEntryController.js'
+import configController from '../controller/config-controller.js'
+import syncThingController from '../endpoints/syncthing/controller/syncthing-controller.js'
+import rsyncphaseController from '../endpoints/rsync-phase/controller/rsyncphase-controller.js'
+import NextCloudController from '../endpoints/nextcloud/controller/nextcloud-controller.js'
+import iconController from '../endpoints/icon/icon-controller.js'
+import trueNasController from '../endpoints/truenas/controller/truenas-controller.js'
+import pveController from '../endpoints/pve/controller/pve-controller.js'
 
+const router = koarouter()
 router.get('/', async (ctx, next) => {
   await ctx.render('index', {
     title: 'Hello Koa 2!'
@@ -50,4 +51,4 @@ router.post('/api/endpoints/nextcloud/download',NextCloudController.download)
 router.post('/api/endpoints/icon/upload',iconController.upload.single('icon'),iconController.uploadIcon)
 router.get('/api/endpoints/truenas/queryPools',trueNasController.queryPools)
 router.get('/api/endpoints/pve/queryStatus',pveController.queryStatus)
-module.exports = router
+export default router

@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios"
 class TruenasController {
   async queryPools(ctx, next) {
     var server = ctx.query.server
@@ -68,5 +68,5 @@ function fileSize(byteSize) {
   return resNum.toFixed(2) + postfix
 }
 
-truenasController = new TruenasController()
-module.exports = truenasController
+var truenasController = new TruenasController()
+export default truenasController

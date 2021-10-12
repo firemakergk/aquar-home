@@ -1,9 +1,9 @@
-const appEntryDao = require('../service/db/app-entry')
-const { v4: uuidv4 } = require('uuid')
+import appEntryDao from '../service/db/app-entry.js'
+import { v4 as uuidv4 } from 'uuid'
 class AppEntryController {
   async list(ctx, next) {
     var index = ctx.query.index
-    var resStr = await appEntryDao.findAllBySort()
+    var resStr = await appEntryDao.findByCurIndex()
     ctx.body = resStr
   }
   async updateById(ctx, next) {
@@ -29,5 +29,5 @@ class AppEntryController {
     ctx.body = resStr
   }
 }
-appEntryController = new AppEntryController();
-module.exports = appEntryController; 
+var appEntryController = new AppEntryController()
+export default appEntryController

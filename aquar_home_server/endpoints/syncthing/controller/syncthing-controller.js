@@ -1,4 +1,4 @@
-const getFoldersInfo = require('../service/syncthing-service')
+import getFoldersInfo from '../service/syncthing-service.js'
 
 class SyncThingController {
   async getFoldersInfo(ctx, next) {
@@ -8,5 +8,5 @@ class SyncThingController {
   }
 }
 
-syncThingController = new SyncThingController()
-module.exports = syncThingController
+var syncThingController = new SyncThingController()
+export default syncThingController

@@ -1,34 +1,32 @@
+import { Low, JSONFile } from 'lowdb'
+import lodash from 'lodash'
+import fs from 'fs'
+const DB_PATH = '/var/aquardata/db/'
 var appEntryDao = (function() {
-  const lowdb = require('lowdb')
-  const fs = require('fs')
-  const FileSync = require('lowdb/adapters/FileSync')
-  const DB_PATH = '/var/aquardata/db/'
   if (!fs.existsSync(DB_PATH+'db.json')){
     var defaultConfig = fs.readFileSync('./db.json','utf8')
     fs.mkdirSync(DB_PATH, { recursive: true });
     fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
   }
-  const adapter = new FileSync(DB_PATH+'db.json')
-  
-  var db = lowdb(adapter)
-  // db.defaults({ widgets: [] }).write()
+  const adapter = new JSONFile(DB_PATH+'db.json')
+  var db = new Low(adapter)
+  db.read()
+  db.chain = lodash.chain(db.data)
 
   return {
     saveAppEntry: function(entry) {
-      db.get('widgets')
-        .push(entry)
-        .write()
+      db.widgets.push(entry)
+      db.write()
     },
     findOneById: function(id) {
       var res = db.get('widgets')
         .find({ 'id': id }).value()
       return res
     },
-    findAllBySort: function(sortByAsc) {
-      return db.get('widgets')
-        .sortBy('sort')
-      // .sortBy(function(item){return item.sort})
-        .value()
+    findByCurIndex: function() {
+      var index = db.chain.get('config').get('current_index').value
+      index = index ? index:0;
+      return db.data.tabs[index].widgets
     },
     findByPage: function(pageNo, pagesize, sortByAsc) {
       return db.get('widgets')
@@ -52,7 +50,7 @@ var appEntryDao = (function() {
       .write()
     },
     getConfig: function() {
-      var res = db.get('config').value()
+      var res = db.data.config
       return res
     },
     getDbInstance: function() {
@@ -61,4 +59,4 @@ var appEntryDao = (function() {
   }
 })()
 
-module.exports = appEntryDao
+export default appEntryDao
