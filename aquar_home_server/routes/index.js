@@ -30,6 +30,7 @@ router.get('/json', async (ctx, next) => {
 //     title: 'koa2 json'
 //   }
 // })
+router.get('/api/allData', appEntryController.allData)
 router.get('/api/list', appEntryController.list)
 router.post('/api/updateById', appEntryController.updateById)
 router.post('/api/addWidget', appEntryController.addWidget)
@@ -37,6 +38,7 @@ router.post('/api/removeWidget', appEntryController.removeWidget)
 router.get('/api/config', configController.config)
 router.post('/api/config/uploadBgImg',configController.upload.single('bgImg'), configController.uploadBgImg)
 router.post('/api/config/update', configController.updateConfig)
+router.post('/api/config/submitTabs', appEntryController.submitTabs)
 router.get('/api/endpoints/syncthing/info',syncThingController.getFoldersInfo)
 router.get('/api/endpoints/archive_phase/prepare',rsyncphaseController.prepareArchive)
 router.get('/api/endpoints/archive_phase/start',rsyncphaseController.startArchive)

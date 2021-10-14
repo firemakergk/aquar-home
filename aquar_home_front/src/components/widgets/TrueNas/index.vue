@@ -71,6 +71,7 @@ export default {
   props: {
     // name: { type: String, default: '文件同步' },
     // data: { type: Object, default: () => {} }
+    tabIndex: {type: Number,default: 0},
     configData: { type: Object, default: () => {} }
   },
   data: function() {
@@ -139,7 +140,7 @@ export default {
       this.showConfig = !this.showConfig
     },
     updateConfig() {
-      this.$bus.emit('update', this.configData)
+      this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
       this.showConfig = false
     }
   }

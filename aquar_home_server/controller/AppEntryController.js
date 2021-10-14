@@ -10,24 +10,41 @@ class AppEntryController {
     var data = ctx.request.body
     // data = JSON.parse(data)
     console.log(data)
-    appEntryDao.updateById(data.id,data)
-    var resStr = await appEntryDao.findOneById(data.id)
+    appEntryDao.updateById(data.tabIndex,data.widget.id,data.widget)
+    var resStr = await appEntryDao.findOneById(data.tabIndex,data.widget.id)
     ctx.body = resStr
   }
   async addWidget(ctx, next) {
     var data = ctx.request.body
-    data.id = uuidv4()
+    data.widget.id = uuidv4()
     // data.layout.i = data.id
-    appEntryDao.saveAppEntry(data)
-    var resStr = await appEntryDao.findOneById(data.id)
+    appEntryDao.saveAppEntry(data.tabIndex,data.widget)
+    var resStr = await appEntryDao.findOneById(data.widget.id)
     ctx.body = resStr
   }
   async removeWidget(ctx, next) {
     var data = ctx.request.body
-    appEntryDao.deleteById(data.id)
-    var resStr = await appEntryDao.findAllBySort()
+    appEntryDao.deleteById(data.tabIndex, data.id)
+    var resStr = await appEntryDao.findByCurIndex()
     ctx.body = resStr
   }
+  async allData(ctx, next) {
+    var resStr = await appEntryDao.allData()
+    ctx.body = resStr
+  }
+  async submitTabs(ctx, next) {
+    var data = ctx.request.body
+    appEntryDao.updateTabs(data)
+    var resStr = await appEntryDao.allData()
+    ctx.body = resStr
+  }
+  async addTab(ctx, next) {
+    var data = ctx.request.body
+    appEntryDao.addTab(data)
+    var resStr = await appEntryDao.allData()
+    ctx.body = resStr
+  }
+  
 }
 var appEntryController = new AppEntryController()
 export default appEntryController

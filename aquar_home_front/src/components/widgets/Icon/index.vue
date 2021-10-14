@@ -97,6 +97,7 @@ export default {
     VueCropper
   },
   props: {
+    tabIndex: {type: Number,default: 0},
     configData: { type: Object, default: () => {} }
   },
   data: function() {
@@ -234,7 +235,7 @@ export default {
       })
     },
     updateConfig() {
-      this.$bus.emit('update', this.configData)
+      this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
       this.showConfig = false
     }
   }

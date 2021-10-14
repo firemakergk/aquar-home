@@ -23,18 +23,21 @@
 import { mapGetters } from 'vuex'
 import AddWidget from './AddWidget.vue' 
 import ConfigAppearance from './ConfigAppearance.vue'
+import ConfigTabs from './ConfigTabs.vue'
 
 export default {
   name: 'Config',
   components: {
     AddWidget,
-    ConfigAppearance
+    ConfigAppearance,
+    ConfigTabs
   },
   data: function() {
     return {
       menus:[
         {'name':'外观设置',component:'ConfigAppearance'},
-        {'name':'添加组件',component:'AddWidget'}
+        {'name':'添加组件',component:'AddWidget'},
+        {'name':'分页配置',component:'ConfigTabs'}
       ],
       curMenu: 0
     }

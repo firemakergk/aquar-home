@@ -6,8 +6,9 @@
         <span style="margin: 4px;">Aquar</span>
       </div>
       <div class="page_tabs">
-        <div class="page_tab tab_selected">sdafa</div>
-        <div class="add_tab">+</div>
+        <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab " :class="{tab_selected: index == curTabIndex}">
+          <a @click="toTab(index)">{{tab.title}}</a>
+        </div>
       </div>
       <div style="flex-grow: 1" />
       <a v-if="!editing" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
@@ -42,24 +43,9 @@
           <a style="font-size: 10px; color: red; margin: 4px;" class="iconfont icon-delete icon" @click="removeWidget(widget.id)" />
           <!-- TODO 二次确认 -->
         </div>
-        <div v-if="widget.widget === 'SyncthingWidget'">
-          <syncthing-widget :config-data="widget" class="no-drag absolute" />
-        </div>
-        <div v-if="widget.widget === 'ArchivePhaseWidget'">
-          <archive-phase-widget :config-data="widget" class="no-drag absolute" />
-        </div>
-        <div v-if="widget.widget === 'NextCloudWidget'">
-          <next-cloud-widget :config-data="widget" class="no-drag absolute" />
-        </div>
-        <div v-if="widget.widget === 'IconWidget'">
-          <icon-widget :config-data="widget" class="no-drag absolute" />
-        </div>
-        <div v-if="widget.widget === 'TrueNasWidget'">
-          <true-nas-widget :config-data="widget" class="no-drag absolute" />
-        </div>
-        <div v-if="widget.widget === 'PveWidget'">
-          <pve-widget :config-data="widget" class="no-drag absolute" />
-        </div>
+        <keep-alive>
+          <component v-bind:is="widget.widget" :tab-index="curTabIndex" :config-data="widget" class="no-drag absolute"></component>
+        </keep-alive>
       </grid-item>
     </grid-layout>
     <div v-show="showAddPanel" class="add_layer">
@@ -103,8 +89,9 @@ export default {
       logo_aquar,
       layout: [],
       editing: false,
-      index: 0,
+      curTabIndex: 0,
       eventLog: [],
+      tabs: [],
       widgets: [],
       showAddPanel: false
     }
@@ -124,22 +111,37 @@ export default {
     this.$bus.on('update', this.updateConfig)
     this.$bus.on('closeAddPanel', this.toggleAddWidget)
     this.$bus.on('addWidget', this.addWidget)
+    this.$bus.on('refresh', this.refreshWidgets)
   },
   mounted: function() {
+
     axios
-      .get('/api/list')
+      .get('/api/allData')
       .then(response => {
-        this.widgets = response.data
+        this.data = response.data
+        this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+        this.tabs = this.data.tabs
+        this.widgets = this.tabs[this.curTabIndex].widgets
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
           this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
         }
       })
+    // axios
+    //   .get('/api/list')
+    //   .then(response => {
+    //     this.widgets = response.data
+    //     this.layout = []
+    //     for (var i = 0; i < this.widgets.length; i++) {
+    //       this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
+    //     }
+    //   })
   },
   beforeDestroy() {
     this.$bus.off('update', this.updateConfig)
     this.$bus.off('closeAddPanel', this.toggleAddWidget)
     this.$bus.off('addWidget', this.addWidget)
+    this.$bus.off('refresh', this.refreshWidgets)
   },
   methods: {
     moveEvent: function(i, newX, newY) {
@@ -189,14 +191,17 @@ export default {
     },
     refreshWidgets() {
       axios
-        .get('/api/list')
-        .then(response => {
-          this.widgets = response.data
-          this.layout = []
-          for (var i = 0; i < this.widgets.length; i++) {
-            this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
-          }
-        })
+      .get('/api/allData')
+      .then(response => {
+        this.data = response.data
+        this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+        this.tabs = this.data.tabs
+        this.widgets = this.tabs[this.curTabIndex].widgets
+        this.layout = []
+        for (var i = 0; i < this.widgets.length; i++) {
+          this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
+        }
+      })
     },
     updateConfig: function(newData) {
       console.log(newData)
@@ -210,7 +215,7 @@ export default {
       for (var i = 0; i < this.layout.length; i++) {
         var curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
         curWidget.layout = this.layout[i]
-        axios.post('/api/updateById', curWidget)
+        axios.post('/api/updateById', {'tabIndex':this.curTabIndex,'widget':curWidget})
       }
       this.editing = false
       this.refreshWidgets()
@@ -230,17 +235,30 @@ export default {
       }
       widget.layout.x = 0
       widget.layout.y = y + h + 1
-      axios.post('/api/addWidget', widget)
+      axios.post('/api/addWidget', {tabIndex: this.curTabIndex,widget: widget})
         .then(() => {
           this.refreshWidgets()
         })
     },
     removeWidget(id) {
-      axios.post('/api/removeWidget', { id: id })
+      axios.post('/api/removeWidget', {tabIndex: this.curTabIndex, id: id })
         .then(() => {
           this.refreshWidgets()
         })
-    }
+    },
+    toTab(index) {
+      if(index<0 || index >= this.tabs.length){
+        return
+      }
+      this.curTabIndex = index
+      this.widgets = this.tabs[index].widgets
+      this.layout = []
+      for (var i = 0; i < this.widgets.length; i++) {
+        this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
+      }
+      this.$forceUpdate()
+    },
+    
   }
 }
 </script>
@@ -267,7 +285,7 @@ export default {
   border-top-right-radius: 3px;
   border-top: 0.5px solid rgb(100,100,100);
   border-left: 0.5px solid rgb(100,100,100);
-  font-size: 18px;
+  font-size: 14px;
   height: 24px;
   padding: 0 6px;
   mask-image: linear-gradient (black 0%,  white 0%,transparent 100%);

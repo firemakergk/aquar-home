@@ -1,62 +1,70 @@
-import { Low, JSONFile } from 'lowdb'
+import { LowSync, JSONFileSync } from 'lowdb'
 import lodash from 'lodash'
 import fs from 'fs'
-const DB_PATH = '/var/aquardata/db/'
-var appEntryDao = (function() {
-  if (!fs.existsSync(DB_PATH+'db.json')){
-    var defaultConfig = fs.readFileSync('./db.json','utf8')
-    fs.mkdirSync(DB_PATH, { recursive: true });
-    fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
-  }
-  const adapter = new JSONFile(DB_PATH+'db.json')
-  var db = new Low(adapter)
-  db.read()
-  db.chain = lodash.chain(db.data)
 
-  return {
-    saveAppEntry: function(entry) {
-      db.widgets.push(entry)
-      db.write()
-    },
-    findOneById: function(id) {
-      var res = db.get('widgets')
-        .find({ 'id': id }).value()
-      return res
-    },
-    findByCurIndex: function() {
-      var index = db.chain.get('config').get('current_index').value
-      index = index ? index:0;
-      return db.data.tabs[index].widgets
-    },
-    findByPage: function(pageNo, pagesize, sortByAsc) {
-      return db.get('widgets')
-        .sortBy('sort')
-      // .sortBy(function(item){return item.sort})
-        .slice((pageNo - 1) * pagesize, pagesize)
-        .value()
-    },
-    updateById: function(id,item) {
-      db.get('widgets')
-      .find({ id: id })
-      .assign(item)
-      .write()
-    },
-    deleteById: function(id) {
-      db.get('widgets').remove({'id':id}).write()
-    },
-    updateConfig: function(config) {
-      db.get('config')
-      .assign(config)
-      .write()
-    },
-    getConfig: function() {
-      var res = db.data.config
-      return res
-    },
-    getDbInstance: function() {
-      return db
+
+class AppDao {
+  DB_PATH = '/var/aquardata/db/'
+  db = null
+  constructor() {
+    if (!fs.existsSync(this.DB_PATH+'db.json')){
+      var defaultConfig = fs.readFileSync('./db.json','utf8')
+      fs.mkdirSync(this.DB_PATH, { recursive: true });
+      fs.writeFileSync(this.DB_PATH+'db.json',defaultConfig)
     }
+    this.db = new LowSync(new JSONFileSync(this.DB_PATH+'db.json'))
+    this.db.read()
+    this.db.chain = lodash.chain(this.db.data)
   }
-})()
 
-export default appEntryDao
+  saveAppEntry(tabIndex,entry) {
+    this.db.data.tabs[tabIndex].widgets.push(entry)
+    this.db.write()
+  }
+  findOneById(tabIndex,id) {
+    var res = this.db.chain.get('tabs['+tabIndex+'].widgets')
+      .find({ 'id': id }).value()
+    return res
+  }
+  findByCurIndex() {
+    var index = this.db.chain.get('config.current_index').value()
+    index = index ? index:0;
+    return this.db.data.tabs[index].widgets
+  }
+  updateById(tabIndex,id,item) {
+    this.db.chain.get('tabs['+tabIndex+'].widgets')
+    .find({ id: id })
+    .assign(item).value()
+    this.db.write()
+  }
+  deleteById(tabIndex,id) {
+    this.db.chain.get('tabs['+tabIndex+'].widgets').remove({'id':id}).value()
+    this.db.write()
+  }
+  updateConfig(config) {
+    this.db.chain.get('config').assign(config).value()
+    this.db.write()
+  }
+  getConfig() {
+    var res = this.db.data.config
+    return res
+  }
+  allData() {
+    var res = this.db.data
+    return res
+  }
+  updateTabs(data) {
+    this.db.data.tabs = data
+    this.db.write()
+  }
+  addTab(tabData) {
+    this.db.data.tabs.push(tabData)
+    this.db.write()
+  }
+  getDbInstance() {
+    return this.db
+  }
+}
+
+var appDao = new AppDao()
+export default appDao

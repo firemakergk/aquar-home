@@ -140,6 +140,7 @@ import dateFormat from 'dateformat'
 export default {
   name: 'ArchivePhaseWidget',
   props: {
+    tabIndex: {type: Number,default: 0},
     configData: { type: Object, default: () => {} }
   },
   data: function() {
@@ -257,7 +258,7 @@ export default {
       this.configBarTable[index] = false
     },
     updateConfig() {
-      this.$bus.emit('update', this.configData)
+      this.$bus.emit('update', {'tabIndex':this.tabIndex,'widget':this.configData})
       this.showConfig = false
     }
   }
