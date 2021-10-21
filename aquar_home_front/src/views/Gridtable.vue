@@ -17,6 +17,7 @@
     </div>
     <grid-layout
       :layout.sync="layout"
+      :responsive="true"
       :col-num="12"
       :col-width="20"
       :row-height="60"
@@ -25,6 +26,7 @@
       :vertical-compact="false"
       :use-css-transforms="true"
       :margin="[4, 4]"
+      @breakpoint-changed="breakpointChangedEvent"
     >
       <grid-item
         v-for="widget in widgets"
@@ -87,7 +89,9 @@ export default {
   data() {
     return {
       logo_aquar,
+      lgLayout: [],
       layout: [],
+      curViewSize: "lg",
       editing: false,
       curTabIndex: 0,
       eventLog: [],
@@ -114,18 +118,20 @@ export default {
     this.$bus.on('refresh', this.refreshWidgets)
   },
   mounted: function() {
-
+    this.updateCurViewSize()
     axios
       .get('/api/allData')
       .then(response => {
         this.data = response.data
         this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
         this.tabs = this.data.tabs
-        this.widgets = this.tabs[this.curTabIndex].widgets
+        this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
           this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
         }
+        this.lgLayout = this.layout
+        this.responseLayout(this.curViewSize)
       })
     // axios
     //   .get('/api/list')
@@ -189,6 +195,24 @@ export default {
       this.eventLog.push('Updated layout')
       console.log('Updated layout: ', newLayout)
     },
+    breakpointChangedEvent: function(newBreakpoint, newLayout){
+      console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
+      this.responseLayout(newBreakpoint)
+    },
+    updateCurViewSize(){
+      const viewMap = [
+      {name:"xxs",minSize: 0},
+      {name:"xs",minSize: 480},
+      {name:"sm",minSize: 768},
+      {name:"md",minSize: 996},
+      {name:"lg",minSize: 1200}]
+      var viewWidth = document.body.clientWidth
+      for(var i in viewMap){
+        if(viewWidth >= viewMap[i].minSize){
+          this.curViewSize = viewMap[i].name
+        }
+      }
+    },
     refreshWidgets() {
       axios
       .get('/api/allData')
@@ -196,11 +220,12 @@ export default {
         this.data = response.data
         this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
         this.tabs = this.data.tabs
-        this.widgets = this.tabs[this.curTabIndex].widgets
+        this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
           this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
         }
+        this.lgLayout = this.layout
       })
     },
     updateConfig: function(newData) {
@@ -219,6 +244,70 @@ export default {
       }
       this.editing = false
       this.refreshWidgets()
+    },
+    responseLayout(newBreakpoint) {
+      if(!this.layout || this.layout.length===0){
+        return
+      }
+      var resLayout = []
+      var colCount = 12
+      if(newBreakpoint === "lg"){
+        this.refreshGrid(this.lgLayout)
+        return
+      }
+      if(newBreakpoint === "md"){
+        colCount = 10
+      }
+      if(newBreakpoint === "sm"){
+        colCount = 6 
+      }
+      if(newBreakpoint === "xs"){
+        colCount = 4
+      }
+      if(newBreakpoint === "xxs"){
+        colCount = 2
+      }
+      var curY = 0
+      var nextY = 0
+      var yList = _.uniq(_.sortBy(_.map(this.lgLayout,"y")))
+      for(var i in yList){
+        var y = yList[i]
+        var itemList = _.sortBy(_.filter(this.lgLayout,{"y":parseInt(y)}),['x'])
+        console.log("itemList:"+itemList)
+        if(curY > 0){
+          curY = nextY
+        }
+        var curW = 0
+        for(var j in itemList){
+          var it = itemList[j]
+          var item = _.cloneDeep(it)
+          if(curW + item.w > colCount){
+            item.x = 0
+            item.y = nextY
+            curY = nextY
+            nextY = curY + item.h
+            curW = item.w
+          }else {
+            item.y = curY
+            item.x = curW
+            curW = curW + item.w
+            if(curY + item.h > nextY){
+              nextY = curY + item.h
+            } 
+          }
+          resLayout.push(item)
+        }
+      }
+      this.refreshGrid(resLayout)
+    },
+    refreshGrid(layout){
+      if(layout){
+        this.layout = layout
+      }
+      for (var i = 0; i < this.layout.length; i++) {
+        var curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
+        curWidget.layout = this.layout[i]
+      }
     },
     toggleAddWidget() {
       this.showAddPanel = !this.showAddPanel
@@ -251,11 +340,14 @@ export default {
         return
       }
       this.curTabIndex = index
-      this.widgets = this.tabs[index].widgets
+      this.widgets = _.cloneDeep(this.tabs[index].widgets)
       this.layout = []
       for (var i = 0; i < this.widgets.length; i++) {
         this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
       }
+      this.lgLayout = this.layout
+      this.updateCurViewSize()
+      this.responseLayout(this.curViewSize)
       this.$forceUpdate()
     },
     
