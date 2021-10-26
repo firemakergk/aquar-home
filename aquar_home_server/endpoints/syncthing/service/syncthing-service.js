@@ -21,7 +21,7 @@ export default async function getFoldersInfo(baseUrl, appKey){
     .catch(function (error) {
         console.log('Error', error.message);
     });
-    for(i = 0;i< folderList.length;i++){
+    for(var i = 0;i< folderList.length;i++){
         let [status,localFiles,globalFiles,lastActiveTime] = await axios({
             method: 'get',
             url: baseUrl+"/rest/db/status?folder="+folderList[i].id,

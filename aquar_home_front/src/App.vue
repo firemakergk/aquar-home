@@ -109,24 +109,21 @@ div:focus {
   min-height: calc(100vh);
   width: 100%;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .app-main::before{
     content:'';
-    position:absolute;
-    top:0;
-    left:0;
+    position:fixed;
     width:100%;
     height:100%;
     background:transparent center center no-repeat fixed;
     background-image: var(--bgUrl,null);
     background-color: var(--bgColor);
-    overflow:hidden;
+    background-size: cover;
+    /* overflow:hidden; */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     filter:var(--blurNum);
     z-index:-1;
-    background-size: 100% 100%;
-    
 }
 </style>

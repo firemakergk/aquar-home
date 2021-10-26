@@ -1,16 +1,21 @@
 import nextcloudService from '../service/nextcloud-service.js'
 
 class NextCloudController {
+  
   async login(ctx, next) {
     var server = ctx.query.server
     var res = await nextcloudService.login(server)
-    ctx.body = {code:0, data: res}
+    
   }
   async poll(ctx, next) {
     var server = ctx.query.server
     var token = ctx.query.token
     var res = await nextcloudService.poll(server, token)
-    ctx.body = {code:0, data: res}
+    if(!res){
+      ctx.body = {code: -1 ,msg:"请求失败"}
+    }else{
+        ctx.body = {code: 0, data: res}
+    }
   }
   async query(ctx, next) {
     var server = ctx.request.body.server
@@ -18,14 +23,22 @@ class NextCloudController {
     var username = ctx.request.body.username
     var apppassword = ctx.request.body.apppassword
     var res = await nextcloudService.query(server, path, username, apppassword)
-    ctx.body = {code:0, data: res}
+    if(!res){
+      ctx.body = {code: -1 ,msg:"请求失败"}
+    }else{
+        ctx.body = {code: 0, data: res}
+    }
   }
   async thumbnail(ctx, next) {
     var url = ctx.request.body.url
     var username = ctx.request.body.username
     var apppassword = ctx.request.body.apppassword
     var res = await nextcloudService.thumbnail(url, username, apppassword)
-    ctx.body = {code:0, data: res}
+    if(!res){
+      ctx.body = {code: -1 ,msg:"请求失败"}
+    }else{
+        ctx.body = {code: 0, data: res}
+    }
   }
   async download(ctx, next) {
     var url = ctx.request.body.url
@@ -37,6 +50,8 @@ class NextCloudController {
     ctx.body = res
   }
 }
+
+
 
 var nextCloudController = new NextCloudController()
 export default nextCloudController

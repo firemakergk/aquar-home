@@ -187,6 +187,11 @@ export default {
           this.loginData = response.data.data
           this.showPoll = false
         })
+        .catch(error => {
+          this.showErrorInfo = true
+          this.errorInfo = error.message
+          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+        })
     },
     gotoLogin() {
       this.showPoll = true
@@ -197,13 +202,21 @@ export default {
         .get('/api/endpoints/nextcloud/poll?server=' + this.configData.data.server + '&token=' + this.loginData.poll.token)
         .then(response => {
           console.log(response)
+          if(response.data.code!=0){
+            this.showErrorInfo = true
+          }
           this.configData.data.user_name = response.data.data.loginName
           this.configData.data.app_password = response.data.data.appPassword
           this.configData.data.default_path = response.data.data.loginName
-          this.$bus.emit('update', this.configData)
+          this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
           this.showPoll = false
           this.showInit = false
           this.init()
+        })
+        .catch(error => {
+          this.showErrorInfo = true
+          this.errorInfo = error.message
+          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
         })
     },
     contentType(contentType) {
@@ -276,6 +289,11 @@ export default {
             }
             this.queryData[reqData.index].thumb = resData.data
             this.$forceUpdate()
+          })
+          .catch(error => {
+            this.showErrorInfo = true
+            this.errorInfo = error.message
+            console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
           })
         plist.push(p)
         if (plist.length >= 5) {

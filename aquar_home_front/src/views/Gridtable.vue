@@ -11,13 +11,13 @@
         </div>
       </div>
       <div style="flex-grow: 1" />
-      <a v-if="!editing" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
-      <a v-else style="margin: 0 4px;" class="iconfont icon-check icon" title="确定布局" @click="comfirmLayout()" />
+      <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
+      <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon" title="确定布局" @click="comfirmLayout()" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleAddWidget()" />
     </div>
     <grid-layout
       :layout.sync="layout"
-      :responsive="true"
+      :responsive="!editing"
       :col-num="12"
       :col-width="20"
       :row-height="60"
@@ -198,6 +198,7 @@ export default {
     breakpointChangedEvent: function(newBreakpoint, newLayout){
       console.log("BREAKPOINT CHANGED breakpoint=", newBreakpoint, ", layout: ", newLayout );
       this.responseLayout(newBreakpoint)
+      this.$forceUpdate()
     },
     updateCurViewSize(){
       const viewMap = [
