@@ -39,6 +39,8 @@
         drag-allow-from=".vue-draggable-handle"
         drag-ignore-from=".no-drag"
         class="relative"
+        @move="moveEvent"
+        @resize="resizeEvent"
       >
         <div v-show="editing" class="vue-draggable-handle">
           <span style="font-size: 14px; color: white; margin: 4px 10px; flex-grow: 1;">点此拖动</span>
@@ -151,19 +153,20 @@ export default {
   },
   methods: {
     moveEvent: function(i, newX, newY) {
-      const msg = 'MOVE i=' + i + ', X=' + newX + ', Y=' + newY
-      this.eventLog.push(msg)
-      console.log(msg)
+      var widget = _.find(this.widgets, { 'id': i }) 
+      widget.layout.x = newX
+      widget.layout.y = newY
     },
     movedEvent: function(i, newX, newY) {
       const msg = 'MOVED i=' + i + ', X=' + newX + ', Y=' + newY
       this.eventLog.push(msg)
       console.log(msg)
+      
     },
     resizeEvent: function(i, newH, newW, newHPx, newWPx) {
-      const msg = 'RESIZE i=' + i + ', H=' + newH + ', W=' + newW + ', H(px)=' + newHPx + ', W(px)=' + newWPx
-      this.eventLog.push(msg)
-      console.log(msg)
+      var widget = _.find(this.widgets, { 'id': i }) 
+      widget.layout.h = newH
+      widget.layout.w = newW
     },
     resizedEvent: function(i, newX, newY, newHPx, newWPx) {
       const msg = 'RESIZED i=' + i + ', X=' + newX + ', Y=' + newY + ', H(px)=' + newHPx + ', W(px)=' + newWPx
@@ -214,12 +217,16 @@ export default {
         }
       }
     },
-    refreshWidgets() {
+    refreshWidgets(curTabIndex) {
       axios
       .get('/api/allData')
       .then(response => {
         this.data = response.data
-        this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+        if(curTabIndex!=null && curTabIndex!=undefined){
+          this.curTabIndex = curTabIndex
+        }else{
+          this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+        }
         this.tabs = this.data.tabs
         this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
@@ -234,7 +241,7 @@ export default {
       axios.post('/api/updateById', newData)
         .then(response => {
           console.log(response.data)
-          this.refreshWidgets()
+          this.refreshWidgets(this.curTabIndex)
         })
     },
     comfirmLayout() {
@@ -244,9 +251,10 @@ export default {
         axios.post('/api/updateById', {'tabIndex':this.curTabIndex,'widget':curWidget})
       }
       this.editing = false
-      this.refreshWidgets()
+      this.refreshWidgets(this.curTabIndex)
     },
     responseLayout(newBreakpoint) {
+      this.editing = false
       if(!this.layout || this.layout.length===0){
         return
       }
@@ -327,16 +335,19 @@ export default {
       widget.layout.y = y + h + 1
       axios.post('/api/addWidget', {tabIndex: this.curTabIndex,widget: widget})
         .then(() => {
-          this.refreshWidgets()
+          this.refreshWidgets(this.curTabIndex)
         })
     },
     removeWidget(id) {
       axios.post('/api/removeWidget', {tabIndex: this.curTabIndex, id: id })
         .then(() => {
-          this.refreshWidgets()
+          this.refreshWidgets(this.curTabIndex)
         })
     },
     toTab(index) {
+      if(this.editing){
+        return
+      }
       if(index<0 || index >= this.tabs.length){
         return
       }
@@ -349,7 +360,7 @@ export default {
       this.lgLayout = this.layout
       this.updateCurViewSize()
       this.responseLayout(this.curViewSize)
-      this.$forceUpdate()
+      // this.$forceUpdate()
     },
     
   }
