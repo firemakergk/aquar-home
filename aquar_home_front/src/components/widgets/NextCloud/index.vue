@@ -186,6 +186,7 @@ export default {
         .then(response => {
           this.loginData = response.data.data
           this.showPoll = false
+          this.showErrorInfo = false
         })
         .catch(error => {
           this.showErrorInfo = true
@@ -211,6 +212,7 @@ export default {
           this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
           this.showPoll = false
           this.showInit = false
+          this.showErrorInfo = false
           this.init()
         })
         .catch(error => {
@@ -261,6 +263,7 @@ export default {
         .post('/api/endpoints/nextcloud/query', reqData)
         .then(response => {
           this.queryData = response.data.data
+          this.showErrorInfo = false
           if (this.viewType === 'block') {
             this.getThumbnailBatch()
           }
@@ -284,6 +287,7 @@ export default {
           .post('/api/endpoints/nextcloud/thumbnail', reqData)
           .then(response => {
             const resData = response.data
+            this.showErrorInfo = false
             if (!resData.data) {
               return
             }

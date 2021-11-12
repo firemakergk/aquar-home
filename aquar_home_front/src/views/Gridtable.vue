@@ -497,7 +497,7 @@ export default {
   border-width: 0.5px;
   border-color: white;
   cursor: pointer;
-  z-index: 4;
+  /* z-index: 3; */
 }
 .layoutJSON {
   background: #ddd;

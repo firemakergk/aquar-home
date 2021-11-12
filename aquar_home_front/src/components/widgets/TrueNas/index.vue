@@ -110,6 +110,7 @@ export default {
           const resData = response.data
           this.poolInfo = resData.data
           if(this.poolInfo){
+            this.showErrorInfo = false
             for (var i = 0; i < this.poolInfo.length; i++) {
               var item = this.poolInfo[i]
               if (item.healthy === true) {
