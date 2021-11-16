@@ -1,17 +1,76 @@
 <template>
-  <div class="container">
-    <div class="icon_panel">
-      <div class="img_span" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
-        <div style="flex-grow: 1; width: 8px;" />
-        <a target="_blank" :href="configData.href">
-          <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 40px;">
-          <img v-else :src="logo_icon" style=" flex-grow: 1; width: 40px;">
-        </a>
-        <div style="flex-grow: 1; width: 8px;">
-          <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon" style="color: rgba(255,255,255,0.3); font-size: 6px; " title="设置" @click="toggleConfig" />
+  <div class="content">
+    <div class="param_panel">
+      <div class="param_row">
+        <div class="param_name">图标图片：</div>
+        <div class="param_form">
+          <div style="display: flex; align-items: stretch;">
+            <div class="icon_warp" @mouseover="showUpload=true" @mouseleave="showUpload=false">
+              <div v-show="showUpload" class="icon_cover">
+                <label class="iconfont icon-upload icon" title="重新上传" style="font-size: 30px;" :for="'upload_icon_'+configData.id" />
+                <input :id="'upload_icon_'+configData.id" :ref="'upload_icon_'+configData.id" type="file" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="clipImg($event, 1)">
+              </div>
+              <img style="width: 100px; height: 100px;" :src="configData.data.img_path">
+            </div>
+            <!-- <input v-model="curWidget.name" type="text" style="width: 100%;"> -->
+            <div>
+              <div v-show="showCropper" style=" margin: 0 10px; width: 200px; height: 200px; display: flex; flex-direction: column;">
+                <vueCropper
+                  :ref="'cropper_'+configData.id"
+                  :img="option.img"
+                  :outputSize="option.size"
+                  :outputType="option.outputType"
+                  :info="true"
+                  :full="option.full"
+                  :canMove="option.canMove"
+                  :canMoveBox="option.canMoveBox"
+                  :fixedBox="option.fixedBox"
+                  :original="option.original"
+                  :autoCrop="option.autoCrop"
+                  :autoCropWidth="option.autoCropWidth"
+                  :autoCropHeight="option.autoCropHeight"
+                  :centerBox="option.centerBox"
+                  :high="option.high"
+                  :infoTrue="option.infoTrue"
+                  :maxImgSize="option.maxImgSize"
+                  @realTime="realTime"
+                  @imgLoad="imgLoad"
+                  @cropMoving="cropMoving"
+                  :enlarge="option.enlarge"
+                  :mode="option.mode"
+                  :limitMinSize="option.limitMinSize"/>
+                <a :ref="'downloadDom'+configData.id" :href="downImg" style="display: none;" download="demo.png" />
+              </div>
+              <div v-show="showCropper" style="margin: 10px; color: rgb(44,44,44);"><a @click="comfirmIcon">确定</a></div>
+            </div>
+            
+          </div>
         </div>
       </div>
-      <a target="_blank" :href="configData.href" style="text-align: center; color: white;">{{ configData.name }}</a>
+      <div class="param_row">
+        <div class="param_name">名称：</div>
+        <div class="param_form">
+          <input v-model="configData.name" style="width: 100%;">
+        </div>
+      </div>
+      <div class="param_row">
+        <div class="param_name">链接地址：</div>
+        <div class="param_form">
+          <input v-model="configData.href" style="width: 100%;">
+        </div>
+      </div>
+      <div class="param_row">
+        <div class="param_name"></div>
+        <div class="param_form">
+          <a class="iconfont icon-check icon" style="color: white;" title="确定" @click="updateConfig" />
+        </div>
+      </div>
+      <div class="param_row" style="height: 80px;">
+        <div class="param_name"></div>
+        <div class="param_form">
+          <button type="button" class="submit_button" @click="updateConfig()">提交</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -21,7 +80,7 @@ import axios from 'axios'
 import { VueCropper } from 'vue-cropper'
 import logo_icon from './img/aquar.png'
 export default {
-  name: 'IconWidget',
+  name: 'IconWidgetConfig',
   components: {
     VueCropper
   },
@@ -33,7 +92,6 @@ export default {
     return {
       logo_icon,
       showConfigIcon: false,
-      showConfig: false,
       showCropper: false,
       showUpload: false,
       option: {
@@ -55,7 +113,7 @@ export default {
         enlarge: 1,
         mode: 'contain',
         maxImgSize: 3000,
-        limitMinSize: [100, 120]
+        limitMinSize: [100, 100]
       },
       previews: {},
       downImg: '#',
@@ -73,10 +131,6 @@ export default {
   methods: {
     imgLoad(msg) {
       console.log(msg)
-    },
-    toggleConfig() {
-      // this.showConfig = !this.showConfig
-      this.$bus.emit('configWidget',  {'widgetType':'IconWidgetConfig','widgetName':'图标','tabIndex':this.tabIndex,'configData':this.configData})
     },
     // 实时预览函数
     realTime(data) {
@@ -166,7 +220,7 @@ export default {
     },
     updateConfig() {
       this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
-      this.showConfig = false
+      this.$bus.emit('closeWidgetConfig', null)
     }
   }
 }
@@ -182,53 +236,40 @@ export default {
   width: 100%;
   display: block;
 }
-.container {
-  width: 100%;
-  height: 100%;
-}
-.float_config {
-  position: absolute;
-  top: 60px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 240px;
-  width: 300px;
-  background-color: rgba(44,44,44,1);
-  border: solid thin white;
-  display: flex;
-  flex-direction: column;
-  z-index: 99;
-}
-
-.high_height {
-  height: 480px;
-}
-.config_top {
+.config_header {
   display: flex;
   align-items: center;
-  background-color: #000;
-  color: #FFF;
-  padding: 4px;
   height: 24px;
-  top: 0;
-}
-.config_row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin: 4px 2px;
-
-}
-.config_name {
-  width: 120px;
-  margin: 4px;
-  text-align: right;
+  background-color: rgb(44,44,44);
   color: white;
 }
-.config_form {
+.content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.param_panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  // border-top: solid #ccc thin;
+  font-size: 14px;
+}
+
+.param_row {
+  display: flex;
+  align-items: center;
   width: 100%;
-  margin:0 4px;
+}
+.param_name {
+  flex-basis: 100px;
+  margin: 10px;
+  text-align: right;
+}
+.param_form {
+  flex-grow: 1;
 }
 .icon_warp {
   position: relative;
@@ -262,14 +303,15 @@ export default {
   // width: 40px;
   height: 40px;
 }
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
+.submit_panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
-
-.clearfix:after {
-    clear: both
+.submit_button {
+  background-color: rgb(44,44,44);
+  color: rgb(243,243,243);
+  font-size: 14px;
 }
-
 </style>

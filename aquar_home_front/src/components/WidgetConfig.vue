@@ -1,45 +1,31 @@
 <template>
   <div class="container">
     <div class="config_header">
-      <span style="flex-grow: 1; margin: 0 10px;">设置</span>
+      <span style="flex-grow: 1; margin: 0 10px;">{{widgetName}}设置</span>
       <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
     </div>
     <div class="config_content">
-      <div class="config_sidebar">
-        <a v-for="(menu,index) in menus" :key="index" class="menu_item" 
-        @click="toTab(index)" :class="{menu_active: index == curMenu}">{{menu.name}}</a>
-      </div>
-      <div class="config_panel">
-        <keep-alive>
-          <component v-bind:is="menus[curMenu].component"></component>
-        </keep-alive>
+      <div class="widget_config_panel">
+        <component v-bind:is="widgetType" :tab-index="tabIndex" :config-data="configData"></component>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import AddWidget from './AddWidget.vue' 
-import ConfigAppearance from './ConfigAppearance.vue'
-import ConfigTabs from './ConfigTabs.vue'
-
+import IconWidgetConfig from './widgets/Icon/config.vue'
 export default {
-  name: 'Config',
+  name: 'WidgetConfig',
   components: {
-    AddWidget,
-    ConfigAppearance,
-    ConfigTabs
+    IconWidgetConfig
   },
   data: function() {
     return {
-      menus:[
-        {'name':'外观设置',component:'ConfigAppearance'},
-        {'name':'添加组件',component:'AddWidget'},
-        {'name':'分页配置',component:'ConfigTabs'}
-      ],
-      curMenu: 0
+      widgetType: "",
+      widgetName: "",
+      tabIndex: null,
+      configData: {}
     }
   },
   computed: {
@@ -48,19 +34,23 @@ export default {
     ])
   },
   created: function() {
+    this.$bus.on('configWidget', this.initConfig)
   },
   mounted: function() {
   },
   beforeDestroy() {
+    this.$bus.off('configWidget', this.initConfig)
   },
   methods: {
     close() {
-      this.curWidget = null
-      this.configDetail = false
-      this.$bus.emit('closeConfigPanel', null)
+      this.$bus.emit('closeWidgetConfig', null)
     },
-    toTab(index) {
-      this.curMenu = index
+    initConfig(eventData) {
+      this.widgetType = eventData.widgetType
+      this.widgetName = eventData.widgetName
+      this.tabIndex = eventData.tabIndex
+      this.configData = eventData.configData
+      this.$bus.emit('showWidgetConfig',null)
     }
   }
 }
@@ -98,26 +88,12 @@ export default {
   flex-grow: 1;
   display: flex;
   position: relative;
-}
-.config_sidebar {
-  margin: 0;
-  flex: 0 0 80px;
-  font-size: 16px;
-  background: rgb(243,243,243);
-  color:rgb(44,44,44);
-  display: flex;
   flex-direction: column;
 }
-.menu_item {
-  padding: 8px 4px;
-}
-.menu_active {
-  background-color: rgb(44,44,44);
-  color: rgb(243,243,243);
-}
-.config_panel {
-  margin: 0;
-  width:100%;
+.widget_config_panel {
+  margin: 10px 0 0 0;
+  padding: 10px;
+  // width:100%;
   height: 100%;
   overflow-y: auto;
 }
@@ -163,6 +139,16 @@ export default {
 }
 .param_form {
   width: 100%;
+}
+.widget_config_panel::-webkit-scrollbar {
+  width: 4px;
+}
+.widget_config_panel::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+}
+.widget_config_panel::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  // outline: 0.5px solid slategrey;
 }
 
 </style>

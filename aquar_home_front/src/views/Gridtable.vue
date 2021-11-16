@@ -13,7 +13,7 @@
       <div style="flex-grow: 1" />
       <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
       <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon" title="确定布局" @click="comfirmLayout()" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleAddWidget()" />
+      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfigPanel()" />
     </div>
     <grid-layout
       :layout.sync="layout"
@@ -52,9 +52,14 @@
         </keep-alive>
       </grid-item>
     </grid-layout>
-    <div v-show="showAddPanel" class="add_layer">
-      <div class="add_panel">
+    <div v-show="showConfigPanel" class="config_layer">
+      <div class="config_panel">
         <config />
+      </div>
+    </div>
+    <div v-show="showWidgetConfig" class="config_layer">
+      <div class="config_panel">
+        <widget-config />
       </div>
     </div>
   </div>
@@ -72,8 +77,8 @@ import NextCloudWidget from '../components/widgets/NextCloud'
 import IconWidget from '../components/widgets/Icon'
 import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
-// import AddWidget from '../components/AddWidget.vue' 
 import Config from '../components/Config.vue' 
+import WidgetConfig from '../components/WidgetConfig.vue' 
 
 export default {
   name: 'GridTable',
@@ -86,7 +91,8 @@ export default {
     IconWidget,
     TrueNasWidget,
     PveWidget,
-    Config
+    Config,
+    WidgetConfig
   },
   data() {
     return {
@@ -99,7 +105,8 @@ export default {
       eventLog: [],
       tabs: [],
       widgets: [],
-      showAddPanel: false
+      showConfigPanel: false,
+      showWidgetConfig: false
     }
   },
   computed: {
@@ -115,7 +122,9 @@ export default {
   },
   created: function() {
     this.$bus.on('update', this.updateConfig)
-    this.$bus.on('closeAddPanel', this.toggleAddWidget)
+    this.$bus.on('closeConfigPanel', this.toggleConfigPanel)
+    this.$bus.on('showWidgetConfig', this.openWidgetConfig)
+    this.$bus.on('closeWidgetConfig', this.closeWidgetConfig)
     this.$bus.on('addWidget', this.addWidget)
     this.$bus.on('refresh', this.refreshWidgets)
   },
@@ -147,7 +156,9 @@ export default {
   },
   beforeDestroy() {
     this.$bus.off('update', this.updateConfig)
-    this.$bus.off('closeAddPanel', this.toggleAddWidget)
+    this.$bus.off('closeConfigPanel', this.toggleConfigPanel)
+    this.$bus.off('showWidgetConfig', this.openWidgetConfig)
+    this.$bus.off('closeWidgetConfig', this.closeWidgetConfig)
     this.$bus.off('addWidget', this.addWidget)
     this.$bus.off('refresh', this.refreshWidgets)
   },
@@ -318,8 +329,14 @@ export default {
         curWidget.layout = this.layout[i]
       }
     },
-    toggleAddWidget() {
-      this.showAddPanel = !this.showAddPanel
+    toggleConfigPanel() {
+      this.showConfigPanel = !this.showConfigPanel
+    },
+    closeWidgetConfig() {
+      this.showWidgetConfig = false
+    },
+    openWidgetConfig() {
+      this.showWidgetConfig = true
     },
     addWidget(widget) {
       var y = 0
@@ -423,7 +440,7 @@ export default {
   padding: 0;
   position: relative;
 }
-.add_layer {
+.config_layer {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -435,7 +452,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.add_panel {
+.config_panel {
   width: 600px;
   height: 500px;
 }
@@ -497,7 +514,7 @@ export default {
   border-width: 0.5px;
   border-color: white;
   cursor: pointer;
-  /* z-index: 3; */
+  z-index: 3;
 }
 .layoutJSON {
   background: #ddd;

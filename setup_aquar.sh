@@ -73,8 +73,15 @@ apt-get update
 apt-get install docker-ce docker-ce-cli containerd.io -y
 
 echo '********创建python环境aquar并安装docker-compose********'
-pip3 install virtualenvwrapper
+source /root/.bashrc
 source /usr/local/bin/virtualenvwrapper.sh
+if ! grep -q 'source /usr/local/bin/virtualenvwrapper.sh' /root/.bashrc;
+then
+cat >> /root/.bashrc <<EOF
+source /usr/local/bin/virtualenvwrapper.sh
+##[aquar config end]##
+EOF
+fi
 mkvirtualenv aquar
 workon aquar
 pip install docker-compose
