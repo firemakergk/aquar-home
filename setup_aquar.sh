@@ -238,6 +238,19 @@ services:
       - '/opt/aquar/storages/apps/gitlab/config:/etc/gitlab'
       - '/opt/aquar/storages/apps/gitlab/logs:/var/log/gitlab'
       - '/opt/aquar/storages/apps/gitlab/data:/var/opt/gitlab'
+  # aquarhome:
+  #   image: aquar-home 
+  #   container_name: aquarhome 
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Asia/Shanghai
+  #   volumes:
+  #     - /opt/aquar/storages/apps/aquarhome/data:/var/aquardata
+  #     - /opt/aquar/storages/aquarpool:/opt/aquarpool
+  #   ports:
+  #     - 8172:8172
+  #   restart: unless-stopped
 EOF
 mkdir -p /opt/aquar/src/docker-compose/mariadb.init.d
 touch /opt/aquar/src/docker-compose/mariadb.init.d/init.sql
