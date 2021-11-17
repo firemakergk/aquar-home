@@ -8,7 +8,7 @@
     "current_index": 0,
     "appearance": {
       "bgColor": "#455A65",
-      "bgImg": null,
+      "bgImg": "/assets/bg.jpg",
       "bgBlur": "0",
       "theme": "vscode"
     }

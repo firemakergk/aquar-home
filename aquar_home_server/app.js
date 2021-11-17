@@ -12,9 +12,15 @@ import users from './routes/users.js'
 import axios from 'axios'
 import moment from 'moment'
 import appDao from './service/db/app-dao.js'
+import fs from 'fs'
+
+const __dirname = path.resolve();
+if (!fs.existsSync('./public/assets/bg.jpg')){
+  fs.mkdirSync('./public/assets/', { recursive: true });
+  fs.copyFileSync('./assets/bg.jpg','./public/assets/bg.jpg')
+}
 
 const app = new Koa()
-const __dirname = path.resolve();
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -52,7 +58,7 @@ app.use(async (ctx, next) => {
 app.use(koajwt({
   secret: appDao.getSecret()
 }).unless({ // 配置白名单
-  path: [ /\/api\/login/, /\/api\/config/]
+  path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
 }))
 
 // routes
@@ -124,5 +130,6 @@ axios.interceptors.response.use(function (response) {
   }
   return Promise.reject(error);
 });
+
 
 export default app
