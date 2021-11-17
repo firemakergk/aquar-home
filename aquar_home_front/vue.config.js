@@ -21,7 +21,7 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8172',
         secusecure: false,
         changeOrigin: true,
         disableHostCheck: true,
@@ -47,7 +47,7 @@ module.exports = {
       },
       '/img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8172',
         changeOrigin: true
         // pathRewrite: {
         //   '^/api': '/'
@@ -55,13 +55,13 @@ module.exports = {
       },
       '/icon_img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       },
       '/bg_img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:3000',
+        target: 'http://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       }

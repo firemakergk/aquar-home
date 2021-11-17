@@ -15,8 +15,8 @@ FROM node:14
 RUN npm install -g pm2
 WORKDIR /app/aquar_home
 COPY --from=builder /app/aquar_home/aquar_home_server/ .
-COPY --from=builder /app/aquar_home/aquar_home_server/service/db/db.json /var/aquar_data/db.json
-EXPOSE 3000
+COPY --from=builder /app/aquar_home/aquar_home_server/service/db/db.json /var/aquardata/db.json
+EXPOSE 8172
 VOLUME ["/var/aquardata"]
 VOLUME ["/opt/aquarpool"]
 CMD ["/bin/bash", "-c", "cd /app/aquar_home/ && mkdir -p /var/aquardata/log/ && npm run prd > /var/aquardata/log/aquar_home.log 2>&1"]
