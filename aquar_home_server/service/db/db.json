@@ -1,4 +1,9 @@
 {
+  "auth":{
+    "userName": null,
+    "password": null,
+    "tokens": []
+  },
   "config": {
     "current_index": 0,
     "appearance": {
@@ -12,6 +17,24 @@
     {
       "title":"控制台",
       "widgets": [
+        {
+          "id": "92345214-5sd4-4e9f-bf48-4e50caff63ef",
+          "sort": 1,
+          "name": "Aquar",
+          "href": "#",
+          "widget": "IconWidget",
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1,
+            "i": "92345214-5sd4-4e9f-bf48-4e50caff63ef",
+            "moved": false
+          },
+          "data": {
+            "img_path": null
+          }
+        }
       ]
     }
   ]

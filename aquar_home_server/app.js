@@ -1,6 +1,7 @@
 import Koa from 'koa'
 import views from 'koa-views'
 import json from 'koa-json'
+import koajwt from 'koa-jwt'
 import onerror from 'koa-onerror'
 import bodyparser from 'koa-bodyparser'
 // import logger from 'koa-logger'
@@ -10,6 +11,7 @@ import index from './routes/index.js'
 import users from './routes/users.js'
 import axios from 'axios'
 import moment from 'moment'
+import appDao from './service/db/app-dao.js'
 
 const app = new Koa()
 const __dirname = path.resolve();
@@ -47,9 +49,16 @@ app.use(async (ctx, next) => {
   console.log(`${moment().format()} response: ${ctx.method} ${ctx.url}, body:${JSON.stringify(ctx.body)} - duration:${ms}`)
 })
 
+app.use(koajwt({
+  secret: appDao.getSecret()
+}).unless({ // 配置白名单
+  path: [ /\/api\/login/, /\/api\/config/]
+}))
+
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+
 
 // error-handling
 // app.on('error', (err, ctx) => {

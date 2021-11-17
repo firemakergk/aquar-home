@@ -111,7 +111,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'PveWidget',
   props: {
@@ -145,7 +144,7 @@ export default {
       }
     },
     getPveInfo() {
-      axios
+      this.$axios
         .get('/api/endpoints/pve/queryStatus?server=' + this.configData.data.server + '&node=' + this.configData.data.node + '&apiToken=' + this.configData.data.api_token)
         .then(response => {
           const resData = response.data

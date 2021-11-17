@@ -68,7 +68,6 @@
 <script>
 import { GridLayout, GridItem } from 'vue-grid-layout'
 import { mapGetters } from 'vuex'
-import axios from 'axios'
 import * as _ from 'lodash'
 import logo_aquar from '../assets/app_images/aquar.png'
 import SyncthingWidget from '../components/widgets/Syncthing'
@@ -77,7 +76,7 @@ import NextCloudWidget from '../components/widgets/NextCloud'
 import IconWidget from '../components/widgets/Icon'
 import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
-import Config from '../components/Config.vue' 
+import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
 
 export default {
@@ -130,7 +129,7 @@ export default {
   },
   mounted: function() {
     this.updateCurViewSize()
-    axios
+    this.$axios
       .get('/api/allData')
       .then(response => {
         this.data = response.data
@@ -144,7 +143,7 @@ export default {
         this.lgLayout = this.layout
         this.responseLayout(this.curViewSize)
       })
-    // axios
+    // this.$axios
     //   .get('/api/list')
     //   .then(response => {
     //     this.widgets = response.data
@@ -229,7 +228,7 @@ export default {
       }
     },
     refreshWidgets(curTabIndex) {
-      axios
+      this.$axios
       .get('/api/allData')
       .then(response => {
         this.data = response.data
@@ -249,7 +248,7 @@ export default {
     },
     updateConfig: function(newData) {
       console.log(newData)
-      axios.post('/api/updateById', newData)
+      this.$axios.post('/api/updateById', newData)
         .then(response => {
           console.log(response.data)
           this.refreshWidgets(this.curTabIndex)
@@ -259,7 +258,7 @@ export default {
       for (var i = 0; i < this.layout.length; i++) {
         var curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
         curWidget.layout = this.layout[i]
-        axios.post('/api/updateById', {'tabIndex':this.curTabIndex,'widget':curWidget})
+        this.$axios.post('/api/updateById', {'tabIndex':this.curTabIndex,'widget':curWidget})
       }
       this.editing = false
       this.refreshWidgets(this.curTabIndex)
@@ -350,13 +349,13 @@ export default {
       }
       widget.layout.x = 0
       widget.layout.y = y + h + 1
-      axios.post('/api/addWidget', {tabIndex: this.curTabIndex,widget: widget})
+      this.$axios.post('/api/addWidget', {tabIndex: this.curTabIndex,widget: widget})
         .then(() => {
           this.refreshWidgets(this.curTabIndex)
         })
     },
     removeWidget(id) {
-      axios.post('/api/removeWidget', {tabIndex: this.curTabIndex, id: id })
+      this.$axios.post('/api/removeWidget', {tabIndex: this.curTabIndex, id: id })
         .then(() => {
           this.refreshWidgets(this.curTabIndex)
         })

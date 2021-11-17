@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 
@@ -63,7 +62,7 @@ export default {
   },
   methods: {
     refreshConfig() {
-      axios
+      this.$axios
         .get('/api/allData')
         .then(response => {
           this.tabs = response.data.tabs
@@ -95,7 +94,7 @@ export default {
     submitTabs(){
       this.newTitle = null
       this.editIndex = null
-      axios.post('/api/config/submitTabs', this.tabs)
+      this.$axios.post('/api/config/submitTabs', this.tabs)
         .then(response => {
           console.log(response.data)
           this.tabs = response.data.tabs

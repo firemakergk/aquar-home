@@ -1,13 +1,13 @@
 <template>
   <div id="app" :style="{'--bgUrl': bgUrl,'--bgColor': bgColor,'--blurNum':blurNum}" class="app-main" >
     <div>
-      <grid-table />
+      <!-- <grid-table /> -->
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 import GridTable from './views/Gridtable.vue'
 import defaultBgImg from '@/assets/bg_images/bg2.jpg'
 export default {
@@ -27,7 +27,7 @@ export default {
     this.$bus.on('renderBg', this.renderBg)
   },
   mounted: function() {
-    axios
+    this.$axios
       .get('/api/config')
       .then(response => {
         this.configData = response.data
@@ -124,6 +124,6 @@ div:focus {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     filter:var(--blurNum);
-    z-index:-1;
+    z-index:-2;
 }
 </style>

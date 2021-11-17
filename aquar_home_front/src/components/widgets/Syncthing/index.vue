@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'SyncthingWidget',
   props: {
@@ -100,7 +99,7 @@ export default {
       }
     },
     getSyncthingInfo() {
-      axios
+      this.$axios
         .get('/api/endpoints/syncthing/info?server=' + this.configData.data.server + '&appKey=' + this.configData.data.app_key,{timeout:300000})
         .then(response => {
           this.showErrorInfo = false

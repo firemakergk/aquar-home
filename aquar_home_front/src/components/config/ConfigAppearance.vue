@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 
@@ -83,7 +82,7 @@ export default {
   },
   methods: {
     refreshConfig() {
-      axios
+      this.$axios
         .get('/api/config')
         .then(response => {
           console.log("config===:"+response.data)
@@ -95,7 +94,7 @@ export default {
       var imgFile = this.$refs.bgImg.files[0];
       var formData = new FormData()
       formData.append('bgImg', imgFile)
-      axios({
+      this.$axios({
         method: 'post',
         url: '/api/config/uploadBgImg',
         data: formData,
@@ -111,7 +110,7 @@ export default {
       this.updateConfig()
     },
     updateConfig() {
-      axios.post('/api/config/update', this.configData)
+      this.$axios.post('/api/config/update', this.configData)
         .then(response => {
           console.log(response.data)
           this.refreshConfig()

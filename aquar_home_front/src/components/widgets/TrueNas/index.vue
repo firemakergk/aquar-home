@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'TrueNasWidget',
   props: {
@@ -104,7 +103,7 @@ export default {
       }
     },
     getPoolInfo() {
-      axios
+      this.$axios
         .get('/api/endpoints/truenas/queryPools?server=' + this.configData.data.server + '&apiKey=' + this.configData.data.api_key)
         .then(response => {
           const resData = response.data

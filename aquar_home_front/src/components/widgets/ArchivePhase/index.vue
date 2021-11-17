@@ -133,7 +133,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import * as _ from 'lodash'
 import dateFormat from 'dateformat'
 
@@ -180,7 +179,7 @@ export default {
       if (curItem.phase_name) {
         paramStr += '&archiveName=' + curItem.phase_name
       }
-      axios
+      this.$axios
         .get('/api/endpoints/archive_phase/prepare?' + paramStr)
         .then(response => {
           this.console = '执行命令:\n'
@@ -205,7 +204,7 @@ export default {
       if (curItem.phase_name) {
         paramStr += '&archiveName=' + curItem.phase_name
       }
-      axios
+      this.$axios
         .get('/api/endpoints/archive_phase/start?' + paramStr)
         .then(response => {
           this.console += response.data.msg
@@ -222,7 +221,7 @@ export default {
     },
     submitConfigSingle(index) {
       const reqData = { id: this.configData.id, index: index, item: this.configData.data.items[index] }
-      axios.post('/api/endpoints/archive_phase/updateItem', reqData)
+      this.$axios.post('/api/endpoints/archive_phase/updateItem', reqData)
         .then(response => {
           console.log(response.data)
           var items = response.data.data
@@ -235,7 +234,7 @@ export default {
     },
     submitAddItem() {
       const reqData = { id: this.configData.id, item: this.newItem }
-      axios.post('/api/endpoints/archive_phase/addNewItem', reqData)
+      this.$axios.post('/api/endpoints/archive_phase/addNewItem', reqData)
         .then(response => {
           console.log(response.data)
           var items = response.data.data
@@ -249,7 +248,7 @@ export default {
     },
     removeItem(index) {
       const reqData = { id: this.configData.id, index: index }
-      axios.post('/api/endpoints/archive_phase/removeItem', reqData)
+      this.$axios.post('/api/endpoints/archive_phase/removeItem', reqData)
         .then(response => {
           console.log(response.data)
           var items = response.data.data

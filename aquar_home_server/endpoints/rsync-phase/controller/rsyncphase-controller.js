@@ -1,4 +1,4 @@
-import appEntryDao from '../../../service/db/app-entry.js'
+import appDao from '../../../service/db/app-dao.js'
 import childprocess from 'child_process'
 import path from "path"
 const exec = childprocess.execSync
@@ -48,13 +48,13 @@ class RsyncphaseController {
   async addNewItem(ctx, next) {
     var id = ctx.request.body.id
     var item = ctx.request.body.item
-    appEntryDao.getDbInstance()
+    appDao.getDbInstance()
       .get('widgets').find({ 'id': id })
       .get('data')
       .get('items')
       .push(item)
       .write()
-    let res = appEntryDao.getDbInstance()
+    let res = appDao.getDbInstance()
       .get('widgets').find({ 'id': id })
       .get('data')
       .get('items')
@@ -65,13 +65,13 @@ class RsyncphaseController {
     var id = ctx.request.body.id
     var index = ctx.request.body.index
     var item = ctx.request.body.item
-    appEntryDao.getDbInstance()
+    appDao.getDbInstance()
       .get('widgets').find({ 'id': id })
       .get('data')
       .get('items').nth(index)
       .assign(item)
       .write()
-    let res = appEntryDao.getDbInstance()
+    let res = appDao.getDbInstance()
     .get('widgets').find({ 'id': id })
     .get('data')
     .get('items')
@@ -81,12 +81,12 @@ class RsyncphaseController {
   async removeItem(ctx, next) {
     var id = ctx.request.body.id
     var index = ctx.request.body.index
-    var items = appEntryDao.getDbInstance()
+    var items = appDao.getDbInstance()
       .get('widgets').find({ 'id': id })
       .get('data')
       .get('items').value()
     items.remove(index)
-    var res = appEntryDao.getDbInstance()
+    var res = appDao.getDbInstance()
       .get('widgets').find({ 'id': id })
       .get('data')
       .set('items',items).write()

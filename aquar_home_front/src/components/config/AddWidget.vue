@@ -56,19 +56,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import logo_syncthing from './widgets/Syncthing/img/syncthing.png'
-import logo_archivephase from './widgets/ArchivePhase/img/rsync.jpg'
-import logo_nextcloud from './widgets/NextCloud/img/nextcloud.png'
-import logo_icon from './widgets/Icon/img/aquar.png'
-import logo_truenas from './widgets/TrueNas/img/truenas.png'
-import logo_pve from './widgets/Pve/img/pve.png'
+import logo_syncthing from '../widgets/Syncthing/img/syncthing.png'
+import logo_archivephase from '../widgets/ArchivePhase/img/rsync.jpg'
+import logo_nextcloud from '../widgets/NextCloud/img/nextcloud.png'
+import logo_icon from '../widgets/Icon/img/aquar.png'
+import logo_truenas from '../widgets/TrueNas/img/truenas.png'
+import logo_pve from '../widgets/Pve/img/pve.png'
 
-import meta_syncthing from './widgets/Syncthing/template.json'
-import meta_archivephase from './widgets/ArchivePhase/template.json'
-import meta_nextcloud from './widgets/NextCloud/template.json'
-import meta_icon from './widgets/Icon/template.json'
-import meta_truenas from './widgets/TrueNas/template.json'
-import meta_pve from './widgets/Pve/template.json'
+import meta_syncthing from '../widgets/Syncthing/template.json'
+import meta_archivephase from '../widgets/ArchivePhase/template.json'
+import meta_nextcloud from '../widgets/NextCloud/template.json'
+import meta_icon from '../widgets/Icon/template.json'
+import meta_truenas from '../widgets/TrueNas/template.json'
+import meta_pve from '../widgets/Pve/template.json'
 
 export default {
   name: 'AddWidget',

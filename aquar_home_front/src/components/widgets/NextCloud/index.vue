@@ -138,7 +138,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'NextCloudWidget',
   props: {
@@ -181,7 +180,7 @@ export default {
       this.showConfig = false
     },
     getLoginUrl() {
-      axios
+      this.$axios
         .get('/api/endpoints/nextcloud/login?server=' + this.configData.data.server)
         .then(response => {
           this.loginData = response.data.data
@@ -199,7 +198,7 @@ export default {
       window.open(this.loginData.login)
     },
     poll() {
-      axios
+      this.$axios
         .get('/api/endpoints/nextcloud/poll?server=' + this.configData.data.server + '&token=' + this.loginData.poll.token)
         .then(response => {
           console.log(response)
@@ -259,7 +258,7 @@ export default {
     queryFileList(path) {
       var finalPath = path || this.configData.data.default_path
       const reqData = { server: this.configData.data.server, path: finalPath, username: this.configData.data.user_name, apppassword: this.configData.data.app_password }
-      axios
+      this.$axios
         .post('/api/endpoints/nextcloud/query', reqData)
         .then(response => {
           this.queryData = response.data.data
@@ -283,7 +282,7 @@ export default {
         }
         var url = this.configData.data.server + '/remote.php/dav/files/' + item.href
         const reqData = { url: url, index: i, username: this.configData.data.user_name, apppassword: this.configData.data.app_password }
-        var p = axios
+        var p = this.$axios
           .post('/api/endpoints/nextcloud/thumbnail', reqData)
           .then(response => {
             const resData = response.data
@@ -333,7 +332,7 @@ export default {
       this.queryFileList(this.path)
     },
     download(href) {
-      axios({
+      this.$axios({
         method: 'post',
         url: '/api/endpoints/nextcloud/download',
         data: {

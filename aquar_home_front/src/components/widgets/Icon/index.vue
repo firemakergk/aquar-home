@@ -17,13 +17,10 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { VueCropper } from 'vue-cropper'
 import logo_icon from './img/aquar.png'
 export default {
   name: 'IconWidget',
   components: {
-    VueCropper
   },
   props: {
     tabIndex: {type: Number,default: 0},
@@ -146,7 +143,7 @@ export default {
       this.$refs['cropper_' + this.configData.id].getCropBlob(data => {
         const formData = new FormData()
         formData.append('icon', data)
-        axios({
+        this.$axios({
           method: 'post',
           url: '/api/endpoints/icon/upload',
           data: formData,

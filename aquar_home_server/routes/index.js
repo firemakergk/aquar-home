@@ -30,6 +30,9 @@ router.get('/json', async (ctx, next) => {
 //     title: 'koa2 json'
 //   }
 // })
+router.post('/api/register', configController.register)
+router.post('/api/login', configController.login)
+router.get('/api/destoryAccount', configController.destoryAccount)
 router.get('/api/allData', appEntryController.allData)
 router.get('/api/list', appEntryController.list)
 router.post('/api/updateById', appEntryController.updateById)
