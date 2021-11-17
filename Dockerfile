@@ -1,4 +1,4 @@
-ARG NPM_REGISTRY=http://registry.npmjs.org
+ARG NPM_REGISTRY=https://registry.npm.taobao.org
 FROM node:14 as builder
 ARG NPM_REGISTRY
 WORKDIR /app/aquar_home/aquar_home_front
@@ -15,7 +15,7 @@ FROM node:14
 RUN npm install -g pm2
 WORKDIR /app/aquar_home
 COPY --from=builder /app/aquar_home/aquar_home_server/ .
-COPY --from=builder /app/aquar_home/aquar_home_server/db.json /var/aquar_data/db.json
+COPY --from=builder /app/aquar_home/aquar_home_server/service/db/db.json /var/aquar_data/db.json
 EXPOSE 3000
 VOLUME ["/var/aquardata"]
 VOLUME ["/opt/aquarpool"]
