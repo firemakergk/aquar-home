@@ -19,4 +19,6 @@ COPY --from=builder /app/aquar_home/aquar_home_server/db.json /var/aquardata/db.
 EXPOSE 8172
 VOLUME ["/var/aquardata"]
 VOLUME ["/opt/aquarpool"]
+VOLUME ["/root/.pm2/logs"]
+
 CMD ["/bin/bash", "-c", "cd /app/aquar_home/ && mkdir -p /var/aquardata/log/ && npm run prd > /var/aquardata/log/aquar_home.log 2>&1"]

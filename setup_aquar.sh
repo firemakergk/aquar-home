@@ -248,6 +248,7 @@ services:
   #   volumes:
   #     - /opt/aquar/storages/apps/aquarhome/data:/var/aquardata
   #     - /opt/aquar/storages/aquarpool:/opt/aquarpool
+  #     - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs
   #   ports:
   #     - 8172:8172
   #   restart: unless-stopped
