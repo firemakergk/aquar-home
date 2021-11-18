@@ -8,6 +8,7 @@
     "start": "node bin/www.cjs",
     "dev": "babel-node ./index.js",
     "prd": "pm2 start ./index.js",
+    "dcprd": "pm2-runtime start ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
