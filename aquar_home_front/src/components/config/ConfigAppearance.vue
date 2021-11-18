@@ -30,10 +30,10 @@
         <div class="param_row">
           <div class="param_name">主题：</div>
           <div class="param_form">
-            <select name="theme">
+            <select name="theme"  v-model="configData.appearance.theme">
               <option value ="">未选择</option>
-              <option value ="vscode">vscode</option>
-              <option value ="white">white</option>
+              <option value ="defaultLight">default light</option>
+              <option value ="dark">dark</option>
             </select>
           </div>
         </div>
@@ -122,22 +122,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button {
-    padding: 0;
-    float: right;
-  }
-
-.image {
-  width: 100%;
-  display: block;
-}
-.config_header {
-  display: flex;
-  align-items: center;
-  height: 24px;
-  background-color: rgb(44,44,44);
-  color: white;
-}
 .config_content {
   padding: 10px;
   display: flex;
@@ -171,25 +155,4 @@ export default {
 .param_form {
   flex-grow: 1;
 }
-.submit_panel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-.submit_button {
-  background-color: rgb(44,44,44);
-  color: rgb(243,243,243);
-  font-size: 14px;
-}
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
-}
-
 </style>

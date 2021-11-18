@@ -15,10 +15,10 @@
           <td v-else><input size="8" type="text" v-model="newTitle"></td>
           
           <td>
-            <a style="margin: 0 4px; color:rgb(0,150,136);" @click="moveTab(index,-1)">↑上移</a>
-            <a style="margin: 0 4px; color:rgb(0,150,136);" @click="moveTab(index,1)">↓下移</a>
-            <a v-if="editIndex != index" style="margin: 0 4px; color:rgb(0,150,136);" @click="editTitle(index)">修改名称</a>
-            <a v-else style="margin: 0 4px; color:rgb(0,150,136);" @click="changeTitle(index)">确定</a>
+            <a style="margin: 0 4px; " @click="moveTab(index,-1)">↑上移</a>
+            <a style="margin: 0 4px; " @click="moveTab(index,1)">↓下移</a>
+            <a v-if="editIndex != index" style="margin: 0 4px; " @click="editTitle(index)">修改名称</a>
+            <a v-else style="margin: 0 4px; " @click="changeTitle(index)">确定</a>
           </td>
         </tr>
       </table>
@@ -106,22 +106,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button {
-    padding: 0;
-    float: right;
-  }
-
-.image {
-  width: 100%;
-  display: block;
-}
-.config_header {
-  display: flex;
-  align-items: center;
-  height: 24px;
-  background-color: rgb(44,44,44);
-  color: white;
-}
 .config_content {
   padding: 10px;
   display: flex;
@@ -173,25 +157,4 @@ export default {
 .param_form {
   flex-grow: 1;
 }
-.submit_panel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-.submit_button {
-  background-color: rgb(44,44,44);
-  color: rgb(243,243,243);
-  font-size: 14px;
-}
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
-}
-
 </style>

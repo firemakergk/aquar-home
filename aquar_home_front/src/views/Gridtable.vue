@@ -1,31 +1,31 @@
 <template>
   <div class="grid_container">
-    <div class="dashboard_header">
+    <div class="dashboard_header tbgcolor_head">
       <div class="logo">
         <img style="height: 20px;" :src="logo_aquar">
         <span style="margin: 4px;">Aquar</span>
       </div>
       <div class="page_tabs">
-        <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab " :class="{tab_selected: index == curTabIndex}">
-          <a @click="toTab(index)">{{tab.title}}</a>
+        <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab" :class="index == curTabIndex ? 'tbgcolor_tab_selected tcolor_tab_selected':'tbgcolor_tab tcolor_tab'">
+          <a @click="toTab(index)" class="tcolor_reverse">{{tab.title}}</a>
         </div>
       </div>
       <div style="flex-grow: 1" />
-      <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon" title="设置布局" @click="editing=true" />
-      <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon" title="确定布局" @click="comfirmLayout()" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfigPanel()" />
+      <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon tcolor_reserve" title="设置布局" @click="editing=true" />
+      <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="comfirmLayout()" />
+      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" />
     </div>
     <grid-layout
       :layout.sync="layout"
       :responsive="!editing"
       :col-num="12"
       :col-width="20"
-      :row-height="60"
+      :row-height="80"
       :is-draggable="editing"
       :is-resizable="editing"
       :vertical-compact="false"
-      :use-css-transforms="true"
-      :margin="[4, 4]"
+      :use-css-transforms="false"
+      :margin="[2, 0]"
       @breakpoint-changed="breakpointChangedEvent"
     >
       <grid-item
@@ -42,9 +42,9 @@
         @move="moveEvent"
         @resize="resizeEvent"
       >
-        <div v-show="editing" class="vue-draggable-handle">
-          <span style="font-size: 14px; color: white; margin: 4px 10px; flex-grow: 1;">点此拖动</span>
-          <a style="font-size: 10px; color: red; margin: 4px;" class="iconfont icon-delete icon" @click="removeWidget(widget.id)" />
+        <div v-show="editing" class="vue-draggable-handle tbgcolor_mask_reverse">
+          <span style="font-size: 14px; margin: 2px 10px; flex-grow: 1;" class="tcolor_reverse">点此拖动</span>
+          <a style="font-size: 10px;  margin: 4px;" class="iconfont icon-delete icon tcolor_error" @click="removeWidget(widget.id)" />
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
@@ -389,9 +389,9 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 0px;
-  background-color: rgba(44, 44, 44, 1);
-  color: white;
+  padding: 0;
+  margin-bottom: 4px;
+  box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, .3);
 }
 .page_tabs {
   padding: 0 20px;
@@ -408,9 +408,6 @@ export default {
   font-size: 14px;
   height: 24px;
   padding: 0 6px;
-  mask-image: linear-gradient (black 0%,  white 0%,transparent 100%);
-  background-color: rgb(49,54,64);
-  color: rgba(221, 221, 221, 1);
 }
 .add_tab {
   border-top-left-radius: 3px;
@@ -421,14 +418,8 @@ export default {
   font-size: 18px;
   height: 24px;
   padding: 0 6px;
-  mask-image: linear-gradient (black 0%,  white 0%,transparent 100%);
-  background-color: rgb(49,54,64);
-  color: rgba(221, 221, 221, 1);
 }
-.tab_selected {
-  background-color: rgb(96,96,96);
-  color: white;
-}
+
 .logo {
   display: flex;
   flex-direction: row;
@@ -504,30 +495,14 @@ export default {
   transform: translateX(-50%);
   padding: 0;
   background-origin: content-box;
-  background-color: rgba(255,255,255,0.4);
   box-sizing: border-box;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-style: dotted;
   border-top-style: none;
   border-width: 0.5px;
-  border-color: white;
   cursor: pointer;
   z-index: 3;
-}
-.layoutJSON {
-  background: #ddd;
-  border: 1px solid white;
-  margin-top: 10px;
-  padding: 10px;
-}
-.eventsJSON {
-  background: #ddd;
-  border: 1px solid white;
-  margin-top: 10px;
-  padding: 10px;
-  height: 100px;
-  overflow-y: scroll;
 }
 .relative {
   position: relative;

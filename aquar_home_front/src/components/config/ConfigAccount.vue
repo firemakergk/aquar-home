@@ -98,22 +98,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button {
-    padding: 0;
-    float: right;
-  }
 
-.image {
-  width: 100%;
-  display: block;
-}
-.config_header {
-  display: flex;
-  align-items: center;
-  height: 24px;
-  background-color: rgb(44,44,44);
-  color: white;
-}
 .config_content {
   padding: 10px;
   display: flex;
@@ -146,26 +131,6 @@ export default {
 }
 .param_form {
   flex-grow: 1;
-}
-.submit_panel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-.submit_button {
-  background-color: rgb(44,44,44);
-  color: rgb(243,243,243);
-  font-size: 14px;
-}
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
 }
 
 </style>

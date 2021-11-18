@@ -155,7 +155,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 28px;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
 }
 .img_span {
   display: flex;

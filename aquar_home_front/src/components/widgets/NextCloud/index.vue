@@ -2,14 +2,14 @@
   <div class="widget_box">
     <div class="clearfix widget_header">
       <img style="height:20px; " src="./img/nextcloud.png">
-      <span style="padding: 0 10px;">{{ configData.name }}</span>
+      <a style="padding: 0 10px;" target="_blank" :href="configData.data.server">{{ configData.name }}</a>
       <span style="flex-grow: 1;" />
-      <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
+      <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" />
     </div>
     <div class="widget_body">
-      <div v-show="showInit" class="float_config">
-        <div class="config_top">
-          <span style="float:left; flex-grow: 1;">设置</span>
+      <div v-show="showInit" class="float_config tbgcolor_mask_info">
+        <div class="config_top tbgcolor_sub_head tcolor_sub_head">
+          <span style="flex-grow: 1;" >设置</span>
         </div>
         <div class="config_body">
           <div class="init_config">
@@ -23,13 +23,13 @@
               </div>
             </div>
             <div v-show="showPoll" style="margin: 10px;">
-              <span style="margin: 10px;"><a @click="getLoginUrl">重新授权</a></span>
-              <span style="margin: 10px;"><a style="margin: 10px;" @click="poll">授权成功</a></span>
+              <span style="margin: 10px;"><a @click="getLoginUrl" >重新授权</a></span>
+              <span style="margin: 10px;"><a style="margin: 10px;" @click="poll" class="tcolor_main">授权成功</a></span>
             </div>
           </div>
         </div>
       </div>
-      <div v-show="showErrorInfo" class="error_info">
+      <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
         <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
           <span  class="iconfont icon-times-circle-fill icon" style="font-size: 24px;"></span>
           <span  style="font-size: 24px;">连接失败</span>
@@ -38,46 +38,46 @@
           <span>{{ errorInfo }}</span>
         </div>
       </div>
-      <div v-show="showConfig" class="float_config">
-        <div class="config_top">
-          <span style="float:left; flex-grow: 1;">设置</span>
-          <a style="float:right; padding:0 4px; color: white;" @click="toggleConfig()"> x </a>
+      <div v-show="showConfig" class="float_config tbgcolor_mask_info ">
+        <div class="config_top tbgcolor_sub_head tcolor_sub_head">
+          <span style="flex-grow: 1;">设置</span>
+          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
         </div>
         <div class="config_body">
           <div class="config_row">
             <div class="config_text">名称：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.name" type="text" name="name" class="config_input">
+              <input v-model="configData.name" type="text" name="name">
             </div>
           </div>
           <div class="config_row">
             <div class="config_text">服务地址：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.server" type="text" class="config_input">
+              <input v-model="configData.data.server" type="text">
             </div>
           </div>
           <div class="config_row">
             <div class="config_text">帐户名：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.user_name" type="text" class="config_input">
+              <input v-model="configData.data.user_name" type="text">
             </div>
           </div>
           <div class="config_row">
             <div class="config_text">apppassword：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.app_password" type="text" class="config_input">
+              <input v-model="configData.data.app_password" type="text">
             </div>
           </div>
           <div class="config_row">
             <div class="config_text">默认地址：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.default_path" type="text" class="config_input">
+              <input v-model="configData.data.default_path" type="text">
             </div>
           </div>
           <div class="config_row">
             <div style="width:100px;" />
             <div style="flex-grow: 5;">
-              <button @click="updateConfig">确定</button>
+              <button @click="updateConfig" >确定</button>
             </div>
           </div>
         </div>
@@ -85,13 +85,13 @@
       <div class="widget_content">
         <div class="explorer_header">
           <span class="path_span">
-            <input v-model="path" type="text" style="width:100%; height: 20px; font-size: 8px; ">
+            <input v-model="path" type="text" style="width:100%; height: 20px; font-size: 8px; " >
           </span>
           <span class="button_span">
-            <a :class="[{a_disabled: (!refreshEnable)}, 'iconfont icon-search icon']" style="margin: 0 4px;" title="转到" @click="refreshView(false)" />
-            <a :class="[{a_disabled: (!refreshEnable)}, 'iconfont icon-reply icon']" style="margin: 0 4px;" title="上级菜单" @click="refreshView(true)" />
-            <a v-if="viewType==='block'" style="margin: 0 4px; float:right; " class="iconfont icon-menu icon" title="列表视图" @click="changeViewType('list')" />
-            <a v-else-if="viewType==='list'" style="margin: 0 4px; float:right;" class="iconfont icon-icon-drag icon" title="预览视图" @click="changeViewType('block')" />
+            <a :class="[{'a_disabled tcolor_disable': (!refreshEnable)}, 'iconfont icon-search icon tcolor_sub']" style="margin: 0 4px;" title="转到" @click="refreshView(false)" />
+            <a :class="[{'a_disabled tcolor_disable': (!refreshEnable)}, 'iconfont icon-reply icon tcolor_sub']" style="margin: 0 4px;" title="上级菜单" @click="refreshView(true)" />
+            <a v-if="viewType==='block'" style="margin: 0 4px; float:right; " class="iconfont icon-menu icon tcolor_sub" title="列表视图" @click="changeViewType('list')" />
+            <a v-else-if="viewType==='list'" style="margin: 0 4px; float:right;" class="iconfont icon-icon-drag icon tcolor_sub" title="预览视图" @click="changeViewType('block')" />
           </span>
         </div>
         <div v-if="viewType==='block'" class="explorer_content_block">
@@ -121,9 +121,9 @@
         </div>
         <div v-if="viewType==='list'" class="explorer_content_list">
           <div v-for="(item,index) in queryData" :key="'file_'+ index" class="list_base">
-            <span v-if="contentType(item.content_type) === 'img'" style="margin-right: 4px;" class="iconfont icon-picture-fill icon" />
-            <span v-else-if="contentType(item.content_type) === 'dir'" style="margin-right: 4px;" class="iconfont icon-folder-fill icon" />
-            <span v-else style="margin-right: 4px;" class="iconfont icon-file-fill icon" />
+            <span v-if="contentType(item.content_type) === 'img'" style="margin-right: 4px;" class="iconfont icon-picture-fill icon tcolor_main" />
+            <span v-else-if="contentType(item.content_type) === 'dir'" style="margin-right: 4px;" class="iconfont icon-folder-fill icon tcolor_main" />
+            <span v-else style="margin-right: 4px;" class="iconfont icon-file-fill icon tcolor_main" />
             <div style="flex-grow:1;">
               <a v-if="contentType(item.content_type) === 'dir'" style="word-wrap:break-word;" @click="toPath(item.href)">{{ item.file_name }}</a>
               <a v-else @click="download(item.href)">{{ item.file_name }}</a>
@@ -364,108 +364,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// endpoint
-a {
-    color: #fff;
-}
-input {
-  font-size:1em;
-  height:2em;
-  border:1px solid;
-  // color:#6a6f77;
-  background-color: #2c2c2c;
-  color: white;
-  border-color: #606060;
-}
-.widget_box {
-  width: 100%;
-  height: 100%;
-  min-height: 280px;
-  min-width: 400px;
-  display: flex;
-  flex-direction: column;
-  float: left;
-  padding: 4px 4px;
-  border-radius: 2px;
-  background-color: rgba(44, 44, 44, 1);
-  box-sizing: border-box;
-  color: white;
-}
-.widget_header {
-  width: 100%;
-  padding: 4px 4px;
-  margin: 0 auto;
-  display: inline-flex;;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-}
-.widget_body {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.widget_content {
-  display: flex;
-  flex-direction: column;
-  // min-height: 200px;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  // max-height: 800px
-}
-.float_config {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  background-color: rgba(0,0,0,0.75);
-  font-size: 12px;
-  z-index: 3;
-}
-.float_config::-webkit-scrollbar {
-  width: 1px;
-}
-.float_config::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.float_config::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
-.error_info {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  z-index: 3;
-  word-wrap:break-word;
-  background-color: rgba(0,0,0,0.75);
-  font-size: 12px;
-  color: white;
-  height: 100%;
-  display: flex;
-  flex-direction:column;
-}
-.init_config{
-  position: relative;
-  top: 40%; /*偏移*/
-  transform: translateY(-80%);
-  text-align: center;
-  vertical-align: center;
-}
+
 .explorer_header {
   display: flex;
   // flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;
   height: 30px;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: #606060;
-  // border-bottom-
 }
 .path_span {
   width: 100%;
@@ -493,49 +398,21 @@ input {
   overflow-y: auto;
   overflow-x: hidden;
 }
-.explorer_content_block::-webkit-scrollbar {
-  width: 1px;
-}
-.explorer_content_block::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.explorer_content_block::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
+
 .explorer_content_list {
   margin: 4px;
-  position: absolute;
-  top: 28px;
+  position: relative;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
   flex-direction: column;
-  // flex-wrap: wrap;
   justify-content: flex-start;
-  // height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
-.explorer_content_list a {
-  // color: #67C23A;
-  color: white;
-}
-.explorer_content_list::-webkit-scrollbar {
-  width: 1px;
-}
-.explorer_content_list::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.explorer_content_list::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
-// rsync endpoint
-.relative {
-  position: relative;
-}
+
 .block_base {
   margin: 4px;
   height: 140px;
@@ -559,47 +436,19 @@ input {
   font-size: 12px;
   align-items: center;
 }
-.bar_base {
-  display: flex;
-  padding: 10px 8px;
-  align-items:center;
-}
 .text_overflow {
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;
 }
 
-.config_top {
-  display: flex;
-  align-items: center;
-  background-color: #000;
-  color: #FFF;
-  padding: 4px;
-  height: 24px;
-  top: 0;
-}
-.config_body {
-  height: 100%;
-}
-.config_row {
-  display: flex;
-  align-items: center;
-  padding: 4px 4px;
-}
 .config_text {
   width:100px;
   text-align: right;
   padding: 0 4px;
 }
-.config_input {
-  display: inline-block;
-  width: 100%;
-  font-size:1em;
-  height:1.5em;
-}
+
 .a_disabled {
   pointer-events: none;
-  color: #999;
 }
 </style>

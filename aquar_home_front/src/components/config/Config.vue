@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <div class="config_header">
+    <div class="config_header tbgcolor_content">
       <span style="flex-grow: 1; margin: 0 10px;">设置</span>
-      <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
+      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
     <div class="config_content">
-      <div class="config_sidebar">
+      <div class="config_sidebar ">
         <a v-for="(menu,index) in menus" :key="index" class="menu_item" 
-        @click="toTab(index)" :class="{menu_active: index == curMenu}">{{menu.name}}</a>
+        @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a>
       </div>
       <div class="config_panel">
         <keep-alive>
@@ -70,15 +70,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button {
-    padding: 0;
-    float: right;
-  }
 
-.image {
-  width: 100%;
-  display: block;
-}
 .container {
   border-radius: 2px;
   margin: 4px;
@@ -92,7 +84,6 @@ export default {
   align-items: center;
   height: 24px;
   border-radius:2px 2px 0 0 ;
-  background-color: rgb(44,44,44);
   color: white;
 }
 .config_content {
@@ -107,16 +98,11 @@ export default {
   flex: 0 0 80px;
   font-size: 16px;
   background: rgb(243,243,243);
-  color:rgb(44,44,44);
   display: flex;
   flex-direction: column;
 }
 .menu_item {
   padding: 8px 4px;
-}
-.menu_active {
-  background-color: rgb(44,44,44);
-  color: rgb(243,243,243);
 }
 .config_panel {
   margin: 0;

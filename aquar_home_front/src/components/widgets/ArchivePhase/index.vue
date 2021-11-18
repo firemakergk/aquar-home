@@ -1,6 +1,6 @@
 <template>
   <div class="widget_box">
-    <div class="clearfix widget_header">
+    <div class=" widget_header">
       <img style="height:20px; " src="./img/rsync.jpg">
       <span style="padding: 0 10px;">{{ configData.name }}</span>
       <span style="flex-grow: 1;" />
@@ -8,10 +8,10 @@
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
     </div>
     <div class="widget_body">
-      <div v-show="showAddItem" class="float_config">
-        <div class="config_top">
-          <span style="float:left;">设置</span>
-          <a style="float:right; padding:0 4px; color: white;" @click="toggleAddItem()"> x </a>
+      <div v-show="showAddItem" class="float_config tbgcolor_mask_info">
+        <div class="config_top tbgcolor_sub_head tcolor_sub_head">
+          <span style="flex-grow: 1;">设置</span>
+          <a style="padding:0 4px; " @click="toggleAddItem()"> x </a>
         </div>
         <div style="flex-grow: 1;">
           <div class="config_row">
@@ -40,23 +40,23 @@
           </div>
         </div>
         <div style="width: 90px; text-align: right;">
-          <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; color: #67C23A; float: right;" @click="submitAddItem()">确定</a>
+          <button @click="submitAddItem()">确定</button>
         </div>
       </div>
       <div v-show="showConsole" class="float_console">
         <div class="console_top">
           <span style="float:left;">控制台</span>
           <a style="float:right; padding:0 4px; color: white;" @click="toggleConsole()"> x </a>
-          <a style="float:right; padding:0 8px;" :class="[executeEnable?'exec_enabled':'exec_disabled', 'iconfont icon-paper-plane icon']" title="执行" @click="startArchive()" />
+          <a style="float:right; padding:0 8px;" :class="[executeEnable?'tcolor_active':'tcolor_disable', 'iconfont icon-paper-plane icon']" title="执行" @click="startArchive()" />
         </div>
         <div class="console_body">
           <textarea v-model="console" class="console_area" />
         </div>
       </div>
-      <div v-show="showConfig" class="float_config">
-        <div class="config_top">
-          <span style="float:left;">设置</span>
-          <a style="float:right; padding:0 4px; color: white;" @click="toggleConfig()"> x </a>
+      <div v-show="showConfig" class="float_config tbgcolor_mask_info">
+        <div class="config_top tbgcolor_sub_head tcolor_sub_head">
+          <span style="flex-grow: 1;">设置</span>
+          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -80,7 +80,7 @@
         </div>
       </div>
       <div class="widget_content">
-        <div v-for="(item,index) in configData.data.items" :key="'archive_item_'+ index" class="clearfix raw_base" style="width: 100%;">
+        <div v-for="(item,index) in configData.data.items" :key="'archive_item_'+ index" class="row_base">
           <div class="bar_base">
             <span style="padding: 0 4px;">{{ item.name }}</span>
             <span class="text_overflow" style="color:#aaa; font-size:12px; width: 120px;">{{ item.source }}</span>
@@ -96,7 +96,7 @@
           <div v-show="configBarTable[index]" class="bar_config animate__animated animate__fadeIn">
             <div style="flex-grow: 1;">
               <div class="config_row">
-                <div style="width:80px; text-align: right; margin: 0 4px;">名称：</div>
+                <div class="config_left">名称：</div>
                 <div style="flex-grow: 1;">
                   <input v-model="item.name" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
@@ -121,8 +121,8 @@
               </div>
             </div>
             <div style="width: 90px; text-align: right;">
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; color: #67C23A; float: right;" class="iconfont icon-check icon" title="确定" @click="submitConfigSingle(index)" />
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; color: red; float: right;" class="iconfont icon-delete icon" title="移除" @click="removeItem(index)" />
+              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-check icon tcolor_active" title="确定" @click="submitConfigSingle(index)" />
+              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-delete icon tcolor_error" title="移除" @click="removeItem(index)" />
             </div>
           </div>
         </div>
@@ -265,77 +265,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// endpoint
-a {
-    color: white;
-}
-input {
-  font-size:1em;
-  height:2em;
-  border:1px solid;
-  // color:#6a6f77;
-  background-color: #2c2c2c;
-  color: white;
-  border-color: #606060;
-}
-.widget_box {
-  min-width: 400px;
-  min-height: 140px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  float: left;
-  padding: 4px 4px;
-  border-radius: 2px;
-  background-color: rgba(44, 44, 44, 1);
-  box-sizing: border-box;
-  color: white;
-}
-.widget_header {
-  width: 100%;
-  padding: 4px 4px;
-  margin: 0 auto;
-  display: inline-flex;;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-}
-.widget_body {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.widget_content {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.widget_content::-webkit-scrollbar {
-  width: 1px;
-}
-.widget_content::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.widget_content::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
-// rsync endpoint
-.relative {
-  position: relative;
-}
-.raw_base {
-  margin: 2px 0px;
-  border: solid thin #606060;
-  font-size: 14px;
+
+.row_base {
+  margin: 2px;
+  border: 1px solid transparent;
+  border-color: #e5e6e7;
+  border-radius: 4px;
 }
 .bar_base {
   display: flex;
@@ -351,11 +286,7 @@ input {
   display: flex;
   padding: 10px 8px;
 }
-.config_row {
-  display: flex;
-  align-items: center;
-  padding: 2px 2px;
-}
+
 .float_console {
   top: 0;
   left: 0;
@@ -405,42 +336,7 @@ input {
   pointer-events:none;
   color: #ccc;
 }
-.float_config {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  z-index: 3;
-  overflow-y: auto;
-  background-color: rgba(0,0,0,0.75);
-  font-size: 12px;
-  color: white;
-}
-.float_config::-webkit-scrollbar {
-  width: 1px;
-}
-.float_config::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.float_config::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
-.config_top {
-  background-color: #000;
-  color: white;
-  top: 0;
-  height: 16px;
-}
-.config_body {
-  height: 100%;
-}
-.config_row {
-  display: flex;
-  align-items: center;
-  padding: 8px 4px;
-}
+
 .config_left {
   width:80px;
   text-align: right;
