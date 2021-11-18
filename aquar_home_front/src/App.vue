@@ -312,7 +312,7 @@ div:focus {
   background-color: var(--tbgcolor_content,#336666);
 }
 .tbgcolor_head {
-  background-color: var(--tbgcolor_head);
+  background-color: var(--tbgcolor_head, white);
 }
 .tbgcolor_tab {
   background-color: var(--tbgcolor_tab,#669999);
