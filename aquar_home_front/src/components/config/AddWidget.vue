@@ -11,6 +11,7 @@
             <img v-if="widget.widget === 'IconWidget'" :src="logo_icon" style="width: 60px;">
             <img v-if="widget.widget === 'TrueNasWidget'" :src="logo_truenas" style="width: 60px;">
             <img v-if="widget.widget === 'PveWidget'" :src="logo_pve" style="width: 60px;">
+            <img v-if="widget.widget === 'DockerWidget'" :src="logo_docker" style="width: 60px;">
           </div>
           <div>{{ widget.name }}</div>
         </a>
@@ -62,6 +63,7 @@ import logo_nextcloud from '../widgets/NextCloud/img/nextcloud.png'
 import logo_icon from '../widgets/Icon/img/aquar.png'
 import logo_truenas from '../widgets/TrueNas/img/truenas.png'
 import logo_pve from '../widgets/Pve/img/pve.png'
+import logo_docker from '../widgets/Docker/img/docker.png'
 
 import meta_syncthing from '../widgets/Syncthing/template.json'
 import meta_archivephase from '../widgets/ArchivePhase/template.json'
@@ -69,6 +71,7 @@ import meta_nextcloud from '../widgets/NextCloud/template.json'
 import meta_icon from '../widgets/Icon/template.json'
 import meta_truenas from '../widgets/TrueNas/template.json'
 import meta_pve from '../widgets/Pve/template.json'
+import meta_docker from '../widgets/Docker/template.json'
 
 export default {
   name: 'AddWidget',
@@ -82,7 +85,8 @@ export default {
         meta_nextcloud,
         meta_icon,
         meta_truenas,
-        meta_pve
+        meta_pve,
+        meta_docker
       ],
       logo_syncthing,
       logo_archivephase,
@@ -90,6 +94,7 @@ export default {
       logo_icon,
       logo_truenas,
       logo_pve,
+      logo_docker,
       configDetail: false,
       curWidget: null
     }

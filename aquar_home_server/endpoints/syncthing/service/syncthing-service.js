@@ -39,6 +39,5 @@ export default async function getFoldersInfo(baseUrl, appKey){
         folderList[i].globalFiles = globalFiles
         folderList[i].lastActiveTime = lastActiveTime
     }
-    console.log(folderList)
     return folderList
 }

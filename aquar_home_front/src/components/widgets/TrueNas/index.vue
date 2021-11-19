@@ -99,7 +99,7 @@ export default {
       if (this.poolInfoTimer == null) {
         this.timer = setInterval(() => {
           this.getPoolInfo()
-        }, 60000)
+        }, 100000)
       }
     },
     getPoolInfo() {

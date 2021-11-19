@@ -1,7 +1,7 @@
 <template>
   <div class="widget_box">
     <div class="widget_header vue-draggable-handle">
-      <img style="height:20px; " src="./img/syncthing.png">
+      <img style="height:20px; " src="./img/docker.png">
       <span style="padding: 0 10px;"><a target="_blank" :href="configData.data.server">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
@@ -35,12 +35,6 @@
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px; text-align: right; padding: 0 2px;">appKey：</div>
-            <div style="flex-grow: 5;">
-              <input v-model="configData.data.app_key" type="text" name="app_key" style="display: inline-block; width: 100%;">
-            </div>
-          </div>
-          <div class="config_row">
             <div style="width:80px;" />
             <div style="flex-grow: 5;">
               <button @click="updateConfig" >确定</button>
@@ -49,11 +43,11 @@
         </div>
       </div>
       <div class="widget_content">
-        <div v-for="item in syncthingInfo" :key="item.id">
-          <div class="stat_base tcolor_reverse" :class="item.statClass">
-            <span style="flex-grow: 1;">{{ item.id }}</span>
-            <span style="margin-right:10px;">{{ item.localFiles }}/{{ item.globalFiles }}</span>
-            <span style="span: 6px; margin-right:6px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
+        <div v-for="(item,index) in containerList" :key="'con_'+index">
+          <div class="row_base tcolor_reverse tbgcolor_idle" >
+            <span style="flex-grow: 1;">{{ item.name }}</span>
+            <span style="margin-right:10px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
+            <span class="state_span" :class="item.statClass">{{ item.state.toUpperCase() }}</span>
           </div>
         </div>
       </div>
@@ -63,60 +57,58 @@
 
 <script>
 export default {
-  name: 'SyncthingWidget',
+  name: 'dockerWidget',
   props: {
-    // name: { type: String, default: '文件同步' },
-    // data: { type: Object, default: () => {} }
     tabIndex: {type: Number,default: 0},
     configData: { type: Object, default: () => {} }
   },
   data: function() {
     return {
-      syncthingTimer: null,
+      dockerTimer: null,
       showErrorInfo: false,
       showConfig: false,
-      syncthingInfo: [],
+      containerList: [],
       errorInfo: null
     }
   },
   created: function() {
-    this.getSyncthingInfo()
-    clearInterval(this.syncthingTimer)
-    this.syncthingTimer = null
-    this.setSyncthingTimer()
+    this.getContainerList()
+    clearInterval(this.dockerTimer)
+    this.dockerTimer = null
+    this.setDockerTimer()
   },
   destroyed: function() {
     // 每次离开当前界面时，清除定时器
-    clearInterval(this.syncthingTimer)
-    this.syncthingTimer = null
+    clearInterval(this.dockerTimer)
+    this.dockerTimer = null
   },
   methods: {
-    setSyncthingTimer() {
-      if (this.syncthingTimer == null) {
+    setDockerTimer() {
+      if (this.dockerTimer == null) {
         this.timer = setInterval(() => {
-          this.getSyncthingInfo()
-        }, 40000)
+          this.getContainerList()
+        }, 60000)
       }
     },
-    getSyncthingInfo() {
+    getContainerList() {
       this.$axios
-        .get('/api/endpoints/syncthing/info?server=' + this.configData.data.server + '&appKey=' + this.configData.data.app_key,{timeout:300000})
+        .get('/api/endpoints/docker/list?server=' + this.configData.data.server ,{timeout:300000})
         .then(response => {
           this.showErrorInfo = false
-          const resData = response.data
-          this.syncthingInfo = resData
-          for (var i = 0; i < this.syncthingInfo.length; i++) {
-            var item = this.syncthingInfo[i]
-            if (item == null || item === 'undifined') {
+          const resData = response.data.data
+          this.containerList = resData
+          for (var i = 0; i < this.containerList.length; i++) {
+            var item = this.containerList[i]
+            if (!item) {
               item.statClass = 'tbgcolor_disable'
-            } else if (item.puase === true) {
-              item.statClass = 'tbgcolor_disable'
-            } else if (item.status === 'idle') {
-              item.statClass = 'tbgcolor_idle'
-            } else if (item.status === 'scanning') {
+            } else if (item.state === 'exited') {
               item.statClass = 'tbgcolor_info'
-            } else if (item.status === 'syncing') {
+            } else if (item.state === 'paused') {
+              item.statClass = 'tbgcolor_warn'
+            } else if (item.state === 'running') {
               item.statClass = 'tbgcolor_active'
+            } else {
+              item.statClass = 'tbgcolor_idle'
             }
           }
         })
@@ -138,9 +130,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.stat_base {
+.row_base {
   margin: 2px 0px;
-  padding: 4px 2px;
+  padding: 0 0 0 4px;
   display: flex;
+  align-items: center;
+}
+.state_span {
+  padding: 4px; 
+  width:80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

@@ -7,6 +7,7 @@ import NextCloudController from '../endpoints/nextcloud/controller/nextcloud-con
 import iconController from '../endpoints/icon/icon-controller.js'
 import trueNasController from '../endpoints/truenas/controller/truenas-controller.js'
 import pveController from '../endpoints/pve/controller/pve-controller.js'
+import dockerController from '../endpoints/docker/controller/docker-controller.js'
 
 const router = koarouter()
 router.get('/', async (ctx, next) => {
@@ -56,4 +57,5 @@ router.post('/api/endpoints/nextcloud/download',NextCloudController.download)
 router.post('/api/endpoints/icon/upload',iconController.upload.single('icon'),iconController.uploadIcon)
 router.get('/api/endpoints/truenas/queryPools',trueNasController.queryPools)
 router.get('/api/endpoints/pve/queryStatus',pveController.queryStatus)
+router.get('/api/endpoints/docker/list',dockerController.list)
 export default router

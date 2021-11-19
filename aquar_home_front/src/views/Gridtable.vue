@@ -25,7 +25,7 @@
       :is-resizable="editing"
       :vertical-compact="false"
       :use-css-transforms="false"
-      :margin="[2, 0]"
+      :margin="[2, 1]"
       @breakpoint-changed="breakpointChangedEvent"
     >
       <grid-item
@@ -76,6 +76,7 @@ import NextCloudWidget from '../components/widgets/NextCloud'
 import IconWidget from '../components/widgets/Icon'
 import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
+import DockerWidget from '../components/widgets/Docker'
 import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
 
@@ -90,6 +91,7 @@ export default {
     IconWidget,
     TrueNasWidget,
     PveWidget,
+    DockerWidget,
     Config,
     WidgetConfig
   },

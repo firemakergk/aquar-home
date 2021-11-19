@@ -145,7 +145,7 @@ div:focus {
   border-radius: 2px;
   background-color: var(--widget_box_bgcolor,rgba(255,255,255, 0.7));
   backdrop-filter: blur(12px);
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, .3);
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
   box-sizing: border-box;
   color: var(--widget_box_color,rgb(44,44,44));
   border-top: #ccc solid thin;
