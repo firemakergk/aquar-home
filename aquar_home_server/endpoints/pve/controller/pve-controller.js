@@ -9,13 +9,6 @@ class PveController {
     ctx.body = {code:0, data: resData}
   }
 }
-
-/*
-curl --silent --insecure --data "username=root@pam&password=<utf-8>" \
- https://192.168.0.99:8006/api2/json/access/ticket\
-| jq --raw-output '.data.ticket' | sed 's/^/PVEAuthCookie=/' > cookie
- */
-
 async function query(server, node, apiToken){
 
   const agent = new https.Agent({  
