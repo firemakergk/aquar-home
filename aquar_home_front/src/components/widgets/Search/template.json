@@ -1,0 +1,14 @@
+{
+  "name": "Search",
+  "widget": "SearchWidget",
+  "href": "#",
+  "layout": {
+    "w": 4,
+    "h": 2 
+  },
+  "data": {
+    "source": "baidu"
+  },
+  "required_params": [
+  ]
+}

@@ -1,2 +1,2 @@
 # aquar_home_front
-Aquar Home，水瓶座个人云的服务Home页。将Aquar系统中不同的开源服务进行整合，提取最核心的信息或功能，以小部件的形式展示在web端。
+AquarHome是一个强大可定制，且适配了多种NAS服务的个人home页。集成了NextCloud、Docker、Syncthing、TrueNas等服务的API，可以在同一页面直接看到各个服务的核心数据与最新状态。

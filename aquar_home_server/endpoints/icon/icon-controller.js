@@ -1,6 +1,7 @@
 import multer from '@koa/multer'
 import sha256 from 'crypto-js/sha256.js'
 import fs from 'fs'
+import iconAdvicer from './service/icon-advicer.js'
 const ICON_PATH = '/var/aquardata/icon_img/'
 
 if (!fs.existsSync(ICON_PATH)){
@@ -22,6 +23,11 @@ class IconController {
   upload = multer({storage})
   async uploadIcon(ctx, next) {
     ctx.body = {code:0, data: {img_path: '/icon_img/'+ctx.request.file.filename}}
+  }
+  async refreshIco(ctx, next) {
+    var data = ctx.request.body
+    var res = await iconAdvicer.afterWidgetAdded(data.tabIndex,data.widget)
+    ctx.body = {code:0, data: res}
   }
 }
 

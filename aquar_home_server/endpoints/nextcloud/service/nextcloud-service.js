@@ -146,7 +146,6 @@ async function downloadBlob(url, username, apppassword){
     responseType: "arraybuffer"
   })
   .then((response) => {
-    console.log(response.data)
     var bufferStream = new stream.PassThrough();
     bufferStream.end(response.data);
     return bufferStream

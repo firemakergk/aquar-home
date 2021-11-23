@@ -1,5 +1,6 @@
 import appDao from '../service/db/app-dao.js'
 import { v4 as uuidv4 } from 'uuid'
+import widgetAdvicer from '../service/widget-advicer.js'
 class AppEntryController {
   async list(ctx, next) {
     var index = ctx.query.index
@@ -17,10 +18,20 @@ class AppEntryController {
   async addWidget(ctx, next) {
     var data = ctx.request.body
     data.widget.id = uuidv4()
-    // data.layout.i = data.id
     appDao.saveAppEntry(data.tabIndex,data.widget)
+    await widgetAdvicer.afterWidgetAdded(data.tabIndex,data.widget)
     var resStr = await appDao.findOneById(data.widget.id)
     ctx.body = resStr
+  }
+  async addWidgetBatch(ctx, next) {
+    var data = ctx.request.body
+    var widgets = data.widgets
+    for(var i=0;i<widgets.length;i++){
+      widgets[i].id = uuidv4()
+      appDao.saveAppEntry(data.tabIndex,widgets[i])
+      await widgetAdvicer.afterWidgetAdded(data.tabIndex,widgets[i])
+    }
+    ctx.body = {code:0,msg:'插入成功'}
   }
   async removeWidget(ctx, next) {
     var data = ctx.request.body

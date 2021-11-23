@@ -12,7 +12,7 @@
       </div>
       <div style="flex-grow: 1" />
       <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon tcolor_reserve" title="设置布局" @click="editing=true" />
-      <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="comfirmLayout()" />
+      <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="confirmLayout()" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" />
     </div>
     <grid-layout
@@ -20,7 +20,7 @@
       :responsive="!editing"
       :col-num="12"
       :col-width="20"
-      :row-height="80"
+      :row-height="40"
       :is-draggable="editing"
       :is-resizable="editing"
       :vertical-compact="false"
@@ -48,7 +48,7 @@
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
-          <component v-bind:is="widget.widget" :tab-index="curTabIndex" :config-data="widget" class="no-drag absolute"></component>
+          <component v-if="show" v-bind:is="widget.widget" :tab-index="curTabIndex" :config-data="widget" class="no-drag absolute"></component>
         </keep-alive>
       </grid-item>
     </grid-layout>
@@ -77,6 +77,7 @@ import IconWidget from '../components/widgets/Icon'
 import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
 import DockerWidget from '../components/widgets/Docker'
+import SearchWidget from '../components/widgets/Search'
 import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
 
@@ -92,6 +93,7 @@ export default {
     TrueNasWidget,
     PveWidget,
     DockerWidget,
+    SearchWidget,
     Config,
     WidgetConfig
   },
@@ -106,6 +108,7 @@ export default {
       eventLog: [],
       tabs: [],
       widgets: [],
+      show: true,
       showConfigPanel: false,
       showWidgetConfig: false
     }
@@ -127,6 +130,7 @@ export default {
     this.$bus.on('showWidgetConfig', this.openWidgetConfig)
     this.$bus.on('closeWidgetConfig', this.closeWidgetConfig)
     this.$bus.on('addWidget', this.addWidget)
+    this.$bus.on('addWidgetBatch', this.addWidgetBatch)
     this.$bus.on('refresh', this.refreshWidgets)
   },
   mounted: function() {
@@ -135,7 +139,8 @@ export default {
       .get('/api/allData')
       .then(response => {
         this.data = response.data
-        this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+        var localTabIndex = localStorage.getItem("curTabIndex")
+        this.curTabIndex = localTabIndex ? parseInt(localTabIndex) : 0
         this.tabs = this.data.tabs
         this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
@@ -145,15 +150,6 @@ export default {
         this.lgLayout = this.layout
         this.responseLayout(this.curViewSize)
       })
-    // this.$axios
-    //   .get('/api/list')
-    //   .then(response => {
-    //     this.widgets = response.data
-    //     this.layout = []
-    //     for (var i = 0; i < this.widgets.length; i++) {
-    //       this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
-    //     }
-    //   })
   },
   beforeDestroy() {
     this.$bus.off('update', this.updateConfig)
@@ -161,6 +157,7 @@ export default {
     this.$bus.off('showWidgetConfig', this.openWidgetConfig)
     this.$bus.off('closeWidgetConfig', this.closeWidgetConfig)
     this.$bus.off('addWidget', this.addWidget)
+    this.$bus.off('addWidgetBatch', this.addWidgetBatch)
     this.$bus.off('refresh', this.refreshWidgets)
   },
   methods: {
@@ -179,6 +176,7 @@ export default {
       var widget = _.find(this.widgets, { 'id': i }) 
       widget.layout.h = newH
       widget.layout.w = newW
+      this.$bus.emit('reload_'+widget.id,{tabIndex:this.curTabIndex,configData:widget}) 
     },
     resizedEvent: function(i, newX, newY, newHPx, newWPx) {
       const msg = 'RESIZED i=' + i + ', X=' + newX + ', Y=' + newY + ', H(px)=' + newHPx + ', W(px)=' + newWPx
@@ -237,13 +235,15 @@ export default {
         if(curTabIndex!=null && curTabIndex!=undefined){
           this.curTabIndex = curTabIndex
         }else{
-          this.curTabIndex = this.data.config.current_index ? this.data.config.current_index : 0
+          var localTabIndex = localStorage.getItem("curTabIndex")
+          this.curTabIndex = localTabIndex ? localTabIndex : 0
         }
         this.tabs = this.data.tabs
         this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
           this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
+          this.$bus.emit('reload_'+this.widgets[i].id,{tabIndex:this.curTabIndex,configData:this.widgets[i]})
         }
         this.lgLayout = this.layout
       })
@@ -256,7 +256,7 @@ export default {
           this.refreshWidgets(this.curTabIndex)
         })
     },
-    comfirmLayout() {
+    confirmLayout() {
       for (var i = 0; i < this.layout.length; i++) {
         var curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
         curWidget.layout = this.layout[i]
@@ -294,10 +294,7 @@ export default {
       for(var i in yList){
         var y = yList[i]
         var itemList = _.sortBy(_.filter(this.lgLayout,{"y":parseInt(y)}),['x'])
-        console.log("itemList:"+itemList)
-        if(curY > 0){
-          curY = nextY
-        }
+        curY = nextY
         var curW = 0
         for(var j in itemList){
           var it = itemList[j]
@@ -350,9 +347,40 @@ export default {
         }
       }
       widget.layout.x = 0
-      widget.layout.y = y + h + 1
+      widget.layout.y = y + h
       this.$axios.post('/api/addWidget', {tabIndex: this.curTabIndex,widget: widget})
         .then(() => {
+          this.refreshWidgets(this.curTabIndex)
+        })
+    },
+    addWidgetBatch(widgets) {
+      var y = 0
+      var h = 0
+      for (var i = 0; i < this.layout.length; i++) {
+        var l = this.layout[i]
+        if (l.y === y) {
+          y = l.y
+          if(l.h > h){
+            h = l.h
+          }
+        }else if(l.y > y) {
+          y = l.y
+          h = l.h
+        }
+      }
+      y = y + h
+      var nextX = 0
+      for(var j=0;j<widgets.length;j++){
+        widgets[j].layout.x = nextX
+        widgets[j].layout.y = y
+        nextX = nextX + widgets[j].layout.w
+        if(nextX > 12){
+          y += 1
+        }
+      }
+      this.$axios.post('/api/addWidgetBatch', {tabIndex: this.curTabIndex,widgets: widgets})
+        .then(() => {
+          this.$bus.emit('iconBatchDone', null)
           this.refreshWidgets(this.curTabIndex)
         })
     },
@@ -370,6 +398,7 @@ export default {
         return
       }
       this.curTabIndex = index
+      localStorage.setItem('curTabIndex',this.curTabIndex)
       this.widgets = _.cloneDeep(this.tabs[index].widgets)
       this.layout = []
       for (var i = 0; i < this.widgets.length; i++) {

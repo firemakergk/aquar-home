@@ -122,19 +122,19 @@ div:focus {
   /* overflow: hidden; */
 }
 .app-main::before{
-    content:'';
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:transparent center center no-repeat fixed;
-    background-image: var(--bgUrl,null);
-    background-color: var(--bgColor);
-    background-size: cover;
-    /* overflow:hidden; */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    filter:var(--blurNum);
-    z-index:-2;
+  content:'';
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:transparent center center no-repeat fixed;
+  background-image: var(--bgUrl,null);
+  background-color: var(--bgColor);
+  background-size: cover;
+  /* overflow:hidden; */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  filter:var(--blurNum);
+  z-index:-2;
 }
 .widget_box {
   width: 100%;

@@ -81,7 +81,7 @@ axios.prototype.ifLogDetail = function(contentType) {
   if(!contentType){
     return false
   }
-  for(var i in axios.prototype.AXIOS_LOG_CONTENT_TYPES){
+  for(var i=0;i<axios.prototype.AXIOS_LOG_CONTENT_TYPES.length;i++){
     var c = axios.prototype.AXIOS_LOG_CONTENT_TYPES[i]
     if(contentType.indexOf(c) >= 0){
       return true

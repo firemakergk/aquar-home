@@ -2,6 +2,14 @@
   <div class="content">
     <div class="param_panel">
       <div class="param_row">
+        <div class="param_name">ico图片：</div>
+        <div class="param_form">
+          <img v-show="configData.data.ico_path" style="width: 16px; height: 16px; margin: 0 8px;" :src="configData.data.ico_path">
+          <button style="margin: 0 4px;" @click="clearIco()"><span class="iconfont icon-delete icon" style="font-size: 14px;">清空</span></button>
+          <button style="margin: 0 4px;" @click="refreshIco()"><span class="iconfont icon-sync-alt icon" style="font-size: 14px;">重新抓取</span></button>
+        </div>
+      </div>
+      <div class="param_row">
         <div class="param_name">图标图片：</div>
         <div class="param_form">
           <div style="display: flex; align-items: stretch;">
@@ -220,17 +228,23 @@ export default {
     updateConfig() {
       this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
       this.$bus.emit('closeWidgetConfig', null)
+    },
+    clearIco() {
+      this.configData.data.ico_path = ''
+      this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
+    },
+    refreshIco(){
+      this.$axios
+      .post('/api/endpoints/icon/refreshIco',{tabIndex: this.tabIndex,widget: this.configData})
+      .then(response => {
+        this.configData.data.ico_path = response.data.data.data.ico_path
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.button {
-    padding: 0;
-    float: right;
-  }
-
 .image {
   width: 100%;
   display: block;
@@ -269,6 +283,9 @@ export default {
 }
 .param_form {
   flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .icon_warp {
   position: relative;

@@ -12,14 +12,21 @@
             <img v-if="widget.widget === 'TrueNasWidget'" :src="logo_truenas" style="width: 60px;">
             <img v-if="widget.widget === 'PveWidget'" :src="logo_pve" style="width: 60px;">
             <img v-if="widget.widget === 'DockerWidget'" :src="logo_docker" style="width: 60px;">
+            <img v-if="widget.widget === 'SearchWidget'" :src="logo_search" style="width: 60px;">
           </div>
           <div>{{ widget.name }}</div>
         </a>
       </div>
     </div>
     <div v-show="configDetail" class="config_panel">
-      <div style="height: 24px; margin: 0 20px;">设置组件参数(2/2):</div>
-      <div class="param_panel">
+      <div style="height: 24px; margin: 0 0 0 20px; display: flex;">
+        <span style="flex-grow: 1">设置组件参数(2/2):</span>
+        <span v-show="curWidget && curWidget.widget === 'IconWidget'"><button @click="toggleBatch()">批量导入</button></span>
+      </div>
+      <div class="param_panel" v-if="showBatch">
+        <batch-import/>
+      </div>
+      <div v-else class="param_panel">
         <div v-if="curWidget" class="param_warp">
           <div class="param_row">
             <span class="param_name">
@@ -45,12 +52,13 @@
               <input v-model="curWidget.data[param[0]]" type="text" style="width: 100%;">
             </div>
           </div>
+          <div class="submit_panel">
+            <a class="submit_button iconfont icon-reply icon" title="返回" @click="toChoose" />
+            <a class="submit_button iconfont icon-check icon" style="color: #67C23A;" title="提交" @click="submit" />
+          </div>
         </div>
       </div>
-      <div class="submit_panel">
-        <a class="submit_button iconfont icon-reply icon" title="返回" @click="toChoose" />
-        <a class="submit_button iconfont icon-check icon" style="color: #67C23A;" title="提交" @click="submit" />
-      </div>
+      
     </div>
   </div>
 </template>
@@ -64,6 +72,7 @@ import logo_icon from '../widgets/Icon/img/aquar.png'
 import logo_truenas from '../widgets/TrueNas/img/truenas.png'
 import logo_pve from '../widgets/Pve/img/pve.png'
 import logo_docker from '../widgets/Docker/img/docker.png'
+import logo_search from '../widgets/Search/img/search.png'
 
 import meta_syncthing from '../widgets/Syncthing/template.json'
 import meta_archivephase from '../widgets/ArchivePhase/template.json'
@@ -72,13 +81,18 @@ import meta_icon from '../widgets/Icon/template.json'
 import meta_truenas from '../widgets/TrueNas/template.json'
 import meta_pve from '../widgets/Pve/template.json'
 import meta_docker from '../widgets/Docker/template.json'
+import meta_search from '../widgets/Search/template.json'
+
+import BatchImport from '../widgets/Icon/batchimport.vue'
 
 export default {
   name: 'AddWidget',
   components: {
+    BatchImport,
   },
   data: function() {
     return {
+      showBatch: false,
       widgets: [
         meta_syncthing,
         meta_archivephase,
@@ -86,7 +100,8 @@ export default {
         meta_icon,
         meta_truenas,
         meta_pve,
-        meta_docker
+        meta_docker,
+        meta_search
       ],
       logo_syncthing,
       logo_archivephase,
@@ -95,6 +110,7 @@ export default {
       logo_truenas,
       logo_pve,
       logo_docker,
+      logo_search,
       configDetail: false,
       curWidget: null
     }
@@ -114,7 +130,8 @@ export default {
     close() {
       this.curWidget = null
       this.configDetail = false
-      this.$bus.emit('closeAddPanel', null)
+      this.showBatch = false
+      // this.$bus.emit('closeAddPanel', null)
     },
     toConfigDetail(widget) {
       this.curWidget = Object.assign({}, widget)
@@ -123,11 +140,15 @@ export default {
     toChoose() {
       this.curWidget = null
       this.configDetail = false
+      this.showBatch = false
     },
     submit() {
       this.$bus.emit('addWidget', this.curWidget)
       this.configDetail = false
       this.close()
+    },
+    toggleBatch() {
+      this.showBatch = !this.showBatch
     }
   }
 }
@@ -145,6 +166,8 @@ export default {
 }
 .config_content {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 .config_panel {
   margin: 0;
@@ -173,9 +196,11 @@ export default {
 }
 .param_panel {
   display: flex;
-  // flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   border-top: solid #ccc thin;
 }
 .param_warp {

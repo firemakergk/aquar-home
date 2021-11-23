@@ -23,6 +23,13 @@ class AppDao {
     this.db.data.tabs[tabIndex].widgets.push(entry)
     this.db.write()
   }
+  saveAppEntryBatch(tabIndex,widgets) {
+    for(var i=0;i<widgets.length;i++){
+      var w = widgets[i]
+      this.db.data.tabs[tabIndex].widgets.push(w)
+    }
+    this.db.write()
+  }
   findOneById(tabIndex,id) {
     var res = this.db.chain.get('tabs['+tabIndex+'].widgets')
       .find({ 'id': id }).value()

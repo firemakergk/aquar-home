@@ -1,8 +1,4 @@
 import axios from "axios"
-// const baseUrl = "http://192.168.0.108:8384"
-// const appKey = 'YYsec2jDZQ3XQmJYESZ7QJWeU6skKgT3'
-// const baseUrl = "http://localhost:8384"
-// const appKey = 'mESCgd6imiPvTfVGojshHRSwcAd9SYzp'
 const reg = /(\d{4}-\d{2}-\d{2}).+?(d{2}:\d{2}:d{2})/i
 
 export default async function getFoldersInfo(baseUrl, appKey){

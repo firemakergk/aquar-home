@@ -51,6 +51,8 @@ export default {
       this.tabIndex = eventData.tabIndex
       this.configData = eventData.configData
       this.$bus.emit('showWidgetConfig',null)
+      // this.$bus.emit('loadConfig_'+this.widgetType,{'tabIndex':eventData.tabIndex,'widget':eventData.configData})
+      this.$forceUpdate()
     }
   }
 }
@@ -73,6 +75,7 @@ export default {
   color: rgb(44,44,44);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
 }
 .config_header {
   display: flex;

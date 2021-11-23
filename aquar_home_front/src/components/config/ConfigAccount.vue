@@ -91,6 +91,7 @@ export default {
     },
     logout(){
       localStorage.removeItem("token")
+      localStorage.removeItem('curTabIndex')
       this.$router.push('/login')
     }
   }
