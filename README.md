@@ -40,3 +40,25 @@ AquarHome的核心特性：
 - rtsp推流监视器
 - emby/jellyfin组件
 - ...
+
+## 快速开始
+
+### 1.docker compose方式（推荐）
+``` yaml
+aquarhome:
+  image: finetu/aquarhome
+  container_name: aquarhome 
+  environment:
+    - PUID=1000
+    - PGID=1000
+    - TZ=Asia/Shanghai
+  volumes:
+    - your/path/to/data:/var/aquardata #数据目录，包含核心配置数据，缓存/上传文件等
+    - your/path/to/aquarpool:/opt/aquarpool #供文件同步功能使用，若不需要此功能可选择一个空文件夹填写
+    - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs #日志文件
+  ports:
+    - 8172:8172
+  restart: unless-stopped
+```
+### 2.源码方式
+TODO
