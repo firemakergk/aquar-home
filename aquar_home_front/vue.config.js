@@ -64,6 +64,12 @@ module.exports = {
         target: 'http://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
+      },
+      '/assets': {
+        // target: 'http://39.100.115.231:8130',
+        target: 'http://localhost:8172',
+        changeOrigin: true,
+        disableHostCheck: true
       }
     },
     overlay: {

@@ -9,11 +9,6 @@ class AppDao {
   DB_PATH = '/var/aquardata/db/'
   db = null
   constructor() {
-    if (!fs.existsSync(this.DB_PATH+'db.json')){
-      var defaultConfig = fs.readFileSync('./db.json','utf8')
-      fs.mkdirSync(this.DB_PATH, { recursive: true });
-      fs.writeFileSync(this.DB_PATH+'db.json',defaultConfig)
-    }
     this.db = new LowSync(new JSONFileSync(this.DB_PATH+'db.json'))
     this.db.read()
     this.db.chain = lodash.chain(this.db.data)

@@ -14,7 +14,13 @@ import moment from 'moment'
 import appDao from './service/db/app-dao.js'
 import fs from 'fs'
 
+const DB_PATH = '/var/aquardata/db/'
 const __dirname = path.resolve();
+if (!fs.existsSync(DB_PATH+'db.json')){
+  var defaultConfig = fs.readFileSync('./db.json','utf8')
+  fs.mkdirSync(DB_PATH, { recursive: true });
+  fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
+}
 if (!fs.existsSync('./public/assets/bg.jpg')){
   fs.mkdirSync('./public/assets/', { recursive: true });
   fs.copyFileSync('./assets/bg.jpg','./public/assets/bg.jpg')
@@ -55,11 +61,11 @@ app.use(async (ctx, next) => {
   console.log(`${moment().format()} response: ${ctx.method} ${ctx.url}, body:${JSON.stringify(ctx.body)} - duration:${ms}`)
 })
 
-// app.use(koajwt({
-//   secret: appDao.getSecret()
-// }).unless({ // 配置白名单
-//   path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
-// }))
+app.use(koajwt({
+  secret: appDao.getSecret()
+}).unless({ // 配置白名单
+  path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
+}))
 
 // routes
 app.use(index.routes(), index.allowedMethods())

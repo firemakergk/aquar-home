@@ -3,6 +3,7 @@ import sha256 from 'crypto-js/sha256.js'
 import fs from 'fs'
 import appDao from '../service/db/app-dao.js'
 const BG_PATH = '/var/aquardata/bg_img/'
+const CACHE_PATH = '/var/aquardata/'
 
 if (!fs.existsSync(BG_PATH)){
   fs.mkdirSync(BG_PATH, { recursive: true });
@@ -58,6 +59,14 @@ class ConfigController {
     ctx.body = appDao.checkAuth(userName,password)
   }
   async destoryAccount(ctx, next) {
+    appDao.updateAuth({userName:null,password:null})
+    ctx.body = {code:0, msg:"帐户注销成功"}
+  }
+  async cacheInfo(ctx, next) {
+    appDao.updateAuth({userName:null,password:null})
+    ctx.body = {code:0, msg:"帐户注销成功"}
+  }
+  async clearCache(ctx, next) {
     appDao.updateAuth({userName:null,password:null})
     ctx.body = {code:0, msg:"帐户注销成功"}
   }
