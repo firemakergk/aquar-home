@@ -2,8 +2,8 @@ import multer from '@koa/multer'
 import sha256 from 'crypto-js/sha256.js'
 import fs from 'fs'
 import appDao from '../service/db/app-dao.js'
+import cacheService from '../service/cache-service.js'
 const BG_PATH = '/var/aquardata/bg_img/'
-const CACHE_PATH = '/var/aquardata/'
 
 if (!fs.existsSync(BG_PATH)){
   fs.mkdirSync(BG_PATH, { recursive: true });
@@ -63,12 +63,12 @@ class ConfigController {
     ctx.body = {code:0, msg:"帐户注销成功"}
   }
   async cacheInfo(ctx, next) {
-    appDao.updateAuth({userName:null,password:null})
-    ctx.body = {code:0, msg:"帐户注销成功"}
+    var cacheSize = await cacheService.cacheSize()
+    ctx.body = {code:0, data:cacheSize}
   }
   async clearCache(ctx, next) {
-    appDao.updateAuth({userName:null,password:null})
-    ctx.body = {code:0, msg:"帐户注销成功"}
+    await cacheService.clearCache()
+    ctx.body = {code:0, msg:"缓存已清理"}
   }
 }
 

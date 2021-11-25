@@ -12,6 +12,7 @@ import users from './routes/users.js'
 import axios from 'axios'
 import moment from 'moment'
 import appDao from './service/db/app-dao.js'
+import jobService from './service/job-service.js'
 import fs from 'fs'
 
 const DB_PATH = '/var/aquardata/db/'
@@ -24,7 +25,7 @@ if (!fs.existsSync(DB_PATH+'db.json')){
 if (!fs.existsSync('./public/assets/bg.jpg')){
   fs.mkdirSync('./public/assets/', { recursive: true });
   fs.copyFileSync('./assets/bg.jpg','./public/assets/bg.jpg')
-}
+} 
 
 const app = new Koa()
 // Array Remove - By John Resig (MIT Licensed)
@@ -137,5 +138,6 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
+// jobService.start()
 
 export default app

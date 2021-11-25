@@ -50,7 +50,7 @@ class AppEntryController {
     ctx.body = resStr
   }
   async addTab(ctx, next) {
-    var data = ctx.request.body
+    var data = {title:"新标签",widgets:[]}
     appDao.addTab(data)
     var resStr = await appDao.allData()
     ctx.body = resStr

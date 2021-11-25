@@ -3,25 +3,25 @@
     <div style="height: 24px; margin: 0 20px;">分页配置:</div>
     <div class="config_panel">
       <div class="param_panel">
+        <div style="margin: 6px 0;"><button @click="addTab()">添加</button></div>
         <table class="tab_table" cellspacing="0">
-        <tr class="tab_head">
-          <th class="tab_cell">顺序</th>
-          <th class="tab_cell" style="width: 120px;">名称</th>
-          <th class="tab_cell">操作</th>
-        </tr>
-        <tr v-for="(tab,index) in tabs" :key="'tab_'+index">
-          <td>{{index}}</td>
-          <td v-if="editIndex != index">{{tab.title}}</td>
-          <td v-else><input size="8" type="text" v-model="newTitle"></td>
-          
-          <td>
-            <a style="margin: 0 4px; " @click="moveTab(index,-1)">↑上移</a>
-            <a style="margin: 0 4px; " @click="moveTab(index,1)">↓下移</a>
-            <a v-if="editIndex != index" style="margin: 0 4px; " @click="editTitle(index)">修改名称</a>
-            <a v-else style="margin: 0 4px; " @click="changeTitle(index)">确定</a>
-          </td>
-        </tr>
-      </table>
+          <tr class="tab_head">
+            <th class="tab_cell">顺序</th>
+            <th class="tab_cell" style="width: 120px;">名称</th>
+            <th class="tab_cell">操作</th>
+          </tr>
+          <tr v-for="(tab,index) in tabs" :key="'tab_'+index">
+            <td>{{index}}</td>
+            <td v-if="editIndex != index">{{tab.title}}</td>
+            <td v-else><input size="8" type="text" v-model="newTitle"></td>
+            <td>
+              <a style="margin: 0 4px; " @click="moveTab(index,-1)">↑上移</a>
+              <a style="margin: 0 4px; " @click="moveTab(index,1)">↓下移</a>
+              <a v-if="editIndex != index" style="margin: 0 4px; " @click="editTitle(index)">修改名称</a>
+              <a v-else style="margin: 0 4px; " @click="changeTitle(index)">确定</a>
+            </td>
+          </tr>
+        </table>
         <div class="param_row" style="height: 80px;">
           <div class="param_name"></div>
           <div class="param_form">
@@ -67,6 +67,14 @@ export default {
         .then(response => {
           this.tabs = response.data.tabs
           this.$forceUpdate()
+        })
+    },
+    addTab(){
+      this.$axios.get('/api/config/addTab')
+        .then(response => {
+          this.tabs = response.data.tabs
+          this.refreshConfig()
+          this.$bus.emit('refresh')
         })
     },
     editTitle(index) {

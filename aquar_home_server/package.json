@@ -6,7 +6,7 @@
   "exports": "./bin/www.cjs",
   "scripts": {
     "start": "node bin/www.cjs",
-    "dev": "babel-node ./index.js",
+    "dev": "set NODE_ENV='dev' && babel-node ./index.js",
     "prd": "pm2 start ./index.js",
     "dcprd": "pm2-runtime start ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,9 +14,11 @@
   "dependencies": {
     "@koa/multer": "^3.0.0",
     "axios": "^0.21.1",
+    "cron": "^1.8.2",
     "crypto-js": "^4.0.0",
     "crypto-random-string": "^4.0.0",
     "debug": "^4.1.1",
+    "du": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
