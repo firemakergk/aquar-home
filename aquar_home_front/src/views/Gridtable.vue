@@ -236,7 +236,11 @@ export default {
           this.curTabIndex = curTabIndex
         }else{
           var localTabIndex = localStorage.getItem("curTabIndex")
-          this.curTabIndex = localTabIndex ? localTabIndex : 0
+          this.curTabIndex = localTabIndex ? parseInt(localTabIndex) : 0
+        }
+        if(this.curTabIndex >= this.data.tabs.length ){
+          this.curTabIndex = this.data.tabs.length -1
+          localStorage.setItem("curTabIndex",this.curTabIndex)
         }
         this.tabs = this.data.tabs
         this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
@@ -246,6 +250,8 @@ export default {
           this.$bus.emit('reload_'+this.widgets[i].id,{tabIndex:this.curTabIndex,configData:this.widgets[i]})
         }
         this.lgLayout = this.layout
+        this.updateCurViewSize()
+        this.responseLayout(this.curViewSize)
       })
     },
     updateConfig: function(newData) {

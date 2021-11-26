@@ -1,7 +1,7 @@
 import appDao from '../service/db/app-dao.js'
 import { v4 as uuidv4 } from 'uuid'
 import widgetAdvicer from '../service/widget-advicer.js'
-class AppEntryController {
+class WidgetController {
   async list(ctx, next) {
     var index = ctx.query.index
     var resStr = await appDao.findByCurIndex()
@@ -55,7 +55,13 @@ class AppEntryController {
     var resStr = await appDao.allData()
     ctx.body = resStr
   }
+  async removeTab(ctx, next) {
+    var data = ctx.request.body
+    appDao.removeTab(data.tabIndex)
+    var resStr = await appDao.allData()
+    ctx.body = resStr
+  }
   
 }
-var appEntryController = new AppEntryController()
-export default appEntryController
+var widgetController = new WidgetController()
+export default widgetController

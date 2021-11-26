@@ -25,6 +25,8 @@ import AddWidget from './AddWidget.vue'
 import ConfigAppearance from './ConfigAppearance.vue'
 import ConfigTabs from './ConfigTabs.vue'
 import ConfigAccount from './ConfigAccount.vue'
+import ConfigCache from './ConfigCache.vue'
+import ConfigAbout from './ConfigAbout.vue'
 
 export default {
   name: 'Config',
@@ -32,15 +34,19 @@ export default {
     AddWidget,
     ConfigAppearance,
     ConfigTabs,
-    ConfigAccount
+    ConfigAccount,
+    ConfigCache,
+    ConfigAbout
   },
   data: function() {
     return {
       menus:[
         {'name':'外观设置',component:'ConfigAppearance'},
         {'name':'添加组件',component:'AddWidget'},
-        {'name':'分页配置',component:'ConfigTabs'},
-        {'name':'帐户配置',component:'ConfigAccount'}
+        {'name':'分页设置',component:'ConfigTabs'},
+        {'name':'帐户设置',component:'ConfigAccount'},
+        {'name':'缓存设置',component:'ConfigCache'},
+        {'name':'关于',component:'ConfigAbout'}
       ],
       curMenu: 0
     }

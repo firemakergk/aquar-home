@@ -19,6 +19,7 @@
               <a style="margin: 0 4px; " @click="moveTab(index,1)">↓下移</a>
               <a v-if="editIndex != index" style="margin: 0 4px; " @click="editTitle(index)">修改名称</a>
               <a v-else style="margin: 0 4px; " @click="changeTitle(index)">确定</a>
+              <a style="margin: 0 4px; " @click="removeTab(index)">删除</a>
             </td>
           </tr>
         </table>
@@ -71,6 +72,17 @@ export default {
     },
     addTab(){
       this.$axios.get('/api/config/addTab')
+        .then(response => {
+          this.tabs = response.data.tabs
+          this.refreshConfig()
+          this.$bus.emit('refresh')
+        })
+    },
+    removeTab(index){
+      if(!confirm('确认删除该标签页？')){
+        return
+      }
+      this.$axios.post('/api/config/removeTab',{tabIndex:index})
         .then(response => {
           this.tabs = response.data.tabs
           this.refreshConfig()

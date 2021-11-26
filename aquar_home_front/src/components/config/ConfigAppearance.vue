@@ -85,7 +85,6 @@ export default {
       this.$axios
         .get('/api/config')
         .then(response => {
-          console.log("config===:"+response.data)
           this.configData = response.data
           this.$forceUpdate()
         })

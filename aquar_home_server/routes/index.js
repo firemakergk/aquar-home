@@ -1,5 +1,5 @@
 import koarouter from 'koa-router'
-import appEntryController from '../controller/AppEntryController.js'
+import widgetController from '../controller/widget-controller.js'
 import configController from '../controller/config-controller.js'
 import syncThingController from '../endpoints/syncthing/controller/syncthing-controller.js'
 import rsyncphaseController from '../endpoints/rsync-phase/controller/rsyncphase-controller.js'
@@ -34,17 +34,18 @@ router.get('/json', async (ctx, next) => {
 router.post('/api/register', configController.register)
 router.post('/api/login', configController.login)
 router.get('/api/destoryAccount', configController.destoryAccount)
-router.get('/api/allData', appEntryController.allData)
-router.get('/api/list', appEntryController.list)
-router.post('/api/updateById', appEntryController.updateById)
-router.post('/api/addWidget', appEntryController.addWidget)
-router.post('/api/addWidgetBatch', appEntryController.addWidgetBatch)
-router.post('/api/removeWidget', appEntryController.removeWidget)
+router.get('/api/allData', widgetController.allData)
+router.get('/api/list', widgetController.list)
+router.post('/api/updateById', widgetController.updateById)
+router.post('/api/addWidget', widgetController.addWidget)
+router.post('/api/addWidgetBatch', widgetController.addWidgetBatch)
+router.post('/api/removeWidget', widgetController.removeWidget)
 router.get('/api/config', configController.config)
 router.post('/api/config/uploadBgImg',configController.upload.single('bgImg'), configController.uploadBgImg)
 router.post('/api/config/update', configController.updateConfig)
-router.get('/api/config/addTab', appEntryController.addTab)
-router.post('/api/config/submitTabs', appEntryController.submitTabs)
+router.get('/api/config/addTab', widgetController.addTab)
+router.post('/api/config/removeTab', widgetController.removeTab)
+router.post('/api/config/submitTabs', widgetController.submitTabs)
 router.get('/api/cache/info', configController.cacheInfo)
 router.get('/api/cache/clear', configController.clearCache)
 

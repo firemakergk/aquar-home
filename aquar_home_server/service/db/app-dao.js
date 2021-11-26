@@ -118,6 +118,12 @@ class AppDao {
     this.db.data.tabs.push(tabData)
     this.db.write()
   }
+  removeTab(tabIndex) {
+    this.db.chain.get('tabs').remove((value, index, array) => {
+      return index === tabIndex
+    }).value()
+    this.db.write()
+  }
   getDbInstance() {
     return this.db
   }
