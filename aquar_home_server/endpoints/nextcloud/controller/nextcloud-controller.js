@@ -5,7 +5,7 @@ class NextCloudController {
   async login(ctx, next) {
     var server = ctx.query.server
     var res = await nextcloudService.login(server)
-    
+    ctx.body = {code:0, data: res}
   }
   async poll(ctx, next) {
     var server = ctx.query.server
