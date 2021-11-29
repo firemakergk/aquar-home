@@ -1,5 +1,7 @@
 # /bin/bash
 pm2 stop all
+cd /opt/aquar/src/aquar-home
+git pull
 cd aquar_home_front
 npm install
 npm run build
