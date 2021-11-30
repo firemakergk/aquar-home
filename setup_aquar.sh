@@ -44,8 +44,8 @@ source /root/.bashrc
 cat > /usr/local/bin/aqserv <<EOF
 #!/bin/bash
 cmd=\$1
-if [ "\$cmd" != "start" ] && [ "\$cmd" != "stop" ]  && [ "\$cmd" != "ps" ]; then
-    echo "error： input parameter only accept 'start','stop'or'ps'"
+if [ "\$cmd" != "start" ] && [ "\$cmd" != "stop" ] && [ "\$cmd" != "restart" ] && [ "\$cmd" != "ps" ]; then
+    echo "error： input parameter only accept 'start','stop','restart' or'ps'"
     exit 0
 fi
 source /root/.bashrc
@@ -53,11 +53,15 @@ source /usr/local/bin/virtualenvwrapper.sh
 workon aquar
 cd /opt/aquar/src/docker-compose/
 if [ "\$cmd" == "start" ]; then
-    echo "aquar docker services start"
+    echo "aquar docker services starting"
     docker-compose up -d
 elif [ "\$cmd" == "stop" ]; then
-    echo "aquar docker services stop"
+    echo "aquar docker services stoping"
     docker-compose stop
+elif [ "\$cmd" == "restart" ]; then
+    echo "aquar docker services restarting"
+    docker-compose restart
+
 else
     docker-compose ps
 fi
