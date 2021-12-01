@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="search_panel tbgcolor_main">
-      <select name="source" class="tbgcolor_main tcolor_main"  v-model="configData.data.source">
+      <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source">
         <option class="tcolor_main" value ="baidu">百度</option>
         <option class="tcolor_main" value ="bing">Bing</option>
         <option class="tcolor_main" value ="google">Google</option>
@@ -92,7 +92,6 @@ input {
 }
 select {
   background-image: none;
-  border: 1px solid #e5e6e7;
   display: block;
   padding: 4px 6px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
