@@ -144,11 +144,11 @@ div:focus {
   padding: 4px 4px;
   border-radius: 2px;
   background-color: var(--widget_box_bgcolor,rgba(255,255,255, 0.7));
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(24px);
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
   box-sizing: border-box;
   color: var(--widget_box_color,rgb(44,44,44));
-  border-top: #ccc solid thin;
+  border-top: var(--tbtcolor,#ccc) solid thin;
 }
 .widget_header {
   width: 100%;
@@ -198,7 +198,7 @@ div:focus {
   background-image: none;
   border: 1px solid #e5e6e7;
   border-radius: 1px;
-  color: inherit;
+  color: var(--tcolor_main,black);
   display: block;
   padding: 4px 6px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
@@ -248,7 +248,16 @@ div:focus {
 }
 .config_body {
   height: 100%;
+  background-color: var(--tbgcolor_content,white);
+  color: var(--tcolor_main,black);
 }
+
+.config_body input {
+  height: 100%;
+  background-color: var(--tbgcolor_content,white);
+  color: var(--tcolor_main,black);
+}
+
 .config_row {
   display: flex;
   align-items: center;

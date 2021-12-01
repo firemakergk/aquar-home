@@ -10,6 +10,7 @@
             开发者：
             <span class="tcolor_main">firemaker</span>
             <span class="tcolor_main" style="margin: 0 10px;">sklxz@qq.com</span></div>
+          <div>系统说明文档：<a href="https://gitee.com/firemaker/aquar-home-helper" target="_blank">https://gitee.com/firemaker/aquar-home-helper</a></div>
           <div>码云地址：<a href="https://gitee.com/firemaker/aquar-home" target="_blank">https://gitee.com/firemaker/aquar-home</a></div>
           <div>GitHub地址：<a href="https://github.com/firemakergk/aquar-home" target="_blank">https://github.com/firemakergk/aquar-home</a></div>
           <div>本项目旨在让各种优秀的服务更好的融合在一起，造福各位NAS爱好者和极客，感谢你的支持。</div>

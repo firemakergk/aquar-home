@@ -53,8 +53,8 @@
             </div>
           </div>
           <div class="submit_panel">
-            <a class="submit_button iconfont icon-reply icon" title="返回" @click="toChoose" />
-            <a class="submit_button iconfont icon-check icon" style="color: #67C23A;" title="提交" @click="submit" />
+            <a class="submit_button iconfont icon-reply icon tcolor_main" title="返回" @click="toChoose" />
+            <a class="submit_button iconfont icon-check icon tcolor_active" title="提交" @click="submit" />
           </div>
         </div>
       </div>
@@ -226,7 +226,6 @@ export default {
   margin-top: 20px;
 }
 .submit_button {
-  color: rgb(44,44,44);
   font-size: 30px;
   margin: 0 40px;
 }

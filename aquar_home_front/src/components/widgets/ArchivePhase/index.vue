@@ -82,10 +82,10 @@
       <div class="widget_content">
         <div v-for="(item,index) in configData.data.items" :key="'archive_item_'+ index" class="row_base">
           <div class="bar_base">
-            <span style="padding: 0 4px;">{{ item.name }}</span>
-            <span class="text_overflow" style="color:#aaa; font-size:12px; width: 120px;">{{ item.source }}</span>
-            <span style="color:#ccc; padding: 0 4px;"> >> </span>
-            <span class="text_overflow" style="color:#aaa; font-size:12px; width: 160px;">
+            <span style="padding: 0 4px;" class="tcolor_main">{{ item.name }}</span>
+            <span class="text_overflow tcolor_sub" style="font-size:12px; width: 120px;">{{ item.source }}</span>
+            <span style="padding: 0 4px;" class="tcolor_sub"> >> </span>
+            <span class="text_overflow tcolor_sub" style=" font-size:12px; width: 160px;">
               {{ item.archive_dir_name+ ":" +[item.phase_name?item.phase_name:nowDate] }}
             </span>
             <span style="flex-grow: 1;" />

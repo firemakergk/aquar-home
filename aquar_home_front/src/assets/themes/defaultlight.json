@@ -18,7 +18,7 @@
     "--tbgcolor_tab_selected":"#83b6b6",
     "--tcolor_tab_selected":"white",
     "--tbgcolor_sub_head":"#669999",
-    "--tcolor_sub_head":"white",
+    "--tcolor_sub_head":"#669999",
     "--tbgcolor_disable":"#ccc",
     "--tbgcolor_idle":"#669999",
     "--tbgcolor_info":"#99CCFF",

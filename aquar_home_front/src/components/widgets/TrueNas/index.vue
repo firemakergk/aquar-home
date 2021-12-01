@@ -48,7 +48,7 @@
       </div>
       <div class="widget_content">
         <div v-for="item in poolInfo" :key="item.id" class="item_row tcolor_reverse">
-          <div style="flex-grow: 1;" class="tcolor">{{ item.name }}</div>
+          <div style="flex-grow: 1;" class="tcolor_main">{{ item.name }}</div>
           <div style="width: 140px; position: relative; ">
             <div style="position: absolute; height: 100%; display: flex; align-items: center; justify-content: center;">{{ item.used + "/" + item.total }}</div>
             <div class="process_bar tbgcolor_idle">

@@ -41,7 +41,7 @@
       <div v-show="showConfig" class="float_config tbgcolor_mask_info ">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
+          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_main"> x </a>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -79,13 +79,13 @@
             <div style="flex-grow: 5;">
               <button @click="updateConfig" >确定</button>
             </div>
-          </div>
+          </div>  
         </div>
       </div>
       <div class="widget_content">
         <div class="explorer_header">
           <span class="path_span">
-            <input v-model="path" type="text" style="width:100%; height: 20px; font-size: 8px; " >
+            <input v-model="path" type="text" class="tbgcolor_content tcolor_main" style="width:100%; height: 20px; font-size: 8px; " >
           </span>
           <span class="button_span">
             <a :class="[{'a_disabled tcolor_disable': (!refreshEnable)}, 'iconfont icon-search icon tcolor_sub']" style="margin: 0 4px;" title="转到" @click="refreshView(false)" />

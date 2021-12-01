@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <div class="search_panel tbgcolor_main">
-      <select name="source"  v-model="configData.data.source">
-        <option value ="baidu">百度</option>
-        <option value ="bing">Bing</option>
-        <option value ="google">Google</option>
+      <select name="source" class="tbgcolor_main tcolor_main"  v-model="configData.data.source">
+        <option class="tcolor_main" value ="baidu">百度</option>
+        <option class="tcolor_main" value ="bing">Bing</option>
+        <option class="tcolor_main" value ="google">Google</option>
       </select>
-      <input type="text" style="flex-grow:1;" placeholder="输入要搜索的内容" 
+      <input type="text" class="tbgcolor_main" style="flex-grow:1;" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
         v-model="searchText" @keyup.enter="search()"/>
       <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search"></button>
@@ -93,7 +93,6 @@ input {
 select {
   background-image: none;
   border: 1px solid #e5e6e7;
-  color: inherit;
   display: block;
   padding: 4px 6px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;

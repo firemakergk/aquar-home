@@ -3,7 +3,7 @@
     <div class="dashboard_header tbgcolor_head">
       <div class="logo">
         <img style="height: 20px;" :src="logo_aquar">
-        <span style="margin: 4px;">Aquar</span>
+        <span style="margin: 4px;" class="tcolor_sub_head">Aquar</span>
       </div>
       <div class="page_tabs">
         <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab" :class="index == curTabIndex ? 'tbgcolor_tab_selected tcolor_tab_selected':'tbgcolor_tab tcolor_tab'">
@@ -11,6 +11,7 @@
         </div>
       </div>
       <div style="flex-grow: 1" />
+      <a style="margin: 0 4px; padding: 0 4px; border-right: solid thin #ccc;" class="iconfont icon-question-circle icon tcolor_disable" title="设置" target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" />
       <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon tcolor_reserve" title="设置布局" @click="editing=true" />
       <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="confirmLayout()" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" />
@@ -272,7 +273,6 @@ export default {
       this.refreshWidgets(this.curTabIndex)
     },
     responseLayout(newBreakpoint) {
-      this.editing = false
       if(!this.layout || this.layout.length===0){
         return
       }
@@ -283,15 +283,19 @@ export default {
         return
       }
       if(newBreakpoint === "md"){
+        this.editing = false
         colCount = 10
       }
       if(newBreakpoint === "sm"){
+        this.editing = false
         colCount = 6 
       }
       if(newBreakpoint === "xs"){
+        this.editing = false
         colCount = 4
       }
       if(newBreakpoint === "xxs"){
+        this.editing = false
         colCount = 2
       }
       var curY = 0
@@ -391,6 +395,9 @@ export default {
         })
     },
     removeWidget(id) {
+      if(!confirm('确认删除该组件？')){
+        return
+      }
       this.$axios.post('/api/removeWidget', {tabIndex: this.curTabIndex, id: id })
         .then(() => {
           this.refreshWidgets(this.curTabIndex)

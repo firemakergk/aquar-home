@@ -5,7 +5,7 @@
       <div class="param_panel">
         <div style="margin: 6px 0;"><button @click="addTab()">添加</button></div>
         <table class="tab_table" cellspacing="0">
-          <tr class="tab_head">
+          <tr class="tab_head tbgcolor_sub_head">
             <th class="tab_cell">顺序</th>
             <th class="tab_cell" style="width: 120px;">名称</th>
             <th class="tab_cell">操作</th>
@@ -142,6 +142,7 @@ export default {
 }
 .tab_table tr{
   height: 24px;
+  border: thin solid rgb(193,193,193);
 }
 .tab_table td{
   margin: 0;
@@ -149,7 +150,6 @@ export default {
 }
 .tab_head {
   padding: 0 10px;
-  background-color: rgb(221,221,221);
 }
 .tab_cell {
   padding: 0 2px;

@@ -2,10 +2,10 @@
   <div class="container">
     <div class="config_header tbgcolor_content">
       <span style="flex-grow: 1; margin: 0 10px;">设置</span>
-      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
+      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_main" @click="close" />
     </div>
-    <div class="config_content">
-      <div class="config_sidebar ">
+    <div class="config_content tbgcolor_main tcolor_main">
+      <div class="config_sidebar tbgcolor_sub_head">
         <a v-for="(menu,index) in menus" :key="index" class="menu_item" 
         @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a>
       </div>
@@ -104,7 +104,6 @@ export default {
   margin: 0;
   flex: 0 0 80px;
   font-size: 16px;
-  background: rgb(243,243,243);
   display: flex;
   flex-direction: column;
 }
