@@ -12,6 +12,7 @@ WORKDIR /app/aquar_home
 RUN rm -rf ./aquar_home_server/public/ && mkdir -p aquar_home_server/public/ && cp -r ./aquar_home_front/dist/* ./aquar_home_server/public/
 
 FROM node:14
+RUN apt update && apt install -y rsync
 RUN npm install -g pm2
 WORKDIR /app/aquar_home
 COPY --from=builder /app/aquar_home/aquar_home_server/ .

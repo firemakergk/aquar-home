@@ -6,7 +6,7 @@
         <option class="tcolor_main" value ="bing">Bing</option>
         <option class="tcolor_main" value ="google">Google</option>
       </select>
-      <input type="text" class="tbgcolor_main" style="flex-grow:1;" placeholder="输入要搜索的内容" 
+      <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
         v-model="searchText" @keyup.enter="search()"/>
       <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search"></button>
@@ -83,7 +83,6 @@ input {
   background-size: 20px;
   text-indent: 24px;
   border: 0px solid #e5e6e7;
-  color: inherit;
   display: block;
   padding: 6px 4px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
