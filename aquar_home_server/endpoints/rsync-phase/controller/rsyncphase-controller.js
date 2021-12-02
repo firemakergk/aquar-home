@@ -48,49 +48,49 @@ class RsyncphaseController {
   async addNewItem(ctx, next) {
     var id = ctx.request.body.id
     var item = ctx.request.body.item
-    appDao.getDbInstance()
-      .get('widgets').find({ 'id': id })
-      .get('data')
-      .get('items')
-      .push(item)
-      .write()
-    let res = appDao.getDbInstance()
-      .get('widgets').find({ 'id': id })
-      .get('data')
-      .get('items')
-      .value()
-      ctx.body =  {code:0,data:res}
+    var tabIndex = ctx.request.body.tabIndex
+    var db = appDao.getDbInstance()
+    db.chain
+    .get('tabs['+tabIndex+'].widgets')
+    .find({ id: id })
+    .get('data')
+    .get('items')
+    .push(item).value()
+    db.write()
+    var res = appDao.findOneById(tabIndex,id).data.items
+    ctx.body =  {code:0,data:res}
   }
   async updateItem(ctx, next) {
     var id = ctx.request.body.id
     var index = ctx.request.body.index
     var item = ctx.request.body.item
-    appDao.getDbInstance()
-      .get('widgets').find({ 'id': id })
-      .get('data')
-      .get('items').nth(index)
-      .assign(item)
-      .write()
-    let res = appDao.getDbInstance()
-    .get('widgets').find({ 'id': id })
+    var tabIndex = ctx.request.body.tabIndex
+    var db = appDao.getDbInstance()
+    db.chain
+    .get('tabs['+tabIndex+'].widgets')
+    .find({ 'id': id })
     .get('data')
-    .get('items')
-    .value() 
+    .get('items').nth(index)
+    .assign(item).value()
+    db.write()
+    var res = appDao.findOneById(tabIndex,id).data.items
     ctx.body = {code:0,data:res}
   }
   async removeItem(ctx, next) {
     var id = ctx.request.body.id
-    var index = ctx.request.body.index
-    var items = appDao.getDbInstance()
-      .get('widgets').find({ 'id': id })
-      .get('data')
-      .get('items').value()
-    items.remove(index)
-    var res = appDao.getDbInstance()
-      .get('widgets').find({ 'id': id })
-      .get('data')
-      .set('items',items).write()
-    ctx.body = {code:0,data:items}
+    var itemIndex = ctx.request.body.index
+    var tabIndex = ctx.request.body.tabIndex
+    var db = appDao.getDbInstance()
+    db.chain
+    .get('tabs['+tabIndex+'].widgets')
+    .find({ 'id': id })
+    .get('data')
+    .get('items').remove((value, index, array) => {
+      return index === itemIndex
+    }).value()
+    db.write()
+    var res = appDao.findOneById(tabIndex,id).data.items
+    ctx.body = {code:0,data:res}
   }
 }
 

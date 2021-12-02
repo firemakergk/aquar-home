@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <div class="config_header">
+    <div class="config_header tbgcolor_sub_head tcolor_main">
       <span style="flex-grow: 1; margin: 0 10px;">{{widgetName}}设置</span>
       <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
     </div>
-    <div class="config_content">
+    <div class="config_content_single tbgcolor_config tcolor_main">
       <div class="widget_config_panel">
         <component v-bind:is="widgetType" :tab-index="tabIndex" :config-data="configData"></component>
       </div>
@@ -71,8 +71,6 @@ export default {
 .container {
   border-radius: 2px;
   margin: 4px;
-  background-color: rgba(255,255,255,1);
-  color: rgb(44,44,44);
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
@@ -82,10 +80,8 @@ export default {
   align-items: center;
   height: 24px;
   border-radius:2px 2px 0 0 ;
-  background-color: rgb(44,44,44);
-  color: white;
 }
-.config_content {
+.config_content_single {
   // min-height: 200px;
   height: 400px;
   flex-grow: 1;

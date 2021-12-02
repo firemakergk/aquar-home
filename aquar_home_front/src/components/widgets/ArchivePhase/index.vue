@@ -223,7 +223,7 @@ export default {
       console.log(this.configBarTable)
     },
     submitConfigSingle(index) {
-      const reqData = { id: this.configData.id, index: index, item: this.configData.data.items[index] }
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, index: index, item: this.configData.data.items[index] }
       this.$axios.post('/api/endpoints/archive_phase/updateItem', reqData)
         .then(response => {
           console.log(response.data)
@@ -236,7 +236,7 @@ export default {
       this.showAddItem = !this.showAddItem
     },
     submitAddItem() {
-      const reqData = { id: this.configData.id, item: this.newItem }
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, item: this.newItem }
       this.$axios.post('/api/endpoints/archive_phase/addNewItem', reqData)
         .then(response => {
           console.log(response.data)
@@ -250,7 +250,7 @@ export default {
       this.$forceUpdate()
     },
     removeItem(index) {
-      const reqData = { id: this.configData.id, index: index }
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, index: index }
       this.$axios.post('/api/endpoints/archive_phase/removeItem', reqData)
         .then(response => {
           console.log(response.data)

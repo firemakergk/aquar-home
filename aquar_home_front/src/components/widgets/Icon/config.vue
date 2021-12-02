@@ -67,12 +67,6 @@
           <input v-model="configData.href" style="width: 100%;">
         </div>
       </div>
-      <div class="param_row">
-        <div class="param_name"></div>
-        <div class="param_form">
-          <a class="iconfont icon-check icon" style="color: white;" title="确定" @click="updateConfig" />
-        </div>
-      </div>
       <div class="param_row" style="height: 80px;">
         <div class="param_name"></div>
         <div class="param_form">
