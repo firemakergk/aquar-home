@@ -7,7 +7,7 @@
       <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" />
     </div>
     <div class="widget_body">
-      <div v-show="showInit" class="float_config tbgcolor_mask_info">
+      <div v-show="showInit" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;" >设置</span>
         </div>
@@ -38,10 +38,10 @@
           <span>{{ errorInfo }}</span>
         </div>
       </div>
-      <div v-show="showConfig" class="float_config tbgcolor_mask_info ">
+      <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_main"> x </a>
+          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_sub_head"> x </a>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -85,7 +85,7 @@
       <div class="widget_content">
         <div class="explorer_header">
           <span class="path_span">
-            <input v-model="path" type="text" class="tbgcolor_content tcolor_main" style="width:100%; height: 20px; font-size: 8px; " >
+            <input v-model="path" type="text" class="tbgcolor_config tcolor_main" style="width:100%; height: 20px; font-size: 8px; " >
           </span>
           <span class="button_span">
             <a :class="[{'a_disabled tcolor_disable': (!refreshEnable)}, 'iconfont icon-search icon tcolor_sub']" style="margin: 0 4px;" title="转到" @click="refreshView(false)" />

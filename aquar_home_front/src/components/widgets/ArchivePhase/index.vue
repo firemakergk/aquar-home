@@ -8,12 +8,12 @@
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
     </div>
     <div class="widget_body">
-      <div v-show="showAddItem" class="float_config tbgcolor_mask_info">
+      <div v-show="showAddItem" class="float_config tbgcolor_config tcolor_main">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
           <a style="padding:0 4px; " @click="toggleAddItem()"> x </a>
         </div>
-        <div style="flex-grow: 1;">
+        <div style="flex-grow: 1;" class="config_body tbgcolor_config">
           <div class="config_row">
             <div style="width:80px; text-align: right; margin: 0 4px;">名称：</div>
             <div style="flex-grow: 1;">
@@ -38,9 +38,12 @@
               <input v-model="newItem.phase_name" type="text" style="display: inline-block; width: 100%;">
             </div>
           </div>
-        </div>
-        <div style="width: 90px; text-align: right;">
-          <button @click="submitAddItem()">确定</button>
+          <div class="config_row">
+            <div style="width:80px; height: 32px; text-align: right; margin: 0 4px;"></div>
+            <div style="flex-grow: 1;">
+              <button @click="submitAddItem()">确定</button>
+            </div>
+          </div>
         </div>
       </div>
       <div v-show="showConsole" class="float_console">
@@ -53,7 +56,7 @@
           <textarea v-model="console" class="console_area" />
         </div>
       </div>
-      <div v-show="showConfig" class="float_config tbgcolor_mask_info">
+      <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
           <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
@@ -93,7 +96,7 @@
             <!-- <a style="margin: 0 6px; width: 32px;" @click="prepareArchive(index)">启动</a> -->
             <a style="margin: 0 4px;" class="iconfont icon-sync-alt icon" title="启动" @click="prepareArchive(index)" />
           </div>
-          <div v-show="configBarTable[index]" class="bar_config animate__animated animate__fadeIn">
+          <div v-show="configBarTable[index]" class="bar_config tcolor_main animate__animated animate__fadeIn">
             <div style="flex-grow: 1;">
               <div class="config_row">
                 <div class="config_left">名称：</div>

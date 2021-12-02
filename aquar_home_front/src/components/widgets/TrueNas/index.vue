@@ -14,7 +14,7 @@
         </span>
         <span>{{ errorInfo }}</span>
       </div>
-      <div v-show="showConfig" class="float_config tbgcolor_mask_info">
+      <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
           <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>

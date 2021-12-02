@@ -164,11 +164,6 @@ export default {
   width: 100%;
   display: block;
 }
-.config_content {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
 .config_panel {
   margin: 0;
 }

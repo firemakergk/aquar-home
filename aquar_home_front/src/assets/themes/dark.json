@@ -12,6 +12,7 @@
     "--tcolor_disable":"#ccc",
     "--tbgcolor_main":"rgb(43,43,51)",
     "--tbgcolor_content":"rgb(83,83,83)",
+    "--tbgcolor_config":"rgb(83,83,83)",
     "--tbgcolor_head":"rgb(43,43,51)",
     "--tbgcolor_tab":"#3cad77",
     "--tcolor_tab":"white",

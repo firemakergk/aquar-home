@@ -199,6 +199,7 @@ div:focus {
   border: 1px solid #e5e6e7;
   border-radius: 1px;
   color: var(--tcolor_main,black);
+  background-color: var(--tbgcolor_config,white);
   display: block;
   padding: 4px 6px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
@@ -231,6 +232,19 @@ div:focus {
   /* outline: 0.5px solid slategrey; */
 }
 
+.config_content {
+  padding: 10px;
+  top: 0;
+  left: 80px;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tbgcolor_config,white);
+  color: var(--tcolor_main,black);
+}
+
 .float_config {
   top: 0;
   left: 0;
@@ -239,6 +253,7 @@ div:focus {
   position: absolute;
   font-size: 12px;
   z-index: 3;
+  background-color: var(--tbgcolor_config,white);
 }
 .config_top {
   display: flex;
@@ -247,14 +262,12 @@ div:focus {
   height: 16px;
 }
 .config_body {
-  height: 100%;
-  background-color: var(--tbgcolor_content,white);
+  background-color: var(--tbgcolor_config,white);
   color: var(--tcolor_main,black);
-}
+} 
 
 .config_body input {
-  height: 100%;
-  background-color: var(--tbgcolor_content,white);
+  background-color: var(--tbgcolor_config,white);
   color: var(--tcolor_main,black);
 }
 
@@ -316,6 +329,9 @@ div:focus {
 }
 .tbgcolor_main {
   background-color: var(--tbgcolor_main,white);
+}
+.tbgcolor_config {
+  background-color: var(--tbgcolor_config,#fff);
 }
 .tbgcolor_content {
   background-color: var(--tbgcolor_content,#336666);
