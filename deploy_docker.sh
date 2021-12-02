@@ -3,10 +3,11 @@
 source /root/.bashrc
 source /usr/local/bin/virtualenvwrapper.sh
 workon aquar
+cd /opt/aquar/src/aquar-home
+git pull
 cd /opt/aquar/src/docker-compose/
 docker-compose stop
 cd /opt/aquar/src/aquar-home
-git pull
 docker image build -t finetu/aquarhome:latest .
 docker images
 cmd=$1
