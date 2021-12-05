@@ -57,6 +57,7 @@
 - [ ] **docker镜像使用精简版node，并加上arm64平台的镜像**
 - [X] bug：页面元素设置的时候点完删除后编辑状态就消失了
 - [X] 解决gitlab在docker环境下的ssh访问问题
+- [ ] 适配WebDAV协议的文件浏览器组件
 - [ ] UNRAID状态显示
 - [ ] filerun组件开发
 - [ ] 日志策略配置好
