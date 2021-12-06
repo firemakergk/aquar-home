@@ -35,7 +35,7 @@ echo "source_dir    = ${source_dir}"
 echo "archive_dir   = ${archive_dir}"
 echo "archive_name  = ${archive_name}"
 dest_name="$archive_dir/$archive_name"
-compare_cmd=`ls -d $archive_dir/* | awk '{ printf("--compare-dest=%s ",$1)}'`
+compare_cmd=`ls -d $archive_dir/* | grep -v ".*/${archive_name}$" | awk '{ printf("--compare-dest=%s ",$1)}'`
 rsync_cmd="rsync -avry --itemize-changes --size-only $compare_cmd $source_dir/ $dest_name/"
 shopt -s globstar
 $rsync_cmd
