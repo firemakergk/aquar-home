@@ -21,7 +21,7 @@ class RsyncphaseController {
     if(archiveName) {
       extParam += ' -n=' +  archiveName
     }
-    let res = '/bin/sh ' + shPath +' -s=' + source + extParam
+    let res = '/bin/bash ' + shPath +' -s=' + source + extParam
     ctx.body = {code:0,msg:res}
   }
   async startArchive(ctx, next) {
@@ -42,7 +42,7 @@ class RsyncphaseController {
     if(archiveName) {
       extParam += ' -n=' + archiveName
     }
-    let res = await new Promise((resolve,reject) => resolve(exec('/bin/sh ' + shPath +' -s=' + source + extParam).toString()))
+    let res = await new Promise((resolve,reject) => resolve(exec('/bin/bash ' + shPath +' -s=' + source + extParam).toString()))
     ctx.body = {code:0,msg:res}
   }
   async addNewItem(ctx, next) {
