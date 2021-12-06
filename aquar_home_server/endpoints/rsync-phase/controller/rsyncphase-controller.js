@@ -19,7 +19,7 @@ class RsyncphaseController {
       extParam += ' -a=' + baseDir + archiveDir
     }
     if(archiveName) {
-      extParam += ' -n=' + archiveName
+      extParam += ' -n=' +  archiveName
     }
     let res = '/bin/sh ' + shPath +' -s=' + source + extParam
     ctx.body = {code:0,msg:res}
@@ -40,7 +40,7 @@ class RsyncphaseController {
       extParam += ' -a=' + baseDir + archiveDir
     }
     if(archiveName) {
-      extParam += ' -n=' + baseDir + archiveName
+      extParam += ' -n=' + archiveName
     }
     let res = await new Promise((resolve,reject) => resolve(exec('/bin/sh ' + shPath +' -s=' + source + extParam).toString()))
     ctx.body = {code:0,msg:res}
