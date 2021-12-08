@@ -2,7 +2,7 @@
   <div class="widget_box">
     <div class="widget_header vue-draggable-handle">
       <img style="height:20px; " src="./img/syncthing.png">
-      <span style="padding: 0 10px;"><a target="_blank" :href="configData.data.server">{{ configData.name }}</a></span>
+      <span style="padding: 0 10px;"><a target="_blank" :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
     </div>
@@ -26,6 +26,12 @@
             <div style="width:80px; text-align: right; padding: 0 2px;">名称：</div>
             <div style="flex-grow: 1;">
               <input v-model="configData.name" type="text" name="name" style="display: inline-block; width: 100%;">
+            </div>
+          </div>
+          <div class="config_row">
+            <div style="width:80px; text-align: right; padding: 0 2px;">链接地址：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="configData.href" type="text" name="href" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">

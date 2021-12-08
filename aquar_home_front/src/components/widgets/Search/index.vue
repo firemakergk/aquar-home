@@ -1,14 +1,20 @@
 <template>
-  <div class="container">
+  <div class="search_container">
+    <div style="position: absolute; z-index: 4; top:50px; left:90px;right: 50px; display: flex; flex-direction: column;" class="tbgcolor_main tcolor_main">
+      <div style="display: flex; flex-direction: row-reverse;" v-show="suggests && suggests.length>0">
+        <a style="margin: 0 8px;" @click="closeSuggest()">X</a>
+      </div>
+      <a v-for="(sugword,index) in suggests" :key="index" style="display:block; margin: 4px;" @click="search(sugword)">{{sugword}}</a>
+    </div>
     <div class="search_panel tbgcolor_main">
       <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source">
         <option class="tcolor_main" value ="baidu">百度</option>
         <option class="tcolor_main" value ="bing">Bing</option>
         <option class="tcolor_main" value ="google">Google</option>
       </select>
-      <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" placeholder="输入要搜索的内容" 
+      <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" autofocus="autofocus" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
-        v-model="searchText" @keyup.enter="search()"/>
+        v-model="searchText" @keyup.enter="search()" @input="prepareSuggest()" />
       <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search"></button>
     </div>
   </div>
@@ -39,7 +45,9 @@ export default {
           url:'https://cn.bing.com/search?q={{}}'
         }
       },
-      searchText:''
+      searchText:'',
+      lastSign: null,
+      suggests:[]
     }
   },
   computed: {
@@ -52,9 +60,42 @@ export default {
   beforeDestroy() {
   },
   methods: {
-    search() {
+    search(word) {
+      if(word){
+        this.searchText = word
+      }
+      this.suggests = []
       var searchUrl = this.source[this.configData.data.source].url.replace('{{}}',this.searchText)
       window.open(searchUrl)
+    },
+    prepareSuggest(){
+      var sign = Math.floor(Math.random() * 1000000)
+      this.lastSign = sign
+      setTimeout(()=>{this.checkSuggest(sign)},500)
+    },
+    checkSuggest(sign){
+      console.log("check suggest!")
+      console.log(sign)
+      console.log(this.lastSign)
+      if(this.lastSign && sign === this.lastSign){
+        console.log("check suggest success!!")
+        this.suggest()
+      }
+    },
+    suggest() {
+      this.$axios
+        .get('/api/endpoints/search/suggest?source=' + this.configData.data.source+'&word='+this.searchText ,{timeout:1000})
+        .then(response => {
+          this.suggests = response.data.data
+        })
+        .catch(error => {
+          this.showErrorInfo = true
+          this.errorInfo = error.message
+          console.log('url:'+error+',message:'+error.message)
+        })
+    },
+    closeSuggest() {
+      this.suggests = []
     }
   }
 }
@@ -96,13 +137,9 @@ select {
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
   font-size: 14px;
 }
-.container {
+.search_container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
 }
 .search_panel {
   flex-grow: 1;

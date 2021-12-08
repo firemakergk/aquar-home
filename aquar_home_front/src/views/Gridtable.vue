@@ -49,7 +49,7 @@
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
-          <component v-if="show" v-bind:is="widget.widget" :tab-index="curTabIndex" :config-data="widget" class="no-drag absolute"></component>
+          <component v-if="show" v-bind:is="widget.widget" :tab-index="curTabIndex" :config-data="widget" class="no-drag" style="position: relative;"></component>
         </keep-alive>
       </grid-item>
     </grid-layout>
@@ -485,6 +485,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index:10;
 }
 .config_panel {
   width: 600px;

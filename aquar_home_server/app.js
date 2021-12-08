@@ -62,11 +62,11 @@ app.use(async (ctx, next) => {
   console.log(`${moment().format()} response: ${ctx.method} ${ctx.url}, body:${JSON.stringify(ctx.body)} - duration:${ms}`)
 })
 
-app.use(koajwt({
-  secret: appDao.getSecret()
-}).unless({ // 配置白名单
-  path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
-}))
+// app.use(koajwt({
+//   secret: appDao.getSecret()
+// }).unless({ // 配置白名单
+//   path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
+// }))
 
 // routes
 app.use(index.routes(), index.allowedMethods())

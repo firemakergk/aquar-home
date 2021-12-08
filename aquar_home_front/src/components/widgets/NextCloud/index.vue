@@ -2,7 +2,7 @@
   <div class="widget_box">
     <div class="clearfix widget_header">
       <img style="height:20px; " src="./img/nextcloud.png">
-      <a style="padding: 0 10px;" target="_blank" :href="configData.data.server">{{ configData.name }}</a>
+      <a style="padding: 0 10px;" target="_blank" :href="configData.href">{{ configData.name }}</a>
       <span style="flex-grow: 1;" />
       <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" />
     </div>
@@ -48,6 +48,12 @@
             <div class="config_text">名称：</div>
             <div style="flex-grow: 1;">
               <input v-model="configData.name" type="text" name="name">
+            </div>
+          </div>
+          <div class="config_row">
+            <div class="config_text">链接地址：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="configData.href" type="text" name="href">
             </div>
           </div>
           <div class="config_row">

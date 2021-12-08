@@ -2,7 +2,7 @@
   <div class="widget_box">
     <div class="widget_header vue-draggable-handle">
       <img style="height:20px; " src="./img/docker.png">
-      <span style="padding: 0 10px;"><a target="_blank" :href="configData.data.server">{{ configData.name }}</a></span>
+      <span style="padding: 0 10px;"><a target="_blank" :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
     </div>

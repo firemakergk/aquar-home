@@ -8,6 +8,7 @@ import iconController from '../endpoints/icon/icon-controller.js'
 import trueNasController from '../endpoints/truenas/controller/truenas-controller.js'
 import pveController from '../endpoints/pve/controller/pve-controller.js'
 import dockerController from '../endpoints/docker/controller/docker-controller.js'
+import searchController from '../endpoints/search/controller/search-controller.js'
 
 const router = koarouter()
 router.get('/', async (ctx, next) => {
@@ -65,4 +66,6 @@ router.post('/api/endpoints/icon/refreshIco',iconController.refreshIco)
 router.get('/api/endpoints/truenas/queryPools',trueNasController.queryPools)
 router.get('/api/endpoints/pve/queryStatus',pveController.queryStatus)
 router.get('/api/endpoints/docker/list',dockerController.list)
+router.get('/api/endpoints/search/suggest',searchController.suggest)
+
 export default router
