@@ -7,7 +7,7 @@
       <a v-for="(sugword,index) in suggests" :key="index" style="display:block; margin: 4px;" @click="search(sugword)">{{sugword}}</a>
     </div>
     <div class="search_panel tbgcolor_main">
-      <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source">
+      <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source" @change="changeSource()">
         <option class="tcolor_main" value ="baidu">百度</option>
         <option class="tcolor_main" value ="bing">Bing</option>
         <option class="tcolor_main" value ="google">Google</option>
@@ -60,6 +60,13 @@ export default {
   beforeDestroy() {
   },
   methods: {
+    changeSource(){
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, source: this.configData.data.source }
+      this.$axios.post('/api/endpoints/search/changeSource', reqData)
+        .then(response => {
+          console.log(response.data)
+        })
+    },
     search(word) {
       if(word){
         this.searchText = word

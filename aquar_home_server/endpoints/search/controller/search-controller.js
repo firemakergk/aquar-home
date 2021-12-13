@@ -2,6 +2,7 @@ import axios from 'axios'
 import cryptoRandomString from 'crypto-random-string'
 import xmldom from 'xmldom'
 import xpath from 'xpath'
+import appDao from '../../../service/db/app-dao.js'
 
 const dom = xmldom.DOMParser
 const RE_DATA_BING = /<ul.+\<\/ul>/g
@@ -40,6 +41,20 @@ function extractData(source,data){
 }
 
 class SearchController {
+  async changeSource(ctx, next){
+    var id = ctx.request.body.id
+    var tabIndex = ctx.request.body.tabIndex
+    var source = ctx.request.body.source
+    var data = {source:source}
+    var db = appDao.getDbInstance()
+    db.chain
+    .get('tabs['+tabIndex+'].widgets')
+    .find({ 'id': id })
+    .get('data')
+    .assign(data).value()
+    db.write()
+    ctx.body = {code:0}
+  }
   async suggest(ctx, next) {
     var word = ctx.query.word
     var source = ctx.query.source

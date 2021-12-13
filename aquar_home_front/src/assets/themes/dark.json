@@ -23,6 +23,7 @@
     "--tbgcolor_disable":"#ccc",
     "--tbgcolor_idle":"#669999",
     "--tbgcolor_info":"#99CCFF",
+    "--tbgcolor_warn":"#FF9900",
     "--tbgcolor_active":"#009933",
     "--tbgcolor_error":"#FF6666",
     "--tbgcolor_mask_info":"rgba(255,255,255, 1)",

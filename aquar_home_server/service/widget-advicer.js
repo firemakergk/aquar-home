@@ -1,12 +1,25 @@
 import iconAdvicer from "../endpoints/icon/service/icon-advicer.js" 
+import transmissionAdvicer from "../endpoints/transmission/service/transmission-advicer.js" 
 class WidgetAdvicer {
   widgetAddedAdvicers = []
+  widgetAdvicerMap = {}
   constructor() {
-    this.widgetAddedAdvicers.push(iconAdvicer)
+    this.widgetAdvicerMap["IconWidget"] = iconAdvicer
+    this.widgetAdvicerMap["TransmissionWidget"] = transmissionAdvicer 
   }
 
   async afterWidgetAdded(tabIndex,widgetData) {
-    await this.widgetAddedAdvicers[0].afterWidgetAdded(tabIndex,widgetData)
+    var advisor = this.widgetAdvicerMap[widgetData.widget]
+    if(advisor){
+      await advisor.afterWidgetAdded(tabIndex,widgetData)
+    }
+  }
+
+  async afterWidgetUdpated(tabIndex,widgetData) {
+    var advisor = this.widgetAdvicerMap[widgetData.widget]
+    if(advisor){
+      await advisor.afterWidgetUpdated(tabIndex,widgetData)
+    }
   }
 }
 

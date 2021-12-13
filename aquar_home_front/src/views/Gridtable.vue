@@ -79,6 +79,7 @@ import TrueNasWidget from '../components/widgets/TrueNas'
 import PveWidget from '../components/widgets/Pve'
 import DockerWidget from '../components/widgets/Docker'
 import SearchWidget from '../components/widgets/Search'
+import TransmissionWidget from '../components/widgets/Transmission'
 import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
 
@@ -95,6 +96,7 @@ export default {
     PveWidget,
     DockerWidget,
     SearchWidget,
+    TransmissionWidget,
     Config,
     WidgetConfig
   },

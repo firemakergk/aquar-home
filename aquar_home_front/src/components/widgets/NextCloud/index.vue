@@ -130,12 +130,12 @@
             <span v-if="contentType(item.content_type) === 'img'" style="margin-right: 4px;" class="iconfont icon-picture-fill icon tcolor_main" />
             <span v-else-if="contentType(item.content_type) === 'dir'" style="margin-right: 4px;" class="iconfont icon-folder-fill icon tcolor_main" />
             <span v-else style="margin-right: 4px;" class="iconfont icon-file-fill icon tcolor_main" />
-            <div style="flex-grow:1;">
+            <div class="file_text">
               <a v-if="contentType(item.content_type) === 'dir'" style="word-wrap:break-word;" @click="toPath(item.href)">{{ item.file_name }}</a>
               <a v-else @click="download(item.href)">{{ item.file_name }}</a>
             </div>
-            <div style="color: #999; font-size: 8px; margin: 0 10px;">{{ fileSize(item.size) }}</div>
-            <div style="color: #999; font-size: 8px;">{{ item.modified_time.replace(/T/,' ').replace(/\.\d+?Z/,'') }}</div>
+            <div style="color: #999; font-size: 8px; margin: 0 10px; flex-shrink:0;">{{ fileSize(item.size) }}</div>
+            <div style="color: #999; font-size: 8px; flex-shrink:0;">{{ item.modified_time.replace(/T/,' ').replace(/\.\d+?Z/,'') }}</div>
           </div>
         </div>
       </div>
@@ -424,6 +424,7 @@ export default {
   height: 140px;
   width: 100px;
   font-size: 14px;
+  flex-shrink:1;
 }
 .block_content {
   height: 100px;
@@ -441,6 +442,15 @@ export default {
   display: flex;
   font-size: 12px;
   align-items: center;
+  overflow: hidden;
+  flex-shrink:0;
+}
+.file_text {
+  flex-grow: 1;
+  flex-shrink:1; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .text_overflow {
   overflow: hidden;

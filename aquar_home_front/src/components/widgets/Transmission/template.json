@@ -1,0 +1,20 @@
+{
+  "name": "transmission",
+  "widget": "TransmissionWidget",
+  "href": "",
+  "layout": {
+    "w": 4,
+    "h": 3
+  },
+  "data": {
+    "server": null,
+    "userName": null,
+    "password": null,
+    "sessionId": null
+  },
+  "required_params": [
+    ["server","text"],
+    ["userName","text"],
+    ["password","password"]
+  ]
+}

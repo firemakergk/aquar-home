@@ -106,7 +106,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   padding: 2px;
   height: 36px;
   white-space:nowrap; word-break:break-all; text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow: hidden;

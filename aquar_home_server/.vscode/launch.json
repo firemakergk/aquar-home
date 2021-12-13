@@ -13,6 +13,7 @@
             ],
             "program": "${workspaceFolder}\\index.js",
             "runtimeArgs": ["--experimental-modules"],
+            "env": {"NODE_ENV": "dev" }
         }
     ]
 }

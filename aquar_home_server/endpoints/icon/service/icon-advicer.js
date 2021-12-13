@@ -51,6 +51,9 @@ class IconAdvicer {
     appDao.updateById(tabIndex,widgetData.id,curConfig)
     return curConfig
   }
+  async afterWidgetUpdated(tabIndex,widgetData){
+    return null
+  }
 }
 const iconAdvicer = new IconAdvicer()
 export default iconAdvicer

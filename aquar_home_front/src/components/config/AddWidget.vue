@@ -13,6 +13,7 @@
             <img v-if="widget.widget === 'PveWidget'" :src="logo_pve" style="width: 60px;">
             <img v-if="widget.widget === 'DockerWidget'" :src="logo_docker" style="width: 60px;">
             <img v-if="widget.widget === 'SearchWidget'" :src="logo_search" style="width: 60px;">
+            <img v-if="widget.widget === 'TransmissionWidget'" :src="logo_transmission" style="width: 60px;">
           </div>
           <div>{{ widget.name }}</div>
         </a>
@@ -51,6 +52,9 @@
             <div v-if="param[1]==='text'" class="param_form">
               <input v-model="curWidget.data[param[0]]" type="text" style="width: 100%;">
             </div>
+            <div v-if="param[1]==='password'" class="param_form">
+              <input v-model="curWidget.data[param[0]]" type="password" style="width: 100%;">
+            </div>
           </div>
           <div class="submit_panel">
             <a class="submit_button iconfont icon-reply icon tcolor_main" title="返回" @click="toChoose" />
@@ -73,6 +77,7 @@ import logo_truenas from '../widgets/TrueNas/img/truenas.png'
 import logo_pve from '../widgets/Pve/img/pve.png'
 import logo_docker from '../widgets/Docker/img/docker.png'
 import logo_search from '../widgets/Search/img/search.png'
+import logo_transmission from '../widgets/Transmission/img/transmission.png'
 
 import meta_syncthing from '../widgets/Syncthing/template.json'
 import meta_archivephase from '../widgets/ArchivePhase/template.json'
@@ -82,6 +87,7 @@ import meta_truenas from '../widgets/TrueNas/template.json'
 import meta_pve from '../widgets/Pve/template.json'
 import meta_docker from '../widgets/Docker/template.json'
 import meta_search from '../widgets/Search/template.json'
+import meta_transmission from '../widgets/Transmission/template.json'
 
 import BatchImport from '../widgets/Icon/batchimport.vue'
 
@@ -101,7 +107,8 @@ export default {
         meta_truenas,
         meta_pve,
         meta_docker,
-        meta_search
+        meta_search,
+        meta_transmission
       ],
       logo_syncthing,
       logo_archivephase,
@@ -111,6 +118,7 @@ export default {
       logo_pve,
       logo_docker,
       logo_search,
+      logo_transmission,
       configDetail: false,
       curWidget: null
     }

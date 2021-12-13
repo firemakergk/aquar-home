@@ -24,6 +24,7 @@
     "--tbgcolor_idle":"#669999",
     "--tbgcolor_info":"#99CCFF",
     "--tbgcolor_active":"#009933",
+    "--tbgcolor_warn":"#FF9900",
     "--tbgcolor_error":"#FF6666",
     "--tbgcolor_mask_info":"rgba(255,255,255, 1)",
     "--tbgcolor_mask_error":"rgba(0,0,0, 0.75)",

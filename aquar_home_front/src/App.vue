@@ -369,6 +369,9 @@ div:focus {
 .tbgcolor_active {
   background-color: var(--tbgcolor_active,#009933);
 }
+.tbgcolor_warn {
+  background-color: var(--tbgcolor_warn,#FF9900);
+}
 .tbgcolor_error {
   background-color: var(--tbgcolor_error,#FF6666);
 }

@@ -9,6 +9,7 @@ import trueNasController from '../endpoints/truenas/controller/truenas-controlle
 import pveController from '../endpoints/pve/controller/pve-controller.js'
 import dockerController from '../endpoints/docker/controller/docker-controller.js'
 import searchController from '../endpoints/search/controller/search-controller.js'
+import transmissionController from '../endpoints/transmission/controller/transmission-controller.js'
 
 const router = koarouter()
 router.get('/', async (ctx, next) => {
@@ -67,5 +68,8 @@ router.get('/api/endpoints/truenas/queryPools',trueNasController.queryPools)
 router.get('/api/endpoints/pve/queryStatus',pveController.queryStatus)
 router.get('/api/endpoints/docker/list',dockerController.list)
 router.get('/api/endpoints/search/suggest',searchController.suggest)
+router.post('/api/endpoints/search/changeSource',searchController.changeSource)
+router.get('/api/endpoints/transmission/torrentList',transmissionController.torrentList)
+router.post('/api/endpoints/transmission/operate',transmissionController.operateTorrent)
 
 export default router

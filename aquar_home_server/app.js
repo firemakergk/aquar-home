@@ -62,11 +62,17 @@ app.use(async (ctx, next) => {
   console.log(`${moment().format()} response: ${ctx.method} ${ctx.url}, body:${JSON.stringify(ctx.body)} - duration:${ms}`)
 })
 
-// app.use(koajwt({
-//   secret: appDao.getSecret()
-// }).unless({ // 配置白名单
-//   path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
-// }))
+if(process.env.NODE_ENV != 'dev'){
+  console.log('token校验开启'+process.env.NODE_ENV)
+  app.use(koajwt({
+    secret: appDao.getSecret()
+  }).unless({ // 配置白名单
+    path: [ /\/assets/, /\/api\/login/, /\/api\/config/]
+  }))
+}else{
+  console.log('开发环境关闭token校验')
+}
+
 
 // routes
 app.use(index.routes(), index.allowedMethods())
@@ -130,7 +136,7 @@ axios.interceptors.response.use(function (response) {
     console.log(`${moment().format()} axios response error-- url:[${error.config.method}] ${error.config.url},code:${error.status},message:${error.message}`)
     return Promise.reject(error)
   }
-  if(axios.prototype.ifLogDetail(error.response.headers.Content-Type)){
+  if(axios.prototype.ifLogDetail(error.response.headers['Content-Type'])){
     console.log(`${moment().format()} axios response error-- status:${error.response.status} url:[${error.response.config.method}] ${error.response.config.url},data:${JSON.stringify(error.response.data)}`)
   }else{
     console.log(`${moment().format()} axios response error-- status:${error.response.status} url:[${error.response.config.method}] ${error.response.config.url},content-type:${error.response.headers['content-type']}`)

@@ -85,16 +85,17 @@
       <div class="widget_content">
         <div v-for="(item,index) in configData.data.items" :key="'archive_item_'+ index" class="row_base">
           <div class="bar_base">
-            <span style="padding: 0 4px;" class="tcolor_main">{{ item.name }}</span>
-            <span class="text_overflow tcolor_sub" style="font-size:12px; width: 120px;">{{ item.source }}</span>
-            <span style="padding: 0 4px;" class="tcolor_sub"> >> </span>
-            <span class="text_overflow tcolor_sub" style=" font-size:12px; width: 160px;">
-              {{ item.archive_dir_name+ ":" +[item.phase_name?item.phase_name:nowDate] }}
-            </span>
-            <span style="flex-grow: 1;" />
-            <a style="margin: 0 4px;" class="iconfont icon-cog icon" title="设置" @click="toggleConfigSingle(index)" />
+            <div class="item_info">
+              <span style="padding: 0 4px;" class="tcolor_main">{{ item.name }}</span>
+              <span class="tcolor_sub" style="font-size:12px; width: 120px;">{{ item.source }}</span>
+              <span style="padding: 0 4px;" class="tcolor_sub"> >> </span>
+              <span class="tcolor_sub" style=" font-size:12px; width: 160px;">
+                {{ item.archive_dir_name+ "/" +[item.phase_name?item.phase_name:nowDate] }}
+              </span>
+            </div>
+            <a style="margin: 0 4px;flex-shrink: 0;" class="iconfont icon-cog icon" title="设置" @click="toggleConfigSingle(index)" />
             <!-- <a style="margin: 0 6px; width: 32px;" @click="prepareArchive(index)">启动</a> -->
-            <a style="margin: 0 4px;" class="iconfont icon-sync-alt icon" title="启动" @click="prepareArchive(index)" />
+            <a style="margin: 0 4px;flex-shrink: 0;" class="iconfont icon-sync-alt icon" title="启动" @click="prepareArchive(index)" />
           </div>
           <div v-show="configBarTable[index]" class="bar_config tcolor_main animate__animated animate__fadeIn">
             <div style="flex-grow: 1;">
@@ -279,6 +280,14 @@ export default {
   display: flex;
   padding: 4px 4px;
   align-items:center;
+  overflow: hidden;
+}
+.item_info {
+  flex-grow: 1;
+  flex-shrink: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .text_overflow {
   overflow: hidden;
