@@ -3,8 +3,8 @@
   "widget": "TransmissionWidget",
   "href": "",
   "layout": {
-    "w": 4,
-    "h": 3
+    "w": 5,
+    "h": 6
   },
   "data": {
     "server": null,

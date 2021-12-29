@@ -1,6 +1,6 @@
 nfspath=$1
 if [ "$nfspath" == "" ]; then
-    echo "ERROR：未传入nfs地址作为脚本参数"
+    echo "ERROR:未传入nfs地址作为脚本参数"
     exit 0
 fi
 

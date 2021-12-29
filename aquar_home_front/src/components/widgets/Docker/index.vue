@@ -45,8 +45,8 @@
       <div class="widget_content">
         <div v-for="(item,index) in containerList" :key="'con_'+index">
           <div class="row_base tcolor_reverse tbgcolor_idle" >
-            <span style="flex-grow: 1;">{{ item.name }}</span>
-            <span style="margin-right:10px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
+            <span style="flex-grow: 1; flex-shrink:1;  overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
+            <span style="flex-shrink:0; margin-right:10px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
             <span class="state_span" :class="item.statClass">{{ item.state.toUpperCase() }}</span>
           </div>
         </div>
@@ -135,6 +135,7 @@ export default {
   padding: 0 0 0 4px;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 .state_span {
   padding: 4px; 
@@ -142,5 +143,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink:0;
 }
 </style>
