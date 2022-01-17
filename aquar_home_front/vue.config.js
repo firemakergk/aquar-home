@@ -70,6 +70,11 @@ module.exports = {
         target: 'http://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
+      },
+      '/socket.io': {
+        target: 'http://localhost:8172',
+        changeOrigin: true,
+        disableHostCheck: true
       }
     },
     overlay: {

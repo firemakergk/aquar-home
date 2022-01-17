@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2977016 */
-  src: url('iconfont.woff2?t=1638261783601') format('woff2'),
-       url('iconfont.woff?t=1638261783601') format('woff'),
-       url('iconfont.ttf?t=1638261783601') format('truetype');
+  src: url('iconfont.woff2?t=1641437890927') format('woff2'),
+       url('iconfont.woff?t=1641437890927') format('woff'),
+       url('iconfont.ttf?t=1641437890927') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,138 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-timefill:before {
+  content: "\e65e";
+}
+
+.icon-time:before {
+  content: "\e65f";
+}
+
+.icon-warnfill:before {
+  content: "\e662";
+}
+
+.icon-notificationfill:before {
+  content: "\e66a";
+}
+
+.icon-notification:before {
+  content: "\e66b";
+}
+
+.icon-homefill:before {
+  content: "\e6bb";
+}
+
+.icon-notificationforbidfill:before {
+  content: "\e6db";
+}
+
+.icon-voice:before {
+  content: "\e6ef";
+}
+
+.icon-voicefill:before {
+  content: "\e6f0";
+}
+
+.icon-noticefill:before {
+  content: "\e709";
+}
+
+.icon-notice:before {
+  content: "\e70a";
+}
+
+.icon-picfill:before {
+  content: "\e72c";
+}
+
+.icon-markfill:before {
+  content: "\e730";
+}
+
+.icon-mark:before {
+  content: "\e731";
+}
+
+.icon-communityfill:before {
+  content: "\e740";
+}
+
+.icon-community:before {
+  content: "\e741";
+}
+
+.icon-calendar:before {
+  content: "\e74a";
+}
+
+.icon-group:before {
+  content: "\e753";
+}
+
+.icon-radiobox:before {
+  content: "\e75b";
+}
+
+.icon-writefill:before {
+  content: "\e760";
+}
+
+.icon-write:before {
+  content: "\e761";
+}
+
+.icon-radioboxfill:before {
+  content: "\e763";
+}
+
+.icon-messagefill:before {
+  content: "\e779";
+}
+
+.icon-musicfill:before {
+  content: "\e79b";
+}
+
+.icon-musicforbidfill:before {
+  content: "\e79c";
+}
+
+.icon-recordfill:before {
+  content: "\e852";
+}
+
+.icon-recordlight:before {
+  content: "\e859";
+}
+
+.icon-record:before {
+  content: "\e866";
+}
+
+.icon-cardboardfill:before {
+  content: "\e868";
+}
+
+.icon-circlefill:before {
+  content: "\e869";
+}
+
+.icon-circle:before {
+  content: "\e876";
+}
+
+.icon-notice_forbid_fill:before {
+  content: "\e87c";
+}
+
+.icon-living:before {
+  content: "\e87f";
 }
 
 .icon-align-right:before {

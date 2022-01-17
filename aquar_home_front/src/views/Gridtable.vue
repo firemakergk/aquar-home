@@ -80,6 +80,7 @@ import PveWidget from '../components/widgets/Pve'
 import DockerWidget from '../components/widgets/Docker'
 import SearchWidget from '../components/widgets/Search'
 import TransmissionWidget from '../components/widgets/Transmission'
+import ChatRoomWidget from '../components/widgets/ChatRoom'
 import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
 
@@ -97,6 +98,7 @@ export default {
     DockerWidget,
     SearchWidget,
     TransmissionWidget,
+    ChatRoomWidget,
     Config,
     WidgetConfig
   },

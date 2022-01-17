@@ -5,6 +5,7 @@
  */
 
 import app from './app.js'
+import SocketServer from './socket.js'
 import debug from 'debug'
 import http from'http'
 debug('demo:server')
@@ -21,7 +22,7 @@ var port = normalizePort(process.env.PORT || '8172');
  */
 
 var server = http.createServer(app.callback());
-
+var socketServer = new SocketServer(server);
 /**
  * Listen on provided port, on all network interfaces.
  */

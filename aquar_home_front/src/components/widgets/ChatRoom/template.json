@@ -1,0 +1,20 @@
+{
+  "name": "视频对讲",
+  "widget": "ChatRoomWidget",
+  "href": "",
+  "layout": {
+    "w": 6,
+    "h": 6
+  },
+  "data": {
+    "server": null,
+    "node": null,
+    "api_token": null
+  },
+  "required_params": [
+    [
+      "server",
+      "text"
+    ]
+  ]
+}
