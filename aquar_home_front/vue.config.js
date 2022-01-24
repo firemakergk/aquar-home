@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path')
+const fs = require('fs')
 // const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
@@ -18,10 +19,14 @@ module.exports = {
     host: '0.0.0.0',
     port: port,
     open: true,
+    https: {
+      key: fs.readFileSync(path.join(__dirname, './cert/aquar.key')),
+      cert: fs.readFileSync(path.join(__dirname, './cert/aquar.crt'))
+    },
     proxy: {
       '/api': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         secusecure: false,
         changeOrigin: true,
         disableHostCheck: true,
@@ -47,7 +52,7 @@ module.exports = {
       },
       '/img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         changeOrigin: true
         // pathRewrite: {
         //   '^/api': '/'
@@ -55,24 +60,24 @@ module.exports = {
       },
       '/icon_img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       },
       '/bg_img': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       },
       '/assets': {
         // target: 'http://39.100.115.231:8130',
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       },
       '/socket.io': {
-        target: 'http://localhost:8172',
+        target: 'https://localhost:8172',
         changeOrigin: true,
         disableHostCheck: true
       }

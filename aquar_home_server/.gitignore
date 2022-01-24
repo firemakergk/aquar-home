@@ -13,3 +13,4 @@ run/
 typings/
 .nyc_output/
 public/*
+cert/*

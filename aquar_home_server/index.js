@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 
+import fs from 'fs'
 import app from './app.js'
 import SocketServer from './socket.js'
 import debug from 'debug'
-import http from'http'
+import https from 'https'
 debug('demo:server')
 
 /**
@@ -20,8 +21,11 @@ var port = normalizePort(process.env.PORT || '8172');
 /**
  * Create HTTP server.
  */
-
-var server = http.createServer(app.callback());
+const options = {
+  key: fs.readFileSync('./cert/aquar.key'),
+  cert: fs.readFileSync('./cert/aquar.crt')
+};
+var server = https.createServer(options,app.callback());
 var socketServer = new SocketServer(server);
 /**
  * Listen on provided port, on all network interfaces.

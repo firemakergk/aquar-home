@@ -257,7 +257,7 @@ div:focus {
   bottom: 0;
   position: absolute;
   font-size: 12px;
-  z-index: 3;
+  z-index: 8;
   background-color: var(--tbgcolor_config,white);
 }
 .config_top {
@@ -288,7 +288,7 @@ div:focus {
   right: 0;
   bottom: 0;
   position: absolute;
-  z-index: 3;
+  z-index: 8;
   word-wrap:break-word;
   background-color: var(--error_info_gbcolor,rgba(0,0,0,0.75));
   font-size: 12px;
