@@ -86,7 +86,7 @@
       <div class="widget_content" style="position: relative;">
         <div ref="selfViewContainer" class="self_view tbgcolor_main">
           <div v-if="isRecording" class="view_content">
-            <div class="view_header"><span class="tcolor_reverse" style="z-index: 3;">{{localData.name}}</span></div>
+            <div class="view_header"><span class="tcolor_reverse" style="">{{localData.name}}</span></div>
             <video class="view_video" autoplay muted ref="selfView" ></video>
           </div>
           <div v-else class="self_view_close" >
@@ -103,7 +103,7 @@
           <div v-for="(member,index) in roomInfo.members" :key="'peer_view_'+index" class="chat_view">
             <div class="view_content">
               <div class="view_header" ><span class="tcolor_reverse">{{member}}</span></div>
-              <video class="view_video" autoplay :ref="'view_'+member" ></video>
+              <video class="view_video" autoplay :ref="'view_'+member" :id="'view_'+member" ></video>
             </div>
           </div>
         </div>
@@ -171,21 +171,18 @@ export default {
         this.socket.emit('join',{tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id})
       })
       this.socket.on("join", data => {
-        console.log(data.members)
         this.roomInfo = data
       })
       this.socket.on("distributewords", data => {
         this.wordsList.push(data)
       })
       this.socket.on("call", data => {
-        console.log("call data")
-        console.log(new RTCSessionDescription(data.offer))
         var peer = this.peers[data.callerId]
         if(!peer){
-          peer = this.initPeer(data.callerId)
+          peer = this.initPeer('answer', data.callerId)
         }
         peer.setRemoteDescription(new RTCSessionDescription(data.offer)).then(() => {
-          this.handleMediaForAnswer(peer)
+          this.handleMediaForAnswer(peer, false)
         })
       })
       this.socket.on("answer", data => {
@@ -222,6 +219,14 @@ export default {
           console.log(peer)
         })
       })
+      // this.socket.on('renegocall', data => {
+      //   //renego的流程与call-answer基本一样，只有两点不同：
+      //   //1.呼叫方发起renego时是明确针对某一个远端的，而在call时是针对整个room的。
+      //   //2.renego流程自始至终都是以一个已有的peer为基础的。
+      //   //所以需要把call-answer的流程拿出来，把peer初始化的部分参数化，然后同时适配这两个流程
+      // })
+      // this.socket.on('renegoanswer', data => {
+      // })
       if(localStorage.getItem('localCamera')){
         this.localData.device.camera = JSON.parse(localStorage.getItem('localCamera'))
         this.localCamSelect = this.localData.device.camera.index
@@ -257,7 +262,7 @@ export default {
     },
     changeRecordStatus(){
       this.isRecording = !this.isRecording
-      this.openMediaForOffer()
+      this.openMedia()
     },
     updateSelfStream() {
       this.selfStream.getVideoTracks()[0].stop()
@@ -279,7 +284,7 @@ export default {
         }
       )
     },
-    openMediaForOffer() {
+    openMedia() {
       var params = this.validStatusForParams()
       navigator.mediaDevices.getUserMedia(params)
       .then(
@@ -289,12 +294,14 @@ export default {
             this.$refs.selfView.srcObject = stream 
           }
           this.$refs['view_'+this.socket.id][0].srcObject = stream
+          console.log(this.$refs['view_'+this.socket.id][0])
           for(var i=0;i<this.roomInfo.members.length;i++){
             var member = this.roomInfo.members[i]
+            console.log(`视频发起方尝试向其他人建立peer： ${member},${this.socket.id},${member === this.socket.id}`)
             if(member === this.socket.id){
               continue
             }
-            this.handleLocalStreamOffer(member, stream)
+            this.setupLocalStream(member, stream)
           }
           var videoSettings = stream.getVideoTracks()[0].getSettings()
           this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
@@ -305,27 +312,33 @@ export default {
         }
       )
     },
-    handleMediaForAnswer(peer) {
-      this.isRecording = true
+    handleMediaForAnswer(peer, openMediaIfNot) {
       if(this.selfStream){
-        this.handleLocalStreamAnswer(peer, this.selfStream)
+        this.addStreamToPeer(peer, this.selfStream)
+        this.makeAnswer(peer)
       }
-      var params = this.validStatusForParams()
-      navigator.mediaDevices.getUserMedia(params)
-      .then(
-        stream => {
-          this.selfStream = stream
-          if(this.$refs.selfView){
-            this.$refs.selfView.srcObject = stream 
+      if(openMediaIfNot){
+        var params = this.validStatusForParams()
+        navigator.mediaDevices.getUserMedia(params)
+        .then(
+          stream => {
+            this.isRecording = true
+            this.selfStream = stream
+            if(this.$refs.selfView){
+              this.$refs.selfView.srcObject = stream 
+            }
+            this.$refs['view_'+this.socket.id][0].srcObject = stream
+            this.addStreamToPeer(peer, this.selfStream)
+            this.makeAnswer(peer)
+            this.syncLocalData(stream)
           }
-          this.$refs['view_'+this.socket.id][0].srcObject = stream
-          this.handleLocalStreamAnswer(peer, stream)
-          this.syncLocalData(stream)
-        }
-        ,error => {
-          console.warn(error.message);
-        }
-      )
+          ,error => {
+            console.warn(error.message);
+          }
+        )
+      }else{
+        this.makeAnswer(peer)
+      }
     },
     validStatusForParams(){
       if(!this.isRecording){
@@ -411,14 +424,26 @@ export default {
         this.words = ''
       }
     },
-    initPeer(remoteId){
+    initPeer(type, remoteId){
       var peer = new RTCPeerConnection({
         iceServers:[{'urls':'stun:stun.voipbuster.com:3478'}]
       })
+      if(type==='call'){
+        peer.callerId = this.socket.id
+        peer.calleeId = remoteId
+      }else if(type==='answer'){
+        peer.callerId = remoteId
+        peer.calleeId = this.socket.id
+      }else{
+        console.error('initPeer param error, type:'+type)
+        return null
+      }
       peer.ontrack = ({ streams: [stream] }) => {
         console.log('set stream view_'+remoteId)
-        this.$refs['view_'+remoteId][0].style.display = 'block'
         this.$refs['view_'+remoteId][0].srcObject = stream
+
+        document.getElementById('view_'+remoteId).srcObject = stream
+        console.log(document.getElementById('view_'+remoteId))
       }
       peer.addEventListener('icecandidate', event => {
         const iceCandidate = event.candidate;
@@ -429,35 +454,58 @@ export default {
         }
       })
       peer.addEventListener('iceconnectionstatechange',  event => {console.log(event)});
+      peer.onnegotiationneeded = (event) => {
+        console.log(`Renegotiation${peer.callerId},${peer.calleeId}`)
+        peer.createOffer()
+        .then(offer => {
+          return peer.setLocalDescription(new RTCSessionDescription(offer))
+        }).then(() => {
+          var calleeId = this.socket.id === peer.callerId ? peer.calleeId : peer.callerId
+          this.socket.emit('call',{callerId: this.socket.id, calleeId: calleeId, offer:peer.localDescription})
+        })
+      }
       this.peers[remoteId] = peer
       return peer
     },
-    handleLocalStreamOffer(calleeId, stream){
-      var peer = this.initPeer(calleeId)
-      stream.getTracks().forEach(track => {
-        peer.addTrack(track, stream)
-      })
-      var tmpOffer = null
-      peer.createOffer().then(offer => {
-        tmpOffer = offer
-        console.log(peer)
-        console.log(offer)
-        return peer.setLocalDescription(new RTCSessionDescription(offer))
-      }).then(() => {
-          this.socket.emit('call',{callerId: this.socket.id, offer:peer.localDescription})
+    setupLocalStream(remoteId, stream){
+      var peer = null
+      if(this.peers[remoteId]){
+        console.log(`向对等方${remoteId}添加轨道`)
+        peer = this.peers[remoteId]
+        stream.getTracks().forEach(track => {
+          peer.addTrack(track, stream)
         })
-      console.log(tmpOffer)
+      }else{
+        peer = this.initPeer('call',remoteId)
+        stream.getTracks().forEach(track => {
+          peer.addTrack(track, stream)
+        })
+        var tmpOffer = null
+        peer.createOffer().then(offer => {
+          tmpOffer = offer
+          console.log(peer)
+          console.log(offer)
+          return peer.setLocalDescription(new RTCSessionDescription(offer))
+        }).then(() => {
+            this.socket.emit('call',{callerId: this.socket.id, calleeId: remoteId, offer:peer.localDescription})
+          })
+        console.log(tmpOffer)
+      }
+      
     },
-    handleLocalStreamAnswer(peer, stream){
+    addStreamToPeer(peer, stream){
       stream.getTracks().forEach(track => {
         peer.addTrack(track, stream)
       })
+    },
+    makeAnswer(peer){
       peer.createAnswer().then(answer => {
         console.log(peer)
         console.log(answer)
         return peer.setLocalDescription(new RTCSessionDescription(answer))
       }).then(() => {
-          this.socket.emit('answer',{calleeId: this.socket.id, answer:peer.localDescription})
+          console.log(`emit answer event: callerId:${peer.callerId},calleeId:${peer.calleeId}`)
+          this.socket.emit('answer',{callerId:peer.callerId, calleeId: peer.calleeId, answer:peer.localDescription})
       }).catch(error => {
         console.log('answer error')
         console.log(error)
@@ -480,7 +528,7 @@ export default {
   margin: 8px;
   flex-grow: 1;
   z-index: 3;
-  max-width: 400px;
+  max-width: 240px;
 }
 .chat_view_header{
   float: left;
@@ -500,11 +548,23 @@ export default {
   align-items: center;
   width: 100%;
   height: 30px;
+  z-index: 5;
 }
 .self_view {
   position: absolute;
   bottom: 40px;
   right: 40px;
+  width: 120px;
+  height: 90px;
+  z-index: 4;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
+  box-sizing: border-box;
+  display: flex;
+}
+.self_view1 {
+  position: absolute;
+  bottom: 40px;
+  right: 180px;
   width: 120px;
   height: 90px;
   z-index: 4;
@@ -528,12 +588,12 @@ export default {
   position:absolute;
   top:0;
   left:0;
-  z-index: 4;
+  z-index: 2;
 }
 .view_video {
   position: relative;
   object-fit: contain;
-  z-index: 3;
+  z-index: 1;
   width: 100%;
   height: 100%;
 }

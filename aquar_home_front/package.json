@@ -21,7 +21,7 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "socket.io-client": "^4.4.1",
-    "vue": "^2.6.11",
+    "vue": "^2.6.14",
     "vue-bus": "^1.2.1",
     "vue-cropper": "^0.5.6",
     "vue-grid-layout": "^2.3.12",
@@ -38,7 +38,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "1.26.8",
     "sass-loader": "8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {
     "root": true,
