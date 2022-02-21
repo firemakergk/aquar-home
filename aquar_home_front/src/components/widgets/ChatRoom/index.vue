@@ -168,11 +168,20 @@ export default {
       this.socket = io('/chatroom')
       this.socket.on("connect", () => {
         this.localData.name = this.socket.id.substring(8)
-        this.socket.emit('join',{tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id})
+        this.socket.emit(
+          'join',
+          {tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id}, 
+          res =>{
+            if(!res){
+              console.log(`没有找到与组件对应的房间${this.configData.id}`)
+            }else{
+              this.roomInfo = res
+            }
+        })
       })
-      this.socket.on("join", data => {
-        this.roomInfo = data
-      })
+      // this.socket.on("join", data => {
+      //   this.roomInfo = data
+      // })
       this.socket.on("distributewords", data => {
         this.wordsList.push(data)
       })

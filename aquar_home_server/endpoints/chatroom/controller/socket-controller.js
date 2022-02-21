@@ -1,11 +1,24 @@
 import appDao from "../../../service/db/app-dao.js"
+import Peer from "../service/Peer.js"
+
 class ChatRoomSocketController {
-  joinRoom(socket, data) {
+  socketServer = null
+  sfuEngine = null
+  joinRoom(socket, data, callback) {
     socket.join(data.roomId)
     var widget = appDao.findOneById(data.tabIndex, data.roomId)
-    var members = Array.from(socket.nsp.sockets.keys())
+    if(!widget){
+      console.error(`未找到对应的组件信息,widgetId:${data.roomId}`)
+      callback(null)
+    }
+    let room = this.sfuEngine.getRoom(data.roomId)
+    if(!room){
+      room = this.sfuEngine.createRoom(data.roomId, widget.name)
+    }
+    room.addPeer(new Peer(socket.id, socket.id))
+    var members = Array.from(room.getPeers().keys())
     socket.to(data.roomId).emit('join', {roomId: data.roomId, name:widget.name, members: members, latestNember: socket.id});
-    socket.emit('join', {roomId: data.roomId, name:widget.name, members: members, latestNember: socket.id});
+    callback({roomId: data.roomId, name:widget.name, members: members, latestNember: socket.id})
   }
   submitWords(socket, data) {
     socket.to(Array.from(socket.rooms)).emit('distributewords', data);
