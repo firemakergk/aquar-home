@@ -125,6 +125,7 @@
 <script>
 import * as _ from 'lodash'
 import { io } from "socket.io-client";
+import ChatClient from './chatclient.js'
 const { RTCPeerConnection, RTCSessionDescription } = window
 export default {
   name: 'chatRoomWidget',
@@ -141,6 +142,7 @@ export default {
       isRecording: false,
       roomInfo: {members:[]},
       socket: null,
+      chatClient: null,
       peers: {},
       selfStream: null,
       wordsList: [
@@ -166,25 +168,68 @@ export default {
   methods: {
     init() {
       this.socket = io('/chatroom')
+      this.chatClient = new ChatClient(this.socket, this.configData.id, this.configData.name, this.$bus)
       this.socket.on("connect", () => {
         this.localData.name = this.socket.id.substring(8)
         this.socket.emit(
           'join',
           {tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id}, 
-          res =>{
+          async (res) =>{
             if(!res){
               console.log(`没有找到与组件对应的房间${this.configData.id}`)
             }else{
+              if(res.capabilities && res.transport){
+                let consumerInfoList = await this.chatClient.initAndPullStream(res.capabilities, res.transport, res.producers)
+                //!!!consumerInfoList中包含有Stream，把这些Steam渲染在页面上 参考464行
+                let n = consumerInfoList.length < this.roomInfo.members.length ? consumerInfoList.length: this.roomInfo.members.length 
+                for(let i=0;i++;i<n){
+                  let remoteId = this.roomInfo.members[i]
+                  let {consumer,stream,kind,producerId} = consumerInfoList[i]
+                  console.log('set stream view_'+remoteId)
+                  this.$refs['view_'+remoteId][0].srcObject = stream
+                  document.getElementById('view_'+remoteId).srcObject = stream
+                }
+                // for({consumer,stream,kind,producerId} of consumerInfoList){
+                //   this.$refs['view_'+remoteId][0].srcObject = stream
+                //   document.getElementById('view_'+remoteId).srcObject = stream
+                // }
+              }
               this.roomInfo = res
             }
         })
       })
-      // this.socket.on("join", data => {
-      //   this.roomInfo = data
-      // })
-      this.socket.on("distributewords", data => {
+      this.socket.on("roominfo", data => {
+        this.roomInfo = data
+      })
+      this.socket.on("join", (data) => {
+        console.log('join')
+        this.roomInfo = data
+      })
+      this.socket.on("postwords", data => {
+        console.log('postwords')
         this.wordsList.push(data)
       })
+      this.socket.on('consumerclosed',({ consumerId }) => {
+        console.log('Closing consumer:', consumerId)
+        this.removeConsumer(consumerId)
+      })
+
+      this.socket.on('newproducers',async (data) => {
+        console.log('New producers', data)
+        for (let { producerId, peerId } of data) {
+          let { consumer, stream, kind } = await this.chatClient.consume(producerId)
+          console.log('set stream view_'+peerId)
+          this.$refs['view_'+peerId][0].srcObject = stream
+          document.getElementById('view_'+peerId).srcObject = stream
+        }
+      })
+
+      this.socket.on(
+        'disconnect',
+        function () {
+          this.exit(true)
+        }.bind(this)
+      )
       this.socket.on("call", data => {
         var peer = this.peers[data.callerId]
         if(!peer){
@@ -293,33 +338,18 @@ export default {
         }
       )
     },
-    openMedia() {
+    async openMedia() {
       var params = this.validStatusForParams()
-      navigator.mediaDevices.getUserMedia(params)
-      .then(
-        stream => {
-          this.selfStream = stream
-          if(this.$refs.selfView){
-            this.$refs.selfView.srcObject = stream 
-          }
-          this.$refs['view_'+this.socket.id][0].srcObject = stream
-          console.log(this.$refs['view_'+this.socket.id][0])
-          for(var i=0;i<this.roomInfo.members.length;i++){
-            var member = this.roomInfo.members[i]
-            console.log(`视频发起方尝试向其他人建立peer： ${member},${this.socket.id},${member === this.socket.id}`)
-            if(member === this.socket.id){
-              continue
-            }
-            this.setupLocalStream(member, stream)
-          }
-          var videoSettings = stream.getVideoTracks()[0].getSettings()
-          this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
-          this.syncLocalData(stream)
-        }
-        ,error => {
-          console.warn(error.message);
-        }
-      )
+      let localStream = await navigator.mediaDevices.getUserMedia(params)
+      this.selfStream = localStream
+      if(this.$refs.selfView){
+        this.$refs.selfView.srcObject = localStream 
+      }
+      this.$refs['view_'+this.socket.id][0].srcObject = localStream
+      var videoSettings = localStream.getVideoTracks()[0].getSettings()
+      this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
+      this.syncLocalData(localStream)
+      this.chatClient.pushStream(ChatClient.mediaType.video, localStream)
     },
     handleMediaForAnswer(peer, openMediaIfNot) {
       if(this.selfStream){
@@ -429,7 +459,7 @@ export default {
     sendWords(){
       if(this.words){
         // this.socket.emit('join',{roomId:this.configData.id})
-        this.socket.emit('submitwords',{name: this.localData.name, content: this.words})
+        this.socket.emit('postwords', {content: this.words})
         this.words = ''
       }
     },
@@ -450,9 +480,7 @@ export default {
       peer.ontrack = ({ streams: [stream] }) => {
         console.log('set stream view_'+remoteId)
         this.$refs['view_'+remoteId][0].srcObject = stream
-
         document.getElementById('view_'+remoteId).srcObject = stream
-        console.log(document.getElementById('view_'+remoteId))
       }
       peer.addEventListener('icecandidate', event => {
         const iceCandidate = event.candidate;
@@ -476,7 +504,7 @@ export default {
       this.peers[remoteId] = peer
       return peer
     },
-    setupLocalStream(remoteId, stream){
+    async setupLocalStream(remoteId, stream){
       var peer = null
       if(this.peers[remoteId]){
         console.log(`向对等方${remoteId}添加轨道`)
@@ -490,15 +518,17 @@ export default {
           peer.addTrack(track, stream)
         })
         var tmpOffer = null
-        peer.createOffer().then(offer => {
-          tmpOffer = offer
-          console.log(peer)
-          console.log(offer)
-          return peer.setLocalDescription(new RTCSessionDescription(offer))
-        }).then(() => {
-            this.socket.emit('call',{callerId: this.socket.id, calleeId: remoteId, offer:peer.localDescription})
-          })
-        console.log(tmpOffer)
+        // peer.createOffer().then(offer => {
+        //   tmpOffer = offer
+        //   console.log(peer)
+        //   console.log(offer)
+        //   return peer.setLocalDescription(new RTCSessionDescription(offer))
+        // }).then(() => {
+        //     this.socket.emit('call',{callerId: this.socket.id, calleeId: remoteId, offer:peer.localDescription})
+        //   })
+        let offer = await peer.createOffer()
+        await peer.setLocalDescription(new RTCSessionDescription(offer))
+        this.socket.emit('call',{callerId: this.socket.id, calleeId: remoteId, offer:peer.localDescription})
       }
       
     },
@@ -506,6 +536,11 @@ export default {
       stream.getTracks().forEach(track => {
         peer.addTrack(track, stream)
       })
+    },
+    makeCall(){
+      rc = new RoomClient(localMedia, remoteVideos, remoteAudios, window.mediasoupClient, socket, room_id, name, roomOpen)
+      this.socket.emit('call',{callerId: this.socket.id, calleeId: remoteId, offer:peer.localDescription})
+      
     },
     makeAnswer(peer){
       peer.createAnswer().then(answer => {
@@ -519,6 +554,10 @@ export default {
         console.log('answer error')
         console.log(error)
       })
+    },
+    async testAsync(){
+      console.log('it works!')
+      return 'OK'
     }
   }
 }

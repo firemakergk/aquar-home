@@ -62,6 +62,7 @@ class AppDao {
     return res
   }
   getSecret() {
+    
     var auth = this.db.data.auth
     if(!auth || !auth.secret){
       var secret = cryptoRandomString({length: 10, type: 'alphanumeric'})

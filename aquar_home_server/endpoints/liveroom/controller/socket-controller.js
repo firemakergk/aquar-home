@@ -1,5 +1,5 @@
 import appDao from "../../../service/db/app-dao.js"
-import Peer from "../service/peer.js"
+import Peer from "../service/Peer.js"
 
 class ChatRoomSocketController {
   socketServer = null

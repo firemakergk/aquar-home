@@ -5,7 +5,7 @@
         "type": "chrome",
         "request": "launch",
         "name": "vuejs: chrome",
-        "url": "http://localhost:9528",
+        "url": "https://localhost:9528",
         "webRoot": "${workspaceFolder}/src",
         "breakOnLoad": true,
         "sourceMapPathOverrides": {
