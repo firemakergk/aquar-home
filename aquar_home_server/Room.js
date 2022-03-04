@@ -1,5 +1,5 @@
-const config = require('./config')
-module.exports = class Room {
+import config from './config.js'
+class Room {
   constructor(room_id, worker, io) {
     this.id = room_id
     const mediaCodecs = config.mediasoup.router.mediaCodecs
@@ -31,6 +31,16 @@ module.exports = class Room {
       })
     })
     return producerList
+  }
+
+  getProducerMapForPeer() {
+    let producerMap = new Map()
+    this.peers.forEach((peer) => {
+      peer.producers.forEach((producer) => {
+        producerMap.set(producer.id, peer.id)
+      })
+    })
+    return producerMap
   }
 
   getRtpCapabilities() {
@@ -91,12 +101,12 @@ module.exports = class Room {
       async function (resolve, reject) {
         let producer = await this.peers.get(socket_id).createProducer(producerTransportId, rtpParameters, kind)
         resolve(producer.id)
-        this.broadCast(socket_id, 'newProducers', [
+        this.broadCast(socket_id, 'newProducers', {producerList: [
           {
             producer_id: producer.id,
             producer_socket_id: socket_id
           }
-        ])
+        ],producerMap: Object.fromEntries(this.getProducerMapForPeer())})
       }.bind(this)
     )
   }
@@ -165,3 +175,4 @@ module.exports = class Room {
     }
   }
 }
+export default Room

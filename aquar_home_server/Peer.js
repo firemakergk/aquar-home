@@ -1,4 +1,4 @@
-module.exports = class Peer {
+class Peer {
   constructor(socket_id, name) {
     this.id = socket_id
     this.name = name
@@ -107,3 +107,5 @@ module.exports = class Peer {
     this.consumers.delete(consumer_id)
   }
 }
+
+export default Peer

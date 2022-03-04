@@ -125,7 +125,8 @@
 <script>
 import * as _ from 'lodash'
 import { io } from "socket.io-client";
-import ChatClient from './chatclient.js'
+// import ChatClient from './chatclient.js'
+import RoomClient from './RoomClient.js'
 const { RTCPeerConnection, RTCSessionDescription } = window
 export default {
   name: 'chatRoomWidget',
@@ -144,6 +145,7 @@ export default {
       socket: null,
       chatClient: null,
       peers: {},
+      producerMap: new Map(),
       selfStream: null,
       wordsList: [
         {name: '系统',content: 'enjoy it'}
@@ -162,41 +164,56 @@ export default {
   },
   created: function() {
     this.init()
+    this.$bus.on('roominfo', data =>  {
+      console.log('roominfo')
+      this.roomInfo = data
+    })
+    this.$bus.on('producermap', data => this.producerMap = data)
+    this.$bus.on('consume', ({producerId, consumer, stream, kind}) => {
+      let peerId = this.producerMap[producerId]
+      console.log(`consume consumerId: ${consumer.id}, producerId: ${producerId},peerId:${peerId}`)
+      this.$refs['view_'+peerId][0].srcObject = stream
+      document.getElementById('view_'+peerId).srcObject = stream
+    })
+
   },
   destroyed: function() {
+    this.$bus.off('roominfo', data =>  this.roomInfo = data)
+    this.$bus.off('producermap', data => this.producerMap = data)
+    this.$bus.off('consume')
   },
   methods: {
     init() {
-      this.socket = io('/chatroom')
-      this.chatClient = new ChatClient(this.socket, this.configData.id, this.configData.name, this.$bus)
+      this.socket = io()
+      this.chatClient = new RoomClient(this.socket, this.configData.id, this.configData.name, this.$bus)
       this.socket.on("connect", () => {
         this.localData.name = this.socket.id.substring(8)
-        this.socket.emit(
-          'join',
-          {tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id}, 
-          async (res) =>{
-            if(!res){
-              console.log(`没有找到与组件对应的房间${this.configData.id}`)
-            }else{
-              if(res.capabilities && res.transport){
-                let consumerInfoList = await this.chatClient.initAndPullStream(res.capabilities, res.transport, res.producers)
-                //!!!consumerInfoList中包含有Stream，把这些Steam渲染在页面上 参考464行
-                let n = consumerInfoList.length < this.roomInfo.members.length ? consumerInfoList.length: this.roomInfo.members.length 
-                for(let i=0;i++;i<n){
-                  let remoteId = this.roomInfo.members[i]
-                  let {consumer,stream,kind,producerId} = consumerInfoList[i]
-                  console.log('set stream view_'+remoteId)
-                  this.$refs['view_'+remoteId][0].srcObject = stream
-                  document.getElementById('view_'+remoteId).srcObject = stream
-                }
-                // for({consumer,stream,kind,producerId} of consumerInfoList){
-                //   this.$refs['view_'+remoteId][0].srcObject = stream
-                //   document.getElementById('view_'+remoteId).srcObject = stream
-                // }
-              }
-              this.roomInfo = res
-            }
-        })
+        // this.socket.emit(
+        //   'join',
+        //   {tabIndex: this.tabIndex, roomId:this.configData.id,memberId: this.socket.id}, 
+        //   async (res) =>{
+        //     if(!res){
+        //       console.log(`没有找到与组件对应的房间${this.configData.id}`)
+        //     }else{
+        //       if(res.capabilities && res.transport){
+        //         // let consumerInfoList = await this.chatClient.(res.capabilities, res.transport, res.producers)
+        //         //!!!consumerInfoList中包含有Stream，把这些Steam渲染在页面上 参考464行
+        //         // let n = consumerInfoList.length < this.roomInfo.members.length ? consumerInfoList.length: this.roomInfo.members.length 
+        //         // for(let i=0;i++;i<n){
+        //         //   let remoteId = this.roomInfo.members[i]
+        //         //   let {consumer,stream,kind,producerId} = consumerInfoList[i]
+        //         //   console.log('set stream view_'+remoteId)
+        //         //   this.$refs['view_'+remoteId][0].srcObject = stream
+        //         //   document.getElementById('view_'+remoteId).srcObject = stream
+        //         // }
+        //         // for({consumer,stream,kind,producerId} of consumerInfoList){
+        //         //   this.$refs['view_'+remoteId][0].srcObject = stream
+        //         //   document.getElementById('view_'+remoteId).srcObject = stream
+        //         // }
+        //       }
+        //       this.roomInfo = res
+        //     }
+        // })
       })
       this.socket.on("roominfo", data => {
         this.roomInfo = data
@@ -205,31 +222,31 @@ export default {
         console.log('join')
         this.roomInfo = data
       })
-      this.socket.on("postwords", data => {
-        console.log('postwords')
-        this.wordsList.push(data)
-      })
-      this.socket.on('consumerclosed',({ consumerId }) => {
-        console.log('Closing consumer:', consumerId)
-        this.removeConsumer(consumerId)
-      })
+      // this.socket.on("postwords", data => {
+      //   console.log('postwords')
+      //   this.wordsList.push(data)
+      // })
+      // this.socket.on('consumerclosed',({ consumerId }) => {
+      //   console.log('Closing consumer:', consumerId)
+      //   this.removeConsumer(consumerId)
+      // })
 
-      this.socket.on('newproducers',async (data) => {
-        console.log('New producers', data)
-        for (let { producerId, peerId } of data) {
-          let { consumer, stream, kind } = await this.chatClient.consume(producerId)
-          console.log('set stream view_'+peerId)
-          this.$refs['view_'+peerId][0].srcObject = stream
-          document.getElementById('view_'+peerId).srcObject = stream
-        }
-      })
+      // this.socket.on('newproducers',async (data) => {
+      //   console.log('New producers', data)
+      //   for (let { producerId, peerId } of data) {
+      //     let { consumer, stream, kind } = await this.chatClient.consume(producerId)
+      //     console.log('set stream view_'+peerId)
+      //     this.$refs['view_'+peerId][0].srcObject = stream
+      //     document.getElementById('view_'+peerId).srcObject = stream
+      //   }
+      // })
 
-      this.socket.on(
-        'disconnect',
-        function () {
-          this.exit(true)
-        }.bind(this)
-      )
+      // this.socket.on(
+      //   'disconnect',
+      //   function () {
+      //     this.exit(true)
+      //   }.bind(this)
+      // )
       this.socket.on("call", data => {
         var peer = this.peers[data.callerId]
         if(!peer){
@@ -349,7 +366,7 @@ export default {
       var videoSettings = localStream.getVideoTracks()[0].getSettings()
       this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
       this.syncLocalData(localStream)
-      this.chatClient.pushStream(ChatClient.mediaType.video, localStream)
+      this.chatClient.produce(RoomClient.mediaType.video, localStream)
     },
     handleMediaForAnswer(peer, openMediaIfNot) {
       if(this.selfStream){

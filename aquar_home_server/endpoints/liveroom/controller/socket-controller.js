@@ -5,6 +5,17 @@ class ChatRoomSocketController {
   socketServer = null
   sfuEngine = null
 
+  async createRoom(sokcet, data, callback){
+    let {room_id} = data
+    if (this.roomList.has(room_id)) {
+      callback(`room ${room_id} already exists`)
+    } else {
+      console.log('Created room', { room_id: room_id })
+      let worker = await this.getMediasoupWorker()
+      this.roomList.set(room_id, new Room(room_id, worker, this.io))
+      callback(room_id)
+    }
+  }
   async joinRoom(socket, data, callback) {
     socket.join(data.roomId)
     var widget = appDao.findOneById(data.tabIndex, data.roomId)
