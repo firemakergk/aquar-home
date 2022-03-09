@@ -1,34 +1,24 @@
 class Peer {
   room = null
-  constructor(peerId, socket, name) {
-    this.id = peerId
-    this.name = name
+  constructor(socket, name) {
+    this.id = socket.id
     this.socket = socket
+    this.name = name
     this.transports = new Map()
     this.consumers = new Map()
     this.producers = new Map()
-  }
-
-  setRoom(room){
-    this.room = room
-  }
-
-  postWords(words){
-    let data = {name: this.name, content: words}
-    this.room.emit('postwords', data)
-    return data
   }
 
   addTransport(transport) {
     this.transports.set(transport.id, transport)
   }
 
-  async connectTransport(transportId, dtlsParameters) {
-    if (!this.transports.has(transportId)){
-      return await this.transports.get(transportId).connect({
-        dtlsParameters: dtlsParameters
-      })
-    }
+  async connectTransport(transport_id, dtlsParameters) {
+    if (!this.transports.has(transport_id)) return
+
+    await this.transports.get(transport_id).connect({
+      dtlsParameters: dtlsParameters
+    })
   }
 
   async createProducer(producerTransportId, rtpParameters, kind) {
@@ -78,25 +68,10 @@ class Peer {
 
     consumer.on(
       'transportclose',
-      async () => {
+      function () {
         console.log('Consumer transport close', { name: `${this.name}`, consumer_id: `${consumer.id}` })
         this.consumers.delete(consumer.id)
-      }
-    )
-
-    consumer.on(
-      'producerclose',
-      async () => {
-        console.log('Consumer closed due to producerclose event', {
-          name: `${this.name}`,
-          consumerId: `${consumer.id}`
-        })
-        this.consumers.delete(consumer.id)
-        // tell client consumer is dead
-        this.socket.emit('consumerclosed', {
-          consumerId: consumer.id
-        })
-      }
+      }.bind(this)
     )
 
     return {
@@ -112,42 +87,17 @@ class Peer {
     }
   }
 
-  async consume(consumerTransportId, producerId, rtpCapabilities) {
-    // handle nulls
-    if (
-      !this.room.router.canConsume({
-        producerId,
-        rtpCapabilities
-      })
-    ) {
-      console.error('can not consume')
-      return
-    }
-
-    let { consumer, params } = await this.createConsumer(consumerTransportId, producerId, rtpCapabilities)
-
-    return params
-  }
-
-  async produce( producerTransportId, rtpParameters, kind) {
-    let producer = await this.createProducer(producerTransportId,kind, rtpParameters)
-    this.room.broadCast('newproducers', [
-      {
-        peerId: this.id,
-        producerId: producer.id,
-        producer_socket_id: this.id
-      }
-    ])
-  }
-
-  closeProducer(producer_id) {
+  closeProducer() {
     try {
-      this.producers.get(producer_id).close()
+      for(let producer of this.producers){
+        console.log(`peer:${this.id}关闭producer:${producer[0]}`)
+        producer[1].close()
+      }
     } catch (e) {
       console.warn(e)
     }
 
-    this.producers.delete(producer_id)
+    this.producers = new Map()
   }
 
   getProducer(producer_id) {
@@ -155,11 +105,17 @@ class Peer {
   }
 
   close() {
+    this.room = null
     this.transports.forEach((transport) => transport.close())
   }
 
   removeConsumer(consumer_id) {
     this.consumers.delete(consumer_id)
+  }
+
+  postWords(data){
+    this.socket.to(this.room.id).emit("postwords",data)
+    this.socket.emit("postwords",data) 
   }
 }
 

@@ -41,7 +41,7 @@ class RoomClient {
 
     this.consumers = new Map()
     this.producers = new Map()
-
+    this.consumerMap = new Map()
     // console.log('Mediasoup client', mediasoupClient)
 
     /**
@@ -273,101 +273,68 @@ class RoomClient {
 
   //////// MAIN FUNCTIONS /////////////
 
-  async produce(type, stream) {
+  async produce(stream) {
     let audio = false
     if (!this.device.canProduce('video') && !audio) {
       console.error('Cannot produce video')
       return
     }
-    if (this.producerLabel.has(type)) {
-      console.log('Producer already exists for this type ' + type)
-      return
-    }
-    
-    const track = stream.getVideoTracks()[0]
-    const params = {
-      track
-    }
-    params.encodings = [
-      {
-        rid: 'r0',
-        maxBitrate: 100000,
-        //scaleResolutionDownBy: 10.0,
-        scalabilityMode: 'S1T3'
-      },
-      {
-        rid: 'r1',
-        maxBitrate: 300000,
-        scalabilityMode: 'S1T3'
-      },
-      {
-        rid: 'r2',
-        maxBitrate: 900000,
-        scalabilityMode: 'S1T3'
+
+    if(!this.producerLabel.has(mediaType.video) && stream.getVideoTracks() && stream.getVideoTracks()[0]){
+      let videoTrack = stream.getVideoTracks()[0]
+      let params = {
+        track: videoTrack
       }
-    ]
-    params.codecOptions = {
-      videoGoogleStartBitrate: 1000
+      params.encodings = [
+        {
+          rid: 'r0',
+          maxBitrate: 100000,
+          //scaleResolutionDownBy: 10.0,
+          scalabilityMode: 'S1T3'
+        },
+        {
+          rid: 'r1',
+          maxBitrate: 300000,
+          scalabilityMode: 'S1T3'
+        },
+        {
+          rid: 'r2',
+          maxBitrate: 900000,
+          scalabilityMode: 'S1T3'
+        }
+      ]
+      params.codecOptions = {
+        videoGoogleStartBitrate: 1000
+      }
+      let videoProducer = await this.producerTransport.produce(params)
+      this.setupProducer(mediaType.video, videoProducer)
     }
-    let producer = await this.producerTransport.produce(params)
 
-    console.log('Producer', producer)
+    if(!this.producerLabel.has(mediaType.video) && stream.getAudioTracks()&& stream.getAudioTracks()[0]){
+      let audioTrack = stream.getAudioTracks()[0]
+      let params = {
+        track: audioTrack
+      }
+      let audioProducer = await this.producerTransport.produce(params)
+      this.setupProducer(mediaType.audio, audioProducer)
+    }
+  }
 
+  setupProducer(type, producer){
+    console.log(`setup Producer ${type} ${producer.id}`)
     this.producers.set(producer.id, producer)
-
-    // let elem
-    // if (!audio) {
-    //   elem = document.createElement('video')
-    //   elem.srcObject = stream
-    //   elem.id = producer.id
-    //   elem.playsinline = false
-    //   elem.autoplay = true
-    //   elem.className = 'vid'
-    //   this.localMediaEl.appendChild(elem)
-    //   this.handleFS(elem.id)
-    // }
-
     producer.on('trackended', () => {
-      this.closeProducer(type)
+      this.closeProducer()
     })
-
     producer.on('transportclose', () => {
       console.log('Producer transport close')
-      // if (!audio) {
-      //   elem.srcObject.getTracks().forEach(function (track) {
-      //     track.stop()
-      //   })
-      //   elem.parentNode.removeChild(elem)
-      // }
       this.producers.delete(producer.id)
     })
-
     producer.on('close', () => {
       console.log('Closing producer')
-      // if (!audio) {
-      //   elem.srcObject.getTracks().forEach(function (track) {
-      //     track.stop()
-      //   })
-      //   elem.parentNode.removeChild(elem)
-      // }
       this.producers.delete(producer.id)
     })
-
     this.producerLabel.set(type, producer.id)
-
-    // switch (type) {
-    //   case mediaType.audio:
-    //     this.event(_EVENTS.startAudio)
-    //     break
-    //   case mediaType.video:
-    //     this.event(_EVENTS.startVideo)
-    //     break
-    //   case mediaType.screen:
-    //     this.event(_EVENTS.startScreen)
-    //     break
-    //   default:
-    //     return
-    // }
   }
 
   async consume(producer_id) {
@@ -376,26 +343,6 @@ class RoomClient {
     this.getConsumeStream(producer_id).then(
       function ({ consumer, stream, kind }) {
         this.consumers.set(consumer.id, consumer)
-        this.vueBus.emit("consume", { producerId:producer_id, consumer, stream, kind } )
-        // let elem
-        // if (kind === 'video') {
-        //   elem = document.createElement('video')
-        //   elem.srcObject = stream
-        //   elem.id = consumer.id
-        //   elem.playsinline = false
-        //   elem.autoplay = true
-        //   elem.className = 'vid'
-        //   this.remoteVideoEl.appendChild(elem)
-        //   this.handleFS(elem.id)
-        // } else {
-        //   elem = document.createElement('audio')
-        //   elem.srcObject = stream
-        //   elem.id = consumer.id
-        //   elem.playsinline = false
-        //   elem.autoplay = true
-        //   this.remoteAudioEl.appendChild(elem)
-        // }
-
         consumer.on(
           'trackended',
           function () {
@@ -409,6 +356,7 @@ class RoomClient {
             this.removeConsumer(consumer.id)
           }.bind(this)
         )
+        this.vueBus.emit("consume", { producerId:producer_id, consumer, stream, kind } )
       }.bind(this)
     )
   }
@@ -441,44 +389,13 @@ class RoomClient {
     }
   }
 
-  closeProducer(type) {
-    if (!this.producerLabel.has(type)) {
-      console.log('There is no producer for this type ' + type)
-      return
+  closeProducer() {
+    for(let producer of this.producers){
+      console.log('Close producer', producer[0].id)
+      this.socket.emit('producerClosed' )
     }
-
-    let producer_id = this.producerLabel.get(type)
-    console.log('Close producer', producer_id)
-
-    this.socket.emit('producerClosed', {
-      producer_id
-    })
-
-    this.producers.get(producer_id).close()
-    this.producers.delete(producer_id)
-    this.producerLabel.delete(type)
-
-    if (type !== mediaType.audio) {
-      let elem = document.getElementById(producer_id)
-      elem.srcObject.getTracks().forEach(function (track) {
-        track.stop()
-      })
-      elem.parentNode.removeChild(elem)
-    }
-
-    switch (type) {
-      case mediaType.audio:
-        this.event(_EVENTS.stopAudio)
-        break
-      case mediaType.video:
-        this.event(_EVENTS.stopVideo)
-        break
-      case mediaType.screen:
-        this.event(_EVENTS.stopScreen)
-        break
-      default:
-        return
-    }
+    this.producerLabel = new Map()
+    this.producers = new Map()
   }
 
   pauseProducer(type) {
@@ -502,40 +419,34 @@ class RoomClient {
   }
 
   removeConsumer(consumer_id) {
-    let elem = document.getElementById(consumer_id)
-    elem.srcObject.getTracks().forEach(function (track) {
-      track.stop()
-    })
-    elem.parentNode.removeChild(elem)
-
+    this.vueBus.emit('consumerclosed', consumer_id)
     this.consumers.delete(consumer_id)
   }
 
-  exit(offline = false) {
+  exit() {
     let clean = function () {
       this._isOpen = false
-      this.consumerTransport.close()
-      this.producerTransport.close()
+      if(this.consumerTransport){
+        this.consumerTransport.close()
+      }
+      if(this.producerTransport){
+        this.producerTransport.close()
+      }
       this.socket.off('disconnect')
       this.socket.off('newProducers')
       this.socket.off('consumerClosed')
+      this.socket.disconnect()
     }.bind(this)
 
-    if (!offline) {
-      this.socket
-        .request('exitRoom')
-        .then((e) => console.log(e))
-        .catch((e) => console.warn(e))
-        .finally(
-          function () {
-            clean()
-          }.bind(this)
-        )
-    } else {
-      clean()
-    }
-
-    this.event(_EVENTS.exitRoom)
+    this.socket
+    .request('exitRoom')
+    .then((e) => console.log(e))
+    .catch((e) => console.warn(e))
+    .finally(
+      function () {
+        clean()
+      }.bind(this)
+    )
   }
 
   ///////  HELPERS //////////
@@ -549,15 +460,6 @@ class RoomClient {
     return mediaType
   }
 
-  // event(evt) {
-  //   if (this.eventListeners.has(evt)) {
-  //     this.eventListeners.get(evt).forEach((callback) => callback())
-  //   }
-  // }
-
-  // on(evt, callback) {
-  //   this.eventListeners.get(evt).push(callback)
-  // }
 
   //////// GETTERS ////////
 
@@ -565,74 +467,5 @@ class RoomClient {
     return this._isOpen
   }
 
-  static get EVENTS() {
-    return _EVENTS
-  }
-
-  //////// UTILITY ////////
-
-  copyURL() {
-    let tmpInput = document.createElement('input')
-    document.body.appendChild(tmpInput)
-    tmpInput.value = window.location.href
-    tmpInput.select()
-    document.execCommand('copy')
-    document.body.removeChild(tmpInput)
-    console.log('URL copied to clipboard 👍')
-  }
-
-  showDevices() {
-    if (!this.isDevicesVisible) {
-      reveal(devicesList)
-      this.isDevicesVisible = true
-    } else {
-      hide(devicesList)
-      this.isDevicesVisible = false
-    }
-  }
-
-  handleFS(id) {
-    let videoPlayer = document.getElementById(id)
-    videoPlayer.addEventListener('fullscreenchange', (e) => {
-      if (videoPlayer.controls) return
-      let fullscreenElement = document.fullscreenElement
-      if (!fullscreenElement) {
-        videoPlayer.style.pointerEvents = 'auto'
-        this.isVideoOnFullScreen = false
-      }
-    })
-    videoPlayer.addEventListener('webkitfullscreenchange', (e) => {
-      if (videoPlayer.controls) return
-      let webkitIsFullScreen = document.webkitIsFullScreen
-      if (!webkitIsFullScreen) {
-        videoPlayer.style.pointerEvents = 'auto'
-        this.isVideoOnFullScreen = false
-      }
-    })
-    videoPlayer.addEventListener('click', (e) => {
-      if (videoPlayer.controls) return
-      if (!this.isVideoOnFullScreen) {
-        if (videoPlayer.requestFullscreen) {
-          videoPlayer.requestFullscreen()
-        } else if (videoPlayer.webkitRequestFullscreen) {
-          videoPlayer.webkitRequestFullscreen()
-        } else if (videoPlayer.msRequestFullscreen) {
-          videoPlayer.msRequestFullscreen()
-        }
-        this.isVideoOnFullScreen = true
-        videoPlayer.style.pointerEvents = 'none'
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen()
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen()
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen()
-        }
-        this.isVideoOnFullScreen = false
-        videoPlayer.style.pointerEvents = 'auto'
-      }
-    })
-  }
 }
 export default RoomClient
