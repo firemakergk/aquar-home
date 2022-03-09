@@ -310,7 +310,7 @@ class RoomClient {
       this.setupProducer(mediaType.video, videoProducer)
     }
 
-    if(!this.producerLabel.has(mediaType.video) && stream.getAudioTracks()&& stream.getAudioTracks()[0]){
+    if(!this.producerLabel.has(mediaType.audio) && stream.getAudioTracks()&& stream.getAudioTracks()[0]){
       let audioTrack = stream.getAudioTracks()[0]
       let params = {
         track: audioTrack

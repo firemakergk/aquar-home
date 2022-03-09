@@ -18,9 +18,6 @@
           <span>{{ errorInfo }}</span>
         </div>
       </div>
-      <div :class="[showWordsList? 'words_info': 'words_info_hide', 'tbgcolor_mask_error']" style="width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
-        <div v-for="(w,index) in wordsList" :key="'localcam_'+index">{{`${w.name}: ${w.content}`}}</div>
-      </div>
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
@@ -86,14 +83,19 @@
         </div>
       </div>
       <div class="widget_content" style="position: relative;">
+        <div :class="[showWordsList? 'words_info': 'words_info_hide', 'tbgcolor_mask_error']" style="width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
+        <div v-for="(w,index) in wordsList" :key="'localcam_'+index">{{`${w.name}: ${w.content}`}}</div>
+        </div>
         <div ref="selfViewContainer" class="self_view tbgcolor_main">
-          <div v-if="isRecording" class="view_content">
+          <div v-if="isInRoom && isRecording" class="view_content">
             <div class="view_header"><span class="tcolor_reverse" style="">{{localData.name}}</span></div>
             <video class="view_video" autoplay muted ref="selfView" ></video>
-            
+          </div>
+          <div v-else-if="isInRoom && !isRecording" class="self_view_close" >
+            <a @click="changeRecordStatus()">开始通话</a>
           </div>
           <div v-else class="self_view_close" >
-            <a @click="changeRecordStatus()">开始通话</a>
+            <a @click="joinRoom()">加入房间</a>
           </div>
         </div>
         <div class="chat_views" @click="showWordsList = false">
@@ -103,11 +105,11 @@
               <video class="self_view_video" autoplay muted ref="remoteView" ></video>
             </div>
           </div> -->
-          <div v-for="(member,index) in roomInfo.members" :key="'peer_view_'+index" class="chat_view">
+          <div v-for="({videoStream, audioStream, name, peerId},index) in streamList" :key="'peer_view_'+index" class="chat_view">
             <div class="view_content">
-              <div class="view_header" ><span class="tcolor_reverse">{{member}}</span></div>
-              <video class="view_video" autoplay :ref="'view_'+member" :id="'view_'+member" :srcObject.prop="myStreamSrc"  ></video>
-              <audio :ref="'audio_'+member" :id="'audio_'+member"></audio>
+              <div class="view_header" ><span class="tcolor_reverse">{{name}}</span></div>
+              <video class="view_video" autoplay :ref="'view_'+peerId" :id="'view_'+peerId" :srcObject.prop="videoStream"  ></video>
+              <audio :ref="'audio_'+peerId" :id="'audio_'+peerId" :srcObject.prop="audioStream"></audio>
             </div>
           </div>
         </div>
@@ -146,7 +148,6 @@ export default {
       showWordsList: false,
       isInRoom: false,
       isRecording: false,
-      roomInfo: {members:[]},
       streamList: [],
       socket: null,
       chatClient: null,
@@ -173,7 +174,7 @@ export default {
     this.init()
     this.$bus.on('roominfo', data =>  {
       console.log('roominfo')
-      this.roomInfo = data
+      this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
     })
     this.$bus.on('producermap', data => this.producerMap = data)
     this.$bus.on('consume', ({producerId, consumer, stream, kind}) => {
@@ -181,13 +182,15 @@ export default {
       this.consumerMap[consumer.id] = peerId
       console.log(`consume consumerId: ${consumer.id}, producerId: ${producerId},peerId:${peerId}`)
       if(kind==='video'){
-        this.$refs['view_'+peerId][0].srcObject = stream
-        if(this.socket.id === peerId){
-          this.$refs['view_'+peerId][0].muted = 'muted'
-        }
+        this.updateStreamList([{peerId, videoStream: stream}],false)
+        // this.$refs['view_'+peerId][0].srcObject = stream
+        // if(this.socket.id === peerId){
+        //   this.$refs['view_'+peerId][0].muted = 'muted'
+        // }
       }else if(kind === 'audio') {
         if(this.socket.id != peerId){
-          this.$refs['audio_'+peerId][0].srcObject = stream
+          this.updateStreamList([{peerId, audioStream: stream}],false)
+          // this.$refs['audio_'+peerId][0].srcObject = stream
         }
       }
 
@@ -199,7 +202,7 @@ export default {
     })
   },
   destroyed: function() {
-    this.$bus.off('roominfo', data =>  this.roomInfo = data)
+    this.$bus.off('roominfo')
     this.$bus.off('producermap', data => this.producerMap = data)
     this.$bus.off('consume')
     this.$bus.off('consumerclosed')
@@ -214,12 +217,11 @@ export default {
         this.localData.name = this.socket.id.substring(8)
       })
       this.socket.on("roominfo", data => {
-        this.roomInfo = data
+        this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
       })
       this.socket.on("join", (data) => {
         console.log('join')
-        //!!!不能简单地赋值，因为会影响已经赋好值的流
-        this.roomInfo = data
+        this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
       })
       this.socket.on("postwords", data => {
         console.log('postwords',data)
@@ -252,7 +254,45 @@ export default {
       }
       this.chatClient.exit()
       this.isInRoom = false
-      this.roomInfo = {members:[]}
+      this.streamList = []
+    },
+    updateStreamList(updateList, withDelete){
+      let streamMap = {}
+      for(let i of this.streamList){
+        streamMap[i.peerId] = i
+      }
+      let resList = []
+      if(withDelete){
+        for(let i of updateList) {
+          if(streamMap[i.peerId]){
+            resList.push(Object.assign(streamMap[i.peerId], i))
+          }else{
+            resList.push(i)
+          }
+        }
+      }else{
+        resList = this.streamList
+        for(let i of updateList) {
+          if(streamMap[i.peerId]){
+            Object.assign(streamMap[i.peerId], i)
+          }else{
+            resList.push(i)
+          }
+        }
+      }
+      this.streamList = resList
+      this.$forceUpdate()
+      for(let i of this.streamList){
+        if(i.videoStream){
+          this.$refs['view_'+i.peerId][0].srcObject = i.videoStream
+          if(this.socket.id === i.peerId){
+            this.$refs['view_'+i.peerId][0].muted = 'muted'
+          }
+        }
+        if(i.audioStream){
+          this.$refs['audio_'+i.peerId][0].srcObject = i.audioStream
+        }
+      }
     },
     toggleConfig() {
       this.showConfig = !this.showConfig
@@ -267,8 +307,9 @@ export default {
     updateLocalConfig() {
       this.localData.device.camera = _.filter(this.localCameras,{'index':this.localCamSelect})[0]
       this.localData.device.mic = _.filter(this.localMics,{'index':this.localMicSelect})[0]
-      this.updateSelfStream()
+      // this.updateSelfStream()
       this.showLocalConfig = false
+      this.changeProduceDevice()
       // this.openMediaForOffer()
     },
     changeRecordStatus(){
@@ -277,6 +318,12 @@ export default {
         this.openMedia()
       }else{
         this.closeMedia()
+      }
+    },
+    changeProduceDevice(){
+      if(this.isRecording){
+        this.closeMedia()
+        this.openMedia()
       }
     },
     refreshDeviceData(stream){

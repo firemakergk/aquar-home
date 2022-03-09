@@ -103,6 +103,7 @@ class ChatRoomSocketController {
   
   async produce(socket, data, callback) {
     let { kind, rtpParameters, producerTransportId } = data
+    console.log(`produce request kind:${kind},producerTransportId:${producerTransportId}`)
     if (!this.roomList.has(socket.room_id)) {
       return callback({ error: 'not is a room' })
     }
