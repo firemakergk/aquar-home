@@ -8,7 +8,7 @@
       <a v-if="isInRoom" style="margin: 0 4px;" class="iconfont icon-poweroff icon tcolor_sub" title="退出" @click="leftRoom()" />
       <a v-else style="margin: 0 4px;" class="iconfont icon-radioboxfill icon tcolor_sub" title="加入" @click="joinRoom()" />
     </div>
-    <div class="widget_body">
+    <div class="widget_body_noscroll">
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
         <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
           <span  class="iconfont icon-times-circle-fill icon tcolor_sub" style="font-size: 24px;"></span>
@@ -82,46 +82,46 @@
           </div>
         </div>
       </div>
-      <div class="widget_content" style="position: relative;">
-        <div :class="[showWordsList? 'words_info': 'words_info_hide', 'tbgcolor_mask_error']" style="width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
-        <div v-for="(w,index) in wordsList" :key="'localcam_'+index">{{`${w.name}: ${w.content}`}}</div>
-        </div>
-        <div ref="selfViewContainer" class="self_view tbgcolor_main">
-          <div v-if="isInRoom && isRecording" class="view_content">
-            <div class="view_header"><span class="tcolor_reverse" style="">{{localData.name}}</span></div>
-            <video class="view_video" autoplay muted ref="selfView" ></video>
-          </div>
-          <div v-else-if="isInRoom && !isRecording" class="self_view_close" >
-            <a @click="changeRecordStatus()">开始通话</a>
-          </div>
-          <div v-else class="self_view_close" >
-            <a @click="joinRoom()">加入房间</a>
-          </div>
-        </div>
+      <div class="widget_content" style="position: relative; overflow-y: auto; height: 0;">
+        
         <div class="chat_views" @click="showWordsList = false">
-          <!-- <div class="chat_view">
-            <div class="chat_view_header" ><span class="tcolor_reverse">remote view</span></div>
-            <div class="chat_view_body">
-              <video class="self_view_video" autoplay muted ref="remoteView" ></video>
-            </div>
-          </div> -->
           <div v-for="({videoStream, audioStream, name, peerId},index) in streamList" :key="'peer_view_'+index" class="chat_view">
             <div class="view_content">
               <div class="view_header" ><span class="tcolor_reverse">{{name}}</span></div>
+              <div v-if="!videoStream && !audioStream" class="view_place_holder" ><span class="iconfont icon-user-fill icon tcolor_reverse" style="font-size: 36px;"></span></div>
+              <div v-else-if="!videoStream && audioStream" class="view_place_holder" ><span class="iconfont icon-notificationfill icon tcolor_reverse" style="font-size: 36px;"></span></div>
               <video class="view_video" autoplay :ref="'view_'+peerId" :id="'view_'+peerId" :srcObject.prop="videoStream"  ></video>
               <audio :ref="'audio_'+peerId" :id="'audio_'+peerId" :srcObject.prop="audioStream"></audio>
             </div>
           </div>
         </div>
-        <div class="chat_menu">
-          <div style="flex-grow: 1;">
-            <input v-model="words" type="text" width="50" @focus="showWordsList = true" @keyup.enter="sendWords()" />
+      </div>
+      <div ref="selfViewContainer" class="self_view tbgcolor_main">
+          <div v-if="isInRoom && isRecording" class="view_content">
+            <div class="view_header"><span class="tcolor_reverse" style="">{{localData.name}}</span></div>
+            <video class="view_video" autoplay muted ref="selfView" ></video>
           </div>
-          <div>
-            <a v-if="!isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
-            <a v-else style="margin: 0 4px;" class="iconfont icon-stopcircle icon tcolor_sub" title="结束视频" @click="changeRecordStatus()" />
-            <a style="margin: 0 4px;" class="iconfont icon-cog icon tcolor_sub" title="设置" @click="toggleLocalConfig()" />
+          <div v-else-if="isInRoom && !isRecording" class="self_view_close" style="padding: 10px;" >
+            <a @click="changeRecordStatus()" class="iconfont icon-recordfill
+ icon" style="font-size: 24px;" ></a>
+            <!-- <a @click="changeRecordStatus()" class="iconfont icon-voicefill
+ icon"  style="font-size: 24px;" ></a> -->
           </div>
+          <div v-else class="self_view_close" >
+            <a @click="joinRoom()">加入房间</a>
+          </div>
+        </div>
+      <div :class="[showWordsList? 'words_info': 'words_info_hide', 'tbgcolor_mask_error']" style="width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;">
+        <div v-for="(w,index) in wordsList" :key="'localcam_'+index">{{`${w.name}: ${w.content}`}}</div>
+      </div>
+      <div class="chat_menu">
+        <div style="flex-grow: 1;">
+          <input v-model="words" type="text" width="50" @focus="showWordsList = true" @keyup.enter="sendWords()" />
+        </div>
+        <div>
+          <a v-if="!isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
+          <a v-else style="margin: 0 4px;" class="iconfont icon-stopcircle icon tcolor_sub" title="结束视频" @click="changeRecordStatus()" />
+          <a style="margin: 0 4px;" class="iconfont icon-cog icon tcolor_sub" title="设置" @click="toggleLocalConfig()" />
         </div>
       </div>
     </div>
@@ -183,14 +183,9 @@ export default {
       console.log(`consume consumerId: ${consumer.id}, producerId: ${producerId},peerId:${peerId}`)
       if(kind==='video'){
         this.updateStreamList([{peerId, videoStream: stream}],false)
-        // this.$refs['view_'+peerId][0].srcObject = stream
-        // if(this.socket.id === peerId){
-        //   this.$refs['view_'+peerId][0].muted = 'muted'
-        // }
       }else if(kind === 'audio') {
         if(this.socket.id != peerId){
           this.updateStreamList([{peerId, audioStream: stream}],false)
-          // this.$refs['audio_'+peerId][0].srcObject = stream
         }
       }
 
@@ -293,6 +288,7 @@ export default {
           this.$refs['audio_'+i.peerId][0].srcObject = i.audioStream
         }
       }
+      this.$forceUpdate()
     },
     toggleConfig() {
       this.showConfig = !this.showConfig
@@ -339,26 +335,6 @@ export default {
         this.syncLocalData(stream)
       })
     },
-    updateSelfStream() {
-      this.selfStream.getVideoTracks()[0].stop()
-      var params = this.validStatusForParams()
-      navigator.mediaDevices.getUserMedia(params)
-      .then(
-        stream => {
-          this.selfStream = stream
-          if(this.$refs.selfView){
-            this.$refs.selfView.srcObject = stream 
-          }
-          this.$refs['view_'+this.socket.id][0].srcObject = stream
-          var videoSettings = stream.getVideoTracks()[0].getSettings()
-          this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
-          this.syncLocalData(stream)
-        }
-        ,error => {
-          console.warn(error.message);
-        }
-      )
-    },
     async openMedia() {
       var params = this.validStatusForParams()
       let localStream = await navigator.mediaDevices.getUserMedia(params)
@@ -368,11 +344,9 @@ export default {
         this.$refs.selfView.srcObject = localStream 
         this.$refs.selfView.setAttribute("test", "test")
       }
-      this.$refs['view_'+this.socket.id][0].srcObject = localStream
-      this.$refs['view_'+this.socket.id][0].setAttribute("muted", "muted")
+      this.updateStreamList([{peerId: this.socket.id, videoStream: localStream}], false)
       var videoSettings = localStream.getVideoTracks()[0].getSettings()
       this.reSizeVideoView('selfViewContainer', videoSettings.width, videoSettings.height, 120, null)
-      // this.syncLocalData(localStream)
       this.chatClient.produce(localStream)
     },
     async closeMedia() {
@@ -410,6 +384,7 @@ export default {
       var videoParam = true
       if(this.localData.device.camera){
         videoParam = { deviceId: this.localData.device.camera.deviceId,groupId: this.localData.device.camera.groupId }
+
       }
       var micParam = true 
       if(this.localData.device.mic){
@@ -476,6 +451,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.widget_body_noscroll{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 .chat_views {
   display: flex;
   flex-direction: row;
@@ -550,6 +533,17 @@ export default {
   left:0;
   z-index: 2;
 }
+.view_place_holder {
+  position:absolute;
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  left: 50%;
+  top: 50%;
+  margin-top: -18px;    /* 高度的一半 */
+  margin-left: -18px;    /* 宽度的一半 */
+  z-index: 2;
+}
 .view_video {
   position: relative;
   object-fit: contain;
@@ -564,7 +558,7 @@ export default {
   bottom: 0;
   position: absolute;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 }
 .local_config {
