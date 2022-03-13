@@ -91,7 +91,7 @@
               <div v-if="!videoStream && !audioStream" class="view_place_holder" ><span class="iconfont icon-user-fill icon tcolor_reverse" style="font-size: 36px;"></span></div>
               <div v-else-if="!videoStream && audioStream" class="view_place_holder" ><span class="iconfont icon-notificationfill icon tcolor_reverse" style="font-size: 36px;"></span></div>
               <video class="view_video" autoplay :ref="'view_'+peerId" :id="'view_'+peerId" :srcObject.prop="videoStream"  ></video>
-              <audio :ref="'audio_'+peerId" :id="'audio_'+peerId" :srcObject.prop="audioStream"></audio>
+              <audio :ref="'audio_'+peerId" :id="'audio_'+peerId" :srcObject.prop="audioStream" autoplay></audio>
             </div>
           </div>
         </div>
@@ -184,6 +184,7 @@ export default {
       if(kind==='video'){
         this.updateStreamList([{peerId, videoStream: stream}],false)
       }else if(kind === 'audio') {
+        console.log(`autio comes peerId: ${peerId}`)
         if(this.socket.id != peerId){
           this.updateStreamList([{peerId, audioStream: stream}],false)
         }
@@ -281,10 +282,12 @@ export default {
         if(i.videoStream){
           this.$refs['view_'+i.peerId][0].srcObject = i.videoStream
           if(this.socket.id === i.peerId){
+            console.log('设置muted')
             this.$refs['view_'+i.peerId][0].muted = 'muted'
           }
         }
         if(i.audioStream){
+          console.log('render audio peerId:'+i.peerId)
           this.$refs['audio_'+i.peerId][0].srcObject = i.audioStream
         }
       }
@@ -342,7 +345,6 @@ export default {
       this.selfStream = localStream
       if(this.$refs.selfView){
         this.$refs.selfView.srcObject = localStream 
-        this.$refs.selfView.setAttribute("test", "test")
       }
       this.updateStreamList([{peerId: this.socket.id, videoStream: localStream}], false)
       var videoSettings = localStream.getVideoTracks()[0].getSettings()
