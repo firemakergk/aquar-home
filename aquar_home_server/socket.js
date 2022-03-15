@@ -1,5 +1,7 @@
 import { Server as SocketIOServer } from "socket.io"
 import chatRoomSocketController from './endpoints/chatroom/controller/socket-controller.js'
+// import socketRouter from "./routes/socket-router.js"
+
 
 class SocketServer {
   io = null
@@ -10,8 +12,18 @@ class SocketServer {
     chatRoomSocketController.io = chatRoomIo
     chatRoomSocketController.init()
     chatRoomIo.on('connection', (socket) => {
+      // for(let routerKey in socketRouter){
+      //   let router = socketRouter[routerKey]
+      //   for(let k in router){
+      //     (function(k) {
+      //       socket.on(k, (data, callback) => {router[k](socket,data,callback)})
+      //       console.log(k)
+      //     })(k)
+      //   }
+      // }
       socket.on('createRoom', (data, callback) => {chatRoomSocketController.createRoom(socket,data,callback)})
       socket.on('join', (data, callback) => {chatRoomSocketController.join(socket,data,callback)})
+      socket.on('updateName', (data, callback) => {chatRoomSocketController.updateName(socket,data,callback)})
       socket.on('getProducers', (data, callback) => {chatRoomSocketController.getProducers(socket,data,callback)})
       socket.on('getRouterRtpCapabilities', (data, callback) => {chatRoomSocketController.getRouterRtpCapabilities(socket,data,callback)})
       socket.on('createWebRtcTransport', (data, callback) => {chatRoomSocketController.createWebRtcTransport(socket,data,callback)})

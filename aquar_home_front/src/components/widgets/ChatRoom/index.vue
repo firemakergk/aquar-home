@@ -1,7 +1,7 @@
 <template>
   <div class="widget_box">
     <div class="widget_header vue-draggable-handle">
-      <span style="height:20px; " class="iconfont icon-communityfill icon tcolor_sub"></span>
+      <img style="height:20px; " src="./img/chatroom.png">
       <span style="padding: 0 10px;">{{ configData.name }}</span>
       <span style="flex-grow: 1;" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
@@ -25,19 +25,29 @@
         </div>
         <div class="config_body">
           <div class="config_row">
-            <div style="width:80px; text-align: right; padding: 0 2px;">名称：</div>
+            <div style="width:100px; text-align: right; padding: 0 2px;">名称：</div>
             <div style="flex-grow: 1;">
               <input v-model="configData.name" type="text" name="name" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px; text-align: right; padding: 0 2px;">server：</div>
+            <div style="width:100px; text-align: right; padding: 0 2px;">自动进入房间：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.server" type="text" name="server" style="display: inline-block; width: 100%;">
+              <select v-model="configData.data.auto_join">
+                <option value='true'>是</option>
+                <option value='false'>否</option>
+              </select>
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px;" />
+            <div style="width:100px; text-align: right; padding: 0 2px;">宣告IP列表
+              <span class="iconfont icon-question-circle icon tcolor_sub" title="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址"></span>：</div>
+            <div style="flex-grow: 1;">
+              <textarea class="ips_textarea" placeholder="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址" v-model="announcedIpsString" name="announcedIps" style="display: inline-block; width: 100%;"></textarea>
+            </div>
+          </div>
+          <div class="config_row">
+            <div style="width:100px;" />
             <div style="flex-grow: 5;">
               <button @click="updateConfig" >确定</button>
             </div>
@@ -102,10 +112,8 @@
             <video class="view_video" autoplay muted ref="selfView" ></video>
           </div>
           <div v-else-if="isInRoom && !isRecording" class="self_view_close" style="padding: 10px;" >
-            <a @click="changeRecordStatus()" class="iconfont icon-recordfill
- icon" style="font-size: 24px;" ></a>
-            <!-- <a @click="changeRecordStatus()" class="iconfont icon-voicefill
- icon"  style="font-size: 24px;" ></a> -->
+            <a @click="changeRecordStatus()" class="iconfont icon-recordfill icon" style="font-size: 24px;" ></a>
+            <!-- <a @click="changeRecordStatus()" class="iconfont icon-voicefill icon"  style="font-size: 24px;" ></a> -->
           </div>
           <div v-else class="self_view_close" >
             <a @click="joinRoom()">加入房间</a>
@@ -115,8 +123,9 @@
         <div v-for="(w,index) in wordsList" :key="'localcam_'+index">{{`${w.name}: ${w.content}`}}</div>
       </div>
       <div class="chat_menu">
-        <div style="flex-grow: 1;">
-          <input v-model="words" type="text" width="50" @focus="showWordsList = true" @keyup.enter="sendWords()" />
+        <div style="flex-grow: 1; display: flex;">
+          <input v-model="words" type="text" width="50" style="flex-grow: 1;" @focus="showWordsList = true" @keyup.enter="sendWords(null)" />
+          <button class="tcolor_sub" style="margin: 0 4px;" @click="sendWords(null)">发送</button>
         </div>
         <div>
           <a v-if="!isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
@@ -131,9 +140,7 @@
 <script>
 import * as _ from 'lodash'
 import { io } from "socket.io-client";
-// import ChatClient from './chatclient.js'
 import RoomClient from './RoomClient.js'
-const { RTCPeerConnection, RTCSessionDescription } = window
 export default {
   name: 'chatRoomWidget',
   props: {
@@ -147,6 +154,7 @@ export default {
       showLocalConfig: false,
       showWordsList: false,
       isInRoom: false,
+      socketLoading: false,
       isRecording: false,
       streamList: [],
       socket: null,
@@ -156,7 +164,7 @@ export default {
       consumerMap: {},
       selfStream: null,
       wordsList: [
-        {name: '系统',content: 'enjoy it'}
+        // {name: '系统',content: 'enjoy it'}
       ],
       words: null,
       localData: {name: '',device: {}},
@@ -167,17 +175,22 @@ export default {
       viewList: [
         {name:"test1"}
       ],
-      errorInfo: null
+      errorInfo: null,
+      announcedIpsString: ''
     }
   },
   created: function() {
-    this.init()
-    this.$bus.on('roominfo', data =>  {
-      console.log('roominfo')
-      this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
+    this.$bus.on('connectfailed_'+this.configData.id, data =>  {
+      console.log('connectfailed')
+      this.showErrorInfo = true
+      this.errorInfo = data.errorMsg
     })
-    this.$bus.on('producermap', data => this.producerMap = data)
-    this.$bus.on('consume', ({producerId, consumer, stream, kind}) => {
+    this.$bus.on('roominfo_'+this.configData.id, data =>  {
+      console.log('roominfo')
+      this.updateStreamList(data.members.map( m => {return {peerId:m.id, name:m.name}}), true)
+    })
+    this.$bus.on('producermap_'+this.configData.id, data => this.producerMap = data)
+    this.$bus.on('consume_'+this.configData.id, ({producerId, consumer, stream, kind}) => {
       let peerId = this.producerMap[producerId]
       this.consumerMap[consumer.id] = peerId
       console.log(`consume consumerId: ${consumer.id}, producerId: ${producerId},peerId:${peerId}`)
@@ -189,35 +202,37 @@ export default {
           this.updateStreamList([{peerId, audioStream: stream}],false)
         }
       }
-
     })
-    this.$bus.on('consumerclosed', consumerId => {
+    this.$bus.on('consumerclosed_'+this.configData.id, consumerId => {
       if(this.consumerMap[consumerId]){
         this.$refs['view_'+this.consumerMap[consumerId]][0].srcObject = null
       }
     })
+    // this.init()
+    if(this.configData.data.auto_join === "true"){
+      this.joinRoom()
+    }
   },
   destroyed: function() {
-    this.$bus.off('roominfo')
-    this.$bus.off('producermap', data => this.producerMap = data)
-    this.$bus.off('consume')
-    this.$bus.off('consumerclosed')
+    this.$bus.off('connectfailed_'+this.configData.id)
+    this.$bus.off('roominfo_'+this.configData.id)
+    this.$bus.off('producermap_'+this.configData.id)
+    this.$bus.off('consume_'+this.configData.id)
+    this.$bus.off('consumerclosed_'+this.configData.id)
   },
   methods: {
     init() {
+      this.announcedIpsString = this.configData.data.announced_ips.join('\n')
       if(!this.isInRoom){
         return
       }
       this.socket = io('/chatroom')
-      this.socket.on("connect", () => {
-        this.localData.name = this.socket.id.substring(8)
-      })
       this.socket.on("roominfo", data => {
-        this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
+        this.updateStreamList(data.members.map( m => {return {peerId:m.id, name:m.name}}), true)
       })
       this.socket.on("join", (data) => {
         console.log('join')
-        this.updateStreamList(data.members.map( m => {return {peerId:m, name:m}}), true)
+        this.updateStreamList(data.members.map( m => {return {peerId:m.id, name:m.name}}), true)
       })
       this.socket.on("postwords", data => {
         console.log('postwords',data)
@@ -229,18 +244,27 @@ export default {
       //     this.exit(true)
       //   }.bind(this)
       // )
-      if(localStorage.getItem('localCamera')){
-        this.localData.device.camera = JSON.parse(localStorage.getItem('localCamera'))
-        this.localCamSelect = this.localData.device.camera.index
-      }
-      if(localStorage.getItem('localMic')){
-        this.localData.device.mic = JSON.parse(localStorage.getItem('localMic'))
-        this.localMicSelect = this.localData.device.mic.index
-      }
-      this.chatClient = new RoomClient(this.socket, this.configData.id, this.localData.name, this.$bus)
+      this.socket.on("connect", () => {
+        if(localStorage.getItem('localCamera_'+this.configData.id)){
+          this.localData.device.camera = JSON.parse(localStorage.getItem('localCamera_'+this.configData.id))
+          this.localCamSelect = this.localData.device.camera.index
+        }
+        if(localStorage.getItem('localMic_'+this.configData.id)){
+          this.localData.device.mic = JSON.parse(localStorage.getItem('localMic_'+this.configData.id))
+          this.localMicSelect = this.localData.device.mic.index
+        }
+        if(localStorage.getItem('name_'+this.configData.id)){
+          this.localData.name = localStorage.getItem('name_'+this.configData.id)
+        }else {
+          console.log(`init socketId: ${this.socket.id}`) 
+          this.localData.name = this.socket.id
+        }
+        this.chatClient = new RoomClient(this.socket, this.configData.id, this.localData.name, this.$bus)
+      });
     },
     joinRoom(){
       this.isInRoom = true
+      this.socketLoading = true
       this.init()
     },
     async leftRoom(){
@@ -300,21 +324,43 @@ export default {
       this.showLocalConfig = !this.showLocalConfig
     },
     updateConfig() {
+      if(!this.validIpsString(this.announcedIpsString)){
+        alert('宣告IP列表格式不正确，请每行写一个IP地址，不要有空行')
+        return
+      }
+      this.configData.data.announced_ips = this.announcedIpsString.split('\n')
       this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
       this.showConfig = false
     },
-    updateLocalConfig() {
-      this.localData.device.camera = _.filter(this.localCameras,{'index':this.localCamSelect})[0]
-      this.localData.device.mic = _.filter(this.localMics,{'index':this.localMicSelect})[0]
-      // this.updateSelfStream()
-      this.showLocalConfig = false
-      this.changeProduceDevice()
-      // this.openMediaForOffer()
+    validIpsString(str){
+      let ips = str.split('\n')
+      for(let ip of ips){
+        if(!ip.match(/^\d+\.\d+\.\d+\.\d+$/)){
+          return false
+        }
+      }
+      return true
     },
-    changeRecordStatus(){
+    updateLocalConfig() {
+      this.socket.emit("updateName", {name:this.localData.name})
+      localStorage.setItem('name_'+this.configData.id,this.localData.name)
+      if(this.localCamSelect !== -1){
+        this.localData.device.camera = _.filter(this.localCameras,{'index':this.localCamSelect})[0]
+      }
+      if(this.localMicSelect !== -1){
+        this.localData.device.mic = _.filter(this.localMics,{'index':this.localMicSelect})[0]
+      }
+      this.showLocalConfig = false
+      if(this.isRecording){
+        this.changeProduceDevice()
+      }
+    },
+    async changeRecordStatus(){
       this.isRecording = !this.isRecording
       if(this.isRecording){
-        this.openMedia()
+        this.mediaLoading = true
+        await this.openMedia()
+        this.mediaLoading = false
       }else{
         this.closeMedia()
       }
@@ -339,6 +385,7 @@ export default {
       })
     },
     async openMedia() {
+      console.log(`openMedia socketId:${this.socket.id}`)
       var params = this.validStatusForParams()
       let localStream = await navigator.mediaDevices.getUserMedia(params)
       this.refreshDeviceData(localStream)
@@ -412,7 +459,7 @@ export default {
           }else {
             this.localData.device.mic = {deviceId:res[0].deviceId,groupId: res[0].groupId,name: res[0].label,index: res[0].index}
             this.localMicSelect = this.localData.device.mic.index
-            localStorage.setItem('localMic',JSON.stringify(this.localData.device.mic))
+            localStorage.setItem('localMic_'+this.configData.id,JSON.stringify(this.localData.device.mic))
           }
         }else if(track.kind === 'video'){
           console.log('视频流:',this.localCameras)
@@ -424,7 +471,7 @@ export default {
           }else {
             this.localData.device.camera = {deviceId:res1[0].deviceId,groupId: res1[0].groupId,name: res1[0].label,index: res1[0].index}
             this.localCamSelect = this.localData.device.camera.index
-            localStorage.setItem('localCamera',JSON.stringify(this.localData.device.camera))
+            localStorage.setItem('localCamera_'+this.configData.id,JSON.stringify(this.localData.device.camera))
           }
         }
       })
@@ -441,11 +488,14 @@ export default {
         this.$refs[contianerRef].style.width = Math.round(height*videoWidth/videoHeight) + 'px'
       }
     },
-    sendWords(){
-      if(this.words){
+    sendWords(words){
+      let trueWords = words ? words:this.words
+      if(trueWords){
         // this.socket.emit('join',{roomId:this.configData.id})
-        this.socket.emit('postwords', {name: this.localData.name, content: this.words})
-        this.words = ''
+        this.socket.emit('postwords', {name: this.localData.name, content: trueWords})
+        if(!words){
+          this.words = ''
+        }
       }
     }
   }
@@ -475,19 +525,7 @@ export default {
   z-index: 3;
   max-width: 240px;
 }
-.chat_view_header{
-  float: left;
-}
-.chat_view_body{
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 260px;
-  height: 100px; 
-  background-color:blue;
-  flex-grow: 1;
-}
+
 .chat_menu {
   display: flex;
   align-items: center;
@@ -506,17 +544,6 @@ export default {
   box-sizing: border-box;
   display: flex;
 }
-.self_view1 {
-  position: absolute;
-  bottom: 40px;
-  right: 180px;
-  width: 120px;
-  height: 90px;
-  z-index: 4;
-  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
-  box-sizing: border-box;
-  display: flex;
-}
 .view_content {
   position: relative;
   top: 0;
@@ -527,6 +554,7 @@ export default {
   flex-grow: 1;
   align-items: stretch;
   background-color: #444444;
+  border-radius: 2px;
 }
 
 .view_header {
@@ -534,6 +562,7 @@ export default {
   top:0;
   left:0;
   z-index: 2;
+  padding: 0 4px;
 }
 .view_place_holder {
   position:absolute;
@@ -604,5 +633,10 @@ export default {
   color: white;
   display: flex;
   flex-direction:column;
+}
+.ips_textarea {
+  outline: none;
+  width: 100%;
+  height: 80px;
 }
 </style>

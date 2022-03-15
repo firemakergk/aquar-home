@@ -2,8 +2,19 @@ import chatRoomSocketController from '../endpoints/chatroom/controller/socket-co
 
 export default {
   'chatroom': {
-    'join': chatRoomSocketController.joinRoom,
-    'test11': chatRoomSocketController.test,
-    'submitwords':chatRoomSocketController.submitWords
+    "createRoom":chatRoomSocketController.createRoom,
+    "join":chatRoomSocketController.join,
+    "getProducers":chatRoomSocketController.getProducers,
+    "getRouterRtpCapabilities":chatRoomSocketController.getRouterRtpCapabilities,
+    "createWebRtcTransport":chatRoomSocketController.createWebRtcTransport,
+    "connectTransport":chatRoomSocketController.connectTransport,
+    "produce":chatRoomSocketController.produce,
+    "consume":chatRoomSocketController.consume,
+    "resume":chatRoomSocketController.resume,
+    "getMyRoomInfo":chatRoomSocketController.getMyRoomInfo,
+    "disconnect":chatRoomSocketController.disconnect,
+    "producerClosed":chatRoomSocketController.producerClosed,
+    "exitRoom":chatRoomSocketController.exitRoom,
+    "postwords":chatRoomSocketController.postWords
   }
 }

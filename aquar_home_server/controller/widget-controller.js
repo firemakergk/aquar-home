@@ -12,7 +12,7 @@ class WidgetController {
     // data = JSON.parse(data)
     console.log(data)
     appDao.updateById(data.tabIndex,data.widget.id,data.widget)
-    var res = await appDao.findOneById(data.tabIndex,data.widget.id)
+    var res = await appDao.findOne(data.tabIndex,data.widget.id)
     await widgetAdvicer.afterWidgetUdpated(data.tabIndex,res)
     ctx.body = res
   }
@@ -20,7 +20,7 @@ class WidgetController {
     var data = ctx.request.body
     data.widget.id = uuidv4()
     appDao.saveAppEntry(data.tabIndex,data.widget)
-    var res = await appDao.findOneById(data.tabIndex,data.widget.id)
+    var res = await appDao.findOne(data.tabIndex,data.widget.id)
     await widgetAdvicer.afterWidgetAdded(data.tabIndex,res)
     ctx.body = res
   }

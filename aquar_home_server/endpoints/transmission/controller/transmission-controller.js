@@ -155,7 +155,7 @@ class TransmissionController {
     var id = ctx.query.id
     var server = ctx.query.server
     var token = ctx.query.token
-    var widget = appDao.findOneById(tabIndex,id)
+    var widget = appDao.findOne(tabIndex,id)
     var auth = appDao.getAuth()
     if(!widget || !auth.secret){
       return null
@@ -182,7 +182,7 @@ class TransmissionController {
     optData.method = ctx.request.body.method
     optData.ids = ctx.request.body.ids
     optData.options = ctx.request.body.options
-    var widget = appDao.findOneById(tabIndex,id)
+    var widget = appDao.findOne(tabIndex,id)
     var auth = appDao.getAuth()
     if(!widget || !auth.secret){
       return null

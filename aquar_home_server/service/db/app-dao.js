@@ -4,6 +4,7 @@ import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import cryptoRandomString from 'crypto-random-string'
 import moment from 'moment'
+import _ from 'lodash'
 
 class AppDao {
   DB_PATH = '/var/aquardata/db/'
@@ -25,10 +26,21 @@ class AppDao {
     }
     this.db.write()
   }
-  findOneById(tabIndex,id) {
+  findOne(tabIndex,id) {
     var res = this.db.chain.get('tabs['+tabIndex+'].widgets')
       .find({ 'id': id }).value()
     return res
+  }
+  findOneById(id) {
+    let tabs = this.db.chain.get('tabs').value()
+    for(let tab of tabs){
+      let resList = _.filter(tab.widgets,{'id':id})
+      if(!resList || resList.length === 0){
+        continue
+      }
+      return resList[0]
+    }
+    return null 
   }
   findByCurIndex() {
     var index = this.db.chain.get('config.current_index').value()

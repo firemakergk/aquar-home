@@ -157,7 +157,11 @@ class Room {
   }
 
   broadCast(socket_id, name, data) {
-    for (let otherID of Array.from(this.peers.keys()).filter((id) => id !== socket_id)) {
+    let idList = Array.from(this.peers.keys())
+    if(socket_id !== null){
+      idList = Array.from(this.peers.keys()).filter((id) => id !== socket_id)
+    }
+    for (let otherID of idList) {
       this.send(otherID, name, data)
     }
   }

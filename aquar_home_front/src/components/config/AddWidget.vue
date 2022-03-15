@@ -14,7 +14,7 @@
             <img v-if="widget.widget === 'DockerWidget'" :src="logo_docker" style="width: 60px;">
             <img v-if="widget.widget === 'SearchWidget'" :src="logo_search" style="width: 60px;">
             <img v-if="widget.widget === 'TransmissionWidget'" :src="logo_transmission" style="width: 60px;">
-            <img v-if="widget.widget === 'ChatRoomWidget'" :src="logo_transmission" style="width: 60px;">
+            <img v-if="widget.widget === 'ChatRoomWidget'" :src="logo_chatroom" style="width: 60px;">
           </div>
           <div>{{ widget.name }}</div>
         </a>

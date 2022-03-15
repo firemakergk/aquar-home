@@ -58,6 +58,7 @@
 - [X] bug：页面元素设置的时候点完删除后编辑状态就消失了
 - [X] 解决gitlab在docker环境下的ssh访问问题
 - [X] transmission组件
+- [ ] 单组件tab模式开发
 - [ ] 音乐播放服务 Navidrome支持
 - [ ] rtsp推流功能集成
 - [ ] NextCloud组件下载失败，报500

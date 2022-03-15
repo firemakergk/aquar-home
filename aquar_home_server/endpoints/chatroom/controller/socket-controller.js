@@ -16,6 +16,7 @@ class ChatRoomSocketController {
 
   async createRoom(sokcet, data, callback){
     let {room_id} = data
+    console.log(`test new function: ${appDao.findOneById(room_id)}`)
     if (this.roomList.has(room_id)) {
       callback(`room ${room_id} already exists`)
     } else {
@@ -44,9 +45,21 @@ class ChatRoomSocketController {
     room.addPeer(peer)
     this.peers.set(socket.id, peer)
     socket.room_id = room_id
-    room.peers
-    socket.broadcast.emit('join',{id:room.id, members: Array.from( room.peers.keys()) } )
-    cb({id:room.id, members: Array.from( room.peers.keys()) })
+    peer.room.broadCast(null, 'join', {id:room.id, members: Array.from(room.peers.keys()).map( m => {return {id: m, name: this.peers.get(m).name}})})
+    cb({id:room.id, members: Array.from(room.peers.keys()).map( m => {return {id: m, name: this.peers.get(m).name}})})
+  }
+
+  async updateName(socket, data, callback){
+    let peer = this.peers.get(socket.id)
+    if(!peer){
+      console.error(`未找到对应的peer,id:${socket.id}`) 
+    }
+    if(!data || !data.name){
+      console.error(`修改昵称接口缺少必要数据,data:${socket.id}`) 
+    }
+    peer.name = data.name.toString().substr(0, 30)
+    let room = peer.room
+    room.broadCast(null, 'join', {id:room.id, members: Array.from(room.peers.keys()).map( m => {return {id: m, name: this.peers.get(m).name}})})
   }
 
   async getProducers(socket, data, callback) {
@@ -77,7 +90,15 @@ class ChatRoomSocketController {
     console.log('Create webrtc transport', {
       name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
     })
-
+    let peer = this.peers.get(socket.id)
+    if(!peer){
+      console.error(`未找到对应的peer,id:${socket.id}`) 
+    }
+    let widget = appDao.findOneById(peer.room.id)
+    if(!widget || !widget.data.announced_ips || widget.data.announced_ips.length === 0){
+      console.log(`未找到该组件的宣告IP列表,roomId:${peer.room.id}`)
+      callback({code: 1, errorMsg: '未找到该组件的宣告IP列表，请先设置好宣告IP列表再使用视频功能'})
+    }
     try {
       const { params } = await this.roomList.get(socket.room_id).createWebRtcTransport(socket.id)
 
@@ -173,7 +194,7 @@ class ChatRoomSocketController {
     // }
     let room = this.roomList.get(socket.room_id)
     if(room && room.peers && room.peers.size > 0){
-      socket.broadcast.emit('join',{id:socket.room_id, members:Array.from( room.peers.keys()) } )
+      room.broadCast(null,'join',{id:socket.room_id, members:Array.from( room.peers.keys()) }  )
     }
     socket.room_id = null
     callback('successfully exited room')

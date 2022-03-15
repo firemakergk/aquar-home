@@ -28,7 +28,12 @@ class RoomClient {
         })
       })
     }
-    this.name = name
+    console.log(`new RoomClient name: ${name},socketId: ${socket.id}`)
+    if(name){
+      this.name = name
+    }else{
+      this.name = socket.id
+    }
     this.socket = socket
     this.vueBus = vueBus
     this.producerTransport = null
@@ -88,11 +93,15 @@ class RoomClient {
       .then(
         async function (e) {
           console.log('Joined to room', e)
-          this.vueBus.emit("roominfo", {roomId: this.room_id, name:this.room_id, members:e.members})
+          this.vueBus.emit("roominfo_"+this.room_id, {roomId: this.room_id, name:this.room_id, members:e.members})
           const data = await this.socket.request('getRouterRtpCapabilities')
           let device = await this.loadDevice(data)
           this.device = device
-          await this.initTransports(device)
+          let initRes = await this.initTransports(device)
+          if(initRes.code !=0){
+            this.vueBus.emit('connectfailed_'+this.room_id, initRes)
+            return
+          }
           this.socket.emit('getProducers')
         }.bind(this)
       )
@@ -126,9 +135,9 @@ class RoomClient {
         rtpCapabilities: device.rtpCapabilities
       })
 
-      if (data.error) {
-        console.error(data.error)
-        return
+      if (data.errorCode) {
+        console.error(data)
+        return data
       }
 
       this.producerTransport = device.createSendTransport(data)
@@ -192,9 +201,9 @@ class RoomClient {
         forceTcp: false
       })
 
-      if (data.error) {
-        console.error(data.error)
-        return
+      if (data.errorCode) {
+        console.error(data)
+        return data
       }
 
       // only one needed
@@ -234,6 +243,7 @@ class RoomClient {
         }.bind(this)
       )
     }
+    return {code: 0}
   }
 
   initSockets() {
@@ -256,7 +266,7 @@ class RoomClient {
       async function (data) {
         console.log('New producers', data)
         let {producerList ,producerMap} = data
-        this.vueBus.emit('producermap', producerMap)
+        this.vueBus.emit('producermap_'+this.room_id, producerMap)
         for (let { producer_id } of producerList) {
           await this.consume(producer_id)
         }
@@ -356,7 +366,7 @@ class RoomClient {
             this.removeConsumer(consumer.id)
           }.bind(this)
         )
-        this.vueBus.emit("consume", { producerId:producer_id, consumer, stream, kind } )
+        this.vueBus.emit("consume_"+this.room_id, { producerId:producer_id, consumer, stream, kind } )
       }.bind(this)
     )
   }
@@ -419,7 +429,7 @@ class RoomClient {
   }
 
   removeConsumer(consumer_id) {
-    this.vueBus.emit('consumerclosed', consumer_id)
+    this.vueBus.emit('consumerclosed_'+this.room_id, consumer_id)
     this.consumers.delete(consumer_id)
   }
 

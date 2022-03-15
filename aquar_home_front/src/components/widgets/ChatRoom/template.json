@@ -1,5 +1,5 @@
 {
-  "name": "视频对讲",
+  "name": "视频聊天",
   "widget": "ChatRoomWidget",
   "href": "",
   "layout": {
@@ -7,14 +7,11 @@
     "h": 6
   },
   "data": {
-    "server": null,
-    "node": null,
-    "api_token": null
+    "auto_join": false,
+    "announced_ips": [
+      "127.0.0.1"
+    ]
   },
   "required_params": [
-    [
-      "server",
-      "text"
-    ]
   ]
 }

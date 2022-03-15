@@ -57,7 +57,7 @@ class RsyncphaseController {
     .get('items')
     .push(item).value()
     db.write()
-    var res = appDao.findOneById(tabIndex,id).data.items
+    var res = appDao.findOne(tabIndex,id).data.items
     ctx.body =  {code:0,data:res}
   }
   async updateItem(ctx, next) {
@@ -73,7 +73,7 @@ class RsyncphaseController {
     .get('items').nth(index)
     .assign(item).value()
     db.write()
-    var res = appDao.findOneById(tabIndex,id).data.items
+    var res = appDao.findOne(tabIndex,id).data.items
     ctx.body = {code:0,data:res}
   }
   async removeItem(ctx, next) {
@@ -89,7 +89,7 @@ class RsyncphaseController {
       return index === itemIndex
     }).value()
     db.write()
-    var res = appDao.findOneById(tabIndex,id).data.items
+    var res = appDao.findOne(tabIndex,id).data.items
     ctx.body = {code:0,data:res}
   }
 }

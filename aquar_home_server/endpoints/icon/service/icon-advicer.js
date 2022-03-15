@@ -46,7 +46,7 @@ class IconAdvicer {
       reason=>{
         console.log(reason)
     })
-    var curConfig = appDao.findOneById(tabIndex,widgetData.id)
+    var curConfig = appDao.findOne(tabIndex,widgetData.id)
     curConfig.data.ico_path = configPath
     appDao.updateById(tabIndex,widgetData.id,curConfig)
     return curConfig
