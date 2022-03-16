@@ -9,7 +9,7 @@ COPY ./aquar_home_front/ ./
 RUN npm install --registry ${NPM_REGISTRY} && npm run build
 WORKDIR /app/aquar_home/aquar_home_server
 COPY ./aquar_home_server/ ./
-RUN PYTHON=python3.8 npm install --unsafe-perm --registry ${NPM_REGISTRY}
+RUN PYTHON=python3 npm install --unsafe-perm --registry ${NPM_REGISTRY}
 WORKDIR /app/aquar_home
 RUN rm -rf ./aquar_home_server/public/ && mkdir -p aquar_home_server/public/ && cp -r ./aquar_home_front/dist/* ./aquar_home_server/public/ 
 EXPOSE 8172
