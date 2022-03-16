@@ -13,6 +13,7 @@ RUN rm -rf ./aquar_home_server/public/ && mkdir -p aquar_home_server/public/ && 
 EXPOSE 8172
 VOLUME ["/var/aquardata"]
 VOLUME ["/opt/aquarpool"]
+VOLUME ["/app/aquar_home/aquar_home_server/cert"]
 VOLUME ["/root/.pm2/logs"]
 
 CMD ["/bin/sh", "-c", "cd /app/aquar_home/aquar_home_server/ && mkdir -p /var/aquardata/log/ && npm run dcprd > /root/.pm2/logs/aquar_home.log 2>&1"]
