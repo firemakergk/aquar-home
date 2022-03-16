@@ -3,7 +3,7 @@ FROM node:14-slim
 ARG NPM_REGISTRY
 WORKDIR /tmp
 RUN apt update && apt install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget rsync && npm install -g pm2 && wget https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz && wget https://bootstrap.pypa.io/get-pip.py && tar -xf Python-3.8.9.tgz
-RUN cd Python-3.8.9 && ./configure --enable-optimizations && make install && python3.8 get-pip.py
+RUN cd Python-3.8.9 && ./configure --enable-optimizations && make install && python3 /tmp/get-pip.py
 WORKDIR /app/aquar_home/aquar_home_front
 COPY ./aquar_home_front/ ./
 RUN npm install --registry ${NPM_REGISTRY} && npm run build
