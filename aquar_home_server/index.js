@@ -11,6 +11,7 @@ import debug from 'debug'
 import https from 'https'
 debug('demo:server')
 
+const CERT_PATH = '/var/aquardata/cert/'
 /**
  * Get port from environment and store in Express.
  */
@@ -21,9 +22,18 @@ var port = normalizePort(process.env.PORT || '8172');
 /**
  * Create HTTP server.
  */
+var keyPath = './cert/aquarhome.key'
+var crtPath = './cert/aquarhome.crt'
+if (fs.existsSync(CERT_PATH+'aquarhome.key') && fs.existsSync(CERT_PATH+'aquarhome.crt')){
+  keyPath = CERT_PATH+'aquarhome.key'
+  crtPath = CERT_PATH+'aquarhome.crt'
+  console.log(`使用目录${CERT_PATH}下的自定义ssl证书`)
+}else{
+  console.log(`使用项目默认ssl证书`)
+}
 const options = {
-  key: fs.readFileSync('./cert/aquarhome.key'),
-  cert: fs.readFileSync('./cert/aquarhome.crt')
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(crtPath)
 };
 var server = https.createServer(options,app.callback());
 var socketServer = new SocketServer(server);
