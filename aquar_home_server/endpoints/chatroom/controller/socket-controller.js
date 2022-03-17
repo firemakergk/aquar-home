@@ -100,7 +100,7 @@ class ChatRoomSocketController {
       callback({code: 1, errorMsg: '未找到该组件的宣告IP列表，请先设置好宣告IP列表再使用视频功能'})
     }
     try {
-      const { params } = await this.roomList.get(socket.room_id).createWebRtcTransport(socket.id)
+      const { params } = await this.roomList.get(socket.room_id).createWebRtcTransport(socket.id,widget.data.announced_ips )
 
       callback(params)
     } catch (err) {

@@ -180,6 +180,7 @@ export default {
     }
   },
   created: function() {
+    this.announcedIpsString = this.configData.data.announced_ips.join('\n')
     this.$bus.on('connectfailed_'+this.configData.id, data =>  {
       console.log('connectfailed')
       this.showErrorInfo = true
@@ -222,7 +223,6 @@ export default {
   },
   methods: {
     init() {
-      this.announcedIpsString = this.configData.data.announced_ips.join('\n')
       if(!this.isInRoom){
         return
       }

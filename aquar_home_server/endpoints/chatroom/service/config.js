@@ -47,18 +47,6 @@ export default {
         {
           ip: '0.0.0.0',
           announcedIp: '127.0.0.1',
-        },
-        {
-          ip: '0.0.0.0',
-          announcedIp: '192.168.0.106',
-        },
-        {
-          ip: '0.0.0.0',
-          announcedIp: '192.168.0.107',
-        },
-        {
-          ip: '0.0.0.0',
-          announcedIp: '39.100.115.231',
         }
       ],
       maxIncomingBitrate: 1500000,
