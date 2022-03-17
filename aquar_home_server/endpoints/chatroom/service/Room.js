@@ -53,7 +53,7 @@ class Room {
     const { maxIncomingBitrate, initialAvailableOutgoingBitrate } = config.mediasoup.webRtcTransport
 
     let configIpList = ip_list.map(i => {return {ip: '0.0.0.0', announcedIp: i}})
-    console.log(`createWebRtcTransport configIpList: ${configIpList}`)
+    console.log(`createWebRtcTransport configIpList: ${JSON.stringify(configIpList)}`)
     const transport = await this.router.createWebRtcTransport({
       listenIps: configIpList,
       enableUdp: true,
