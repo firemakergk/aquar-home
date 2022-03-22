@@ -107,6 +107,7 @@ class RoomClient {
       )
       .catch((err) => {
         console.log('Join error:', err)
+        this.vueBus.emit('joinfailed_'+this.room_id, {errorMsg: err})
       })
   }
 

@@ -16,26 +16,26 @@ class SocketServer {
       //   let router = socketRouter[routerKey]
       //   for(let k in router){
       //     (function(k) {
-      //       socket.on(k, (data, callback) => {router[k](socket,data,callback)})
+      //       socket.on(k, async (data, callback) => {router[k](socket,data,callback)})
       //       console.log(k)
       //     })(k)
       //   }
       // }
-      socket.on('createRoom', (data, callback) => {chatRoomSocketController.createRoom(socket,data,callback)})
-      socket.on('join', (data, callback) => {chatRoomSocketController.join(socket,data,callback)})
-      socket.on('updateName', (data, callback) => {chatRoomSocketController.updateName(socket,data,callback)})
-      socket.on('getProducers', (data, callback) => {chatRoomSocketController.getProducers(socket,data,callback)})
-      socket.on('getRouterRtpCapabilities', (data, callback) => {chatRoomSocketController.getRouterRtpCapabilities(socket,data,callback)})
-      socket.on('createWebRtcTransport', (data, callback) => {chatRoomSocketController.createWebRtcTransport(socket,data,callback)})
-      socket.on('connectTransport', (data, callback) => {chatRoomSocketController.connectTransport(socket,data,callback)})
-      socket.on('produce', (data, callback) => {chatRoomSocketController.produce(socket,data,callback)})
-      socket.on('consume', (data, callback) => {chatRoomSocketController.consume(socket,data,callback)})
-      socket.on('resume', (data, callback) => {chatRoomSocketController.resume(socket,data,callback)})
-      socket.on('getMyRoomInfo', (data, callback) => {chatRoomSocketController.getMyRoomInfo(socket,data,callback)})
-      socket.on('disconnect', (data, callback) => {chatRoomSocketController.disconnect(socket,data,callback)})
-      socket.on('producerClosed', (data, callback) => {chatRoomSocketController.producerClosed(socket,data,callback)})
-      socket.on('exitRoom', (data, callback) => {chatRoomSocketController.exitRoom(socket,data,callback)})
-      socket.on('postwords', (data, callback) => {chatRoomSocketController.postWords(socket,data,callback)})
+      socket.on('disconnect', async (reason) => {try{ await chatRoomSocketController.exitRoom(socket,reason,() => {})} catch(e){console.error(e)}})
+      socket.on('createRoom', async (data, callback) => {try{ await chatRoomSocketController.createRoom(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('join', async (data, callback) => {try{ await chatRoomSocketController.join(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('updateName', async (data, callback) => {try{ await chatRoomSocketController.updateName(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('getProducers', async (data, callback) => {try{ await chatRoomSocketController.getProducers(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('getRouterRtpCapabilities', async (data, callback) => {try{ await chatRoomSocketController.getRouterRtpCapabilities(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('createWebRtcTransport', async (data, callback) => {try{ await chatRoomSocketController.createWebRtcTransport(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('connectTransport', async (data, callback) => {try{ await chatRoomSocketController.connectTransport(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('produce', async (data, callback) => {try{ await chatRoomSocketController.produce(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('consume', async (data, callback) => {try{ await chatRoomSocketController.consume(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('resume', async (data, callback) => {try{ await chatRoomSocketController.resume(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('getMyRoomInfo', async (data, callback) => {try{ await chatRoomSocketController.getMyRoomInfo(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('producerClosed', async (data, callback) => {try{ await chatRoomSocketController.producerClosed(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('exitRoom', async (data, callback) => {try{ await chatRoomSocketController.exitRoom(socket,data,callback)} catch(e){console.error(e)}})
+      socket.on('postwords', (data, callback) => {try{ chatRoomSocketController.postWords(socket,data,callback)}  catch(e){console.error(e)}})
     })
   }
 }

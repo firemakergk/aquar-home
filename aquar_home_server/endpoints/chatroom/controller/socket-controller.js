@@ -29,18 +29,18 @@ class ChatRoomSocketController {
 
   async join(socket, data, cb) {
     let { room_id, name } = data
-    console.log('User joined', {
-      room_id: room_id,
-      name: name
-    })
-
+    console.log(`User join socketId: ${socket.id}, roomId: ${room_id}`)
     if (!this.roomList.has(room_id)) {
       return cb({
         error: 'Room does not exist'
       })
     }
-
     let room = this.roomList.get(room_id)
+    if(room.peers.size >= 6){
+      return cb({
+        error: 'room is full'
+      }) 
+    }
     let peer = new Peer(socket, name)
     room.addPeer(peer)
     this.peers.set(socket.id, peer)
@@ -66,7 +66,7 @@ class ChatRoomSocketController {
     if (!this.roomList.has(socket.room_id)){
       return
     } 
-    console.log('Get producers', { name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}` })
+    console.log(`Get producers socketId: ${socket.id}`)
     // send all the current producer to newly joined member
     let producerList = this.roomList.get(socket.room_id).getProducerListForPeer()
     let producerMap = this.roomList.get(socket.room_id).getProducerMapForPeer()
@@ -74,9 +74,7 @@ class ChatRoomSocketController {
   }
 
   async getRouterRtpCapabilities(socket, data, callback){
-    console.log('Get RouterRtpCapabilities', {
-      name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
-    })
+    console.log(`Get RouterRtpCapabilities socketId: ${socket.id}`)
     try {
       callback(this.roomList.get(socket.room_id).getRtpCapabilities())
     } catch (e) {
@@ -87,9 +85,7 @@ class ChatRoomSocketController {
   }
 
   async createWebRtcTransport(socket, data, callback) {
-    console.log('Create webrtc transport', {
-      name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
-    })
+    console.log(`Create webrtc transport socketId: ${socket.id}`)
     let peer = this.peers.get(socket.id)
     if(!peer){
       console.error(`未找到对应的peer,id:${socket.id}`) 
@@ -113,7 +109,7 @@ class ChatRoomSocketController {
 
   async connectTransport(socket, data, callback) {
     let { transport_id, dtlsParameters } = data
-    console.log('Connect transport', { name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}` })
+    console.log(`Connect transport socketId: ${socket.id},transportId: ${transport_id}`)
     
     if (!this.roomList.has(socket.room_id)) {
       return
@@ -129,11 +125,7 @@ class ChatRoomSocketController {
       return callback({ error: 'not is a room' })
     }
     let producer_id = await this.roomList.get(socket.room_id).produce(socket.id, producerTransportId, rtpParameters, kind)
-    console.log('Produce', {
-      type: `${kind}`,
-      name: `${this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`,
-      id: `${producer_id}`
-    })
+    console.log(`Produce socketId:${socket.id},kind:${kind},producerId: ${producer_id}`)
     callback({
       producer_id
     })
@@ -142,11 +134,7 @@ class ChatRoomSocketController {
   async consume(socket, data, callback) {
     let { consumerTransportId, producerId, rtpCapabilities } = data
     let params = await this.roomList.get(socket.room_id).consume(socket.id, consumerTransportId, producerId, rtpCapabilities)
-    console.log('Consuming', {
-      name: `${this.roomList.get(socket.room_id) && this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`,
-      producer_id: `${producerId}`,
-      consumer_id: `${params.id}`
-    })
+    console.log(`Consuming socketId:${socket.id},consumerId:${params.id},producerId: ${producerId}`)
     callback(params)
   }
 
@@ -160,26 +148,20 @@ class ChatRoomSocketController {
   }
 
   async disconnect(socket, data, callback) {
-    console.log('Disconnect', {
-      name: `${this.roomList.get(socket.room_id) && this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
-    })
+    console.log(`Disconnect ${socket.id}`)
 
     if (!socket.room_id) return
     this.roomList.get(socket.room_id).removePeer(socket.id)
   }
 
   async producerClosed(socket, data, callback) {
-    console.log('Producer close', {
-      name: `${this.roomList.get(socket.room_id) && this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
-    })
+    console.log(`Producer close socketId:${socket.id}`)
 
     this.roomList.get(socket.room_id).closeProducer(socket.id)
   }
 
   async exitRoom(socket, data, callback) {
-    console.log('Exit room', {
-      name: `${this.roomList.get(socket.room_id) && this.roomList.get(socket.room_id).getPeers().get(socket.id).name}`
-    })
+    console.log(`Exit room socketId:${socket.id}`)
 
     if (!this.roomList.has(socket.room_id)) {
       callback({
@@ -194,7 +176,7 @@ class ChatRoomSocketController {
     // }
     let room = this.roomList.get(socket.room_id)
     if(room && room.peers && room.peers.size > 0){
-      room.broadCast(null,'join',{id:socket.room_id, members:Array.from( room.peers.keys()) }  )
+      room.broadCast(null,'join',{id:socket.room_id, members: Array.from(room.peers.keys()).map( m => {return {id: m, name: this.peers.get(m).name}})})
     }
     socket.room_id = null
     callback('successfully exited room')

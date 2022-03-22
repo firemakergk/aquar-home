@@ -108,10 +108,11 @@
       </div>
       <div ref="selfViewContainer" class="self_view tbgcolor_main">
           <div v-if="isInRoom && isRecording" class="view_content">
-            <div class="view_header"><span class="tcolor_reverse" style="">{{localData.name}}</span></div>
+            <div class="view_header" style="width: 120px;"><span class="tcolor_reverse" style="overflow-wrap: break-word;">{{localData.name}}</span></div>
             <video class="view_video" autoplay muted ref="selfView" ></video>
           </div>
           <div v-else-if="isInRoom && !isRecording" class="self_view_close" style="padding: 10px;" >
+            <div class="view_header" style="width: 120px;"><span class="tcolor_main" style="overflow-wrap: break-word;">{{localData.name}}</span></div>
             <a @click="changeRecordStatus()" class="iconfont icon-recordfill icon" style="font-size: 24px;" ></a>
             <!-- <a @click="changeRecordStatus()" class="iconfont icon-voicefill icon"  style="font-size: 24px;" ></a> -->
           </div>
@@ -186,6 +187,10 @@ export default {
       this.showErrorInfo = true
       this.errorInfo = data.errorMsg
     })
+    this.$bus.on('joinfailed_'+this.configData.id, e => {
+      console.log('join failed')
+      alert(e.errorMsg)
+    })
     this.$bus.on('roominfo_'+this.configData.id, data =>  {
       console.log('roominfo')
       this.updateStreamList(data.members.map( m => {return {peerId:m.id, name:m.name}}), true)
@@ -205,7 +210,7 @@ export default {
       }
     })
     this.$bus.on('consumerclosed_'+this.configData.id, consumerId => {
-      if(this.consumerMap[consumerId]){
+      if(this.consumerMap[consumerId] && this.$refs['view_'+this.consumerMap[consumerId]] && this.$refs['view_'+this.consumerMap[consumerId]].length > 0){
         this.$refs['view_'+this.consumerMap[consumerId]][0].srcObject = null
       }
     })
@@ -220,6 +225,7 @@ export default {
     this.$bus.off('producermap_'+this.configData.id)
     this.$bus.off('consume_'+this.configData.id)
     this.$bus.off('consumerclosed_'+this.configData.id)
+    this.$bus.off('joinfailed_'+this.configData.id)
   },
   methods: {
     init() {
