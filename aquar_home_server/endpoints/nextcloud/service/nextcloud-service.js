@@ -13,7 +13,7 @@ if (!fs.existsSync(CACHE_PATH)){
 }
 
 async function login(baseUrl){
-  let res = axios({
+  let res = await axios({
     method: 'post',
     url: baseUrl+"/index.php/login/v2",
     params: null,
@@ -23,7 +23,7 @@ async function login(baseUrl){
 }
 
 async function poll(baseUrl, pollToken){
-  let res = axios({
+  let res = await axios({
     method: 'post',
     url: baseUrl+"/index.php/login/v2/poll",
     params: {token: pollToken},
