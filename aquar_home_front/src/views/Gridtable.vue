@@ -70,6 +70,7 @@
 import { GridLayout, GridItem } from 'vue-grid-layout'
 import { mapGetters } from 'vuex'
 import * as _ from 'lodash'
+import Push from 'push.js'
 import logo_aquar from '../assets/app_images/aquar.png'
 import SyncthingWidget from '../components/widgets/Syncthing'
 import ArchivePhaseWidget from '../components/widgets/ArchivePhase'
@@ -105,6 +106,9 @@ export default {
   data() {
     return {
       logo_aquar,
+      soundDeleng : new Audio(require('../assets/sounds/deleng.wav')),
+      soundBor : new Audio(require('../assets/sounds/bor.ogg')),
+      soundDongDeng : new Audio(require('../assets/sounds/dongdeng.wav')),
       lgLayout: [],
       layout: [],
       curViewSize: "lg",
@@ -137,6 +141,7 @@ export default {
     this.$bus.on('addWidget', this.addWidget)
     this.$bus.on('addWidgetBatch', this.addWidgetBatch)
     this.$bus.on('refresh', this.refreshWidgets)
+    this.$bus.on('notify', this.notify)
   },
   mounted: function() {
     this.updateCurViewSize()
@@ -164,6 +169,7 @@ export default {
     this.$bus.off('addWidget', this.addWidget)
     this.$bus.off('addWidgetBatch', this.addWidgetBatch)
     this.$bus.off('refresh', this.refreshWidgets)
+    this.$bus.off('notify', this.notify)
   },
   methods: {
     moveEvent: function(i, newX, newY) {
@@ -426,7 +432,22 @@ export default {
       this.responseLayout(this.curViewSize)
       // this.$forceUpdate()
     },
-    
+    notify(data){
+      console.log('notify called')
+      let {title, body, sound, timeout} = data
+      if(sound === 'dongdeng'){
+        this.soundDongDeng.play()
+      }else if(sound === 'deleng'){
+        this.soundDeleng.play()
+      }else if(sound === 'bor'){
+        this.soundBor.play()
+      }
+      Push.create(title, {
+        body: body,
+        icon: this.logo_aquar,
+        timeout: timeout
+      });
+    }
   }
 }
 </script>

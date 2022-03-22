@@ -214,7 +214,7 @@ export default {
       this.joinRoom()
     }
   },
-  destroyed: function() {
+  beforeDestroy: function() {
     this.$bus.off('connectfailed_'+this.configData.id)
     this.$bus.off('roominfo_'+this.configData.id)
     this.$bus.off('producermap_'+this.configData.id)
@@ -236,6 +236,7 @@ export default {
       })
       this.socket.on("postwords", data => {
         console.log('postwords',data)
+        this.$bus.emit('notify', {title: '消息', body: `${data.name}: ${data.content}`,sound: 'bor',timeout: 4000})
         this.wordsList.push(data)
       })
       // this.socket.on(
@@ -285,18 +286,38 @@ export default {
       if(withDelete){
         for(let i of updateList) {
           if(streamMap[i.peerId]){
+            if((i.audioStream || i.videoStream) && (!streamMap[i.peerId].audioStream && !streamMap[i.peerId].videoStream)){
+              console.log('通话接通0')
+              let name = i.name ? i.name : i.peerId
+              this.$bus.emit('notify', {title: '通话接通', body: `聊天室${this.configData.name}-${name}开始通话`,sound: 'deleng',timeout: 4000})
+            }
             resList.push(Object.assign(streamMap[i.peerId], i))
           }else{
             resList.push(i)
+            if(this.streamList.length > 0) {
+              console.log('新成员0')
+              let name = i.name ? i.name : i.peerId
+              this.$bus.emit('notify', {title: '新成员', body: `${name}进入聊天室${this.configData.name}`,sound:'dongdeng',timeout: 4000})
+            }
           }
         }
       }else{
         resList = this.streamList
         for(let i of updateList) {
           if(streamMap[i.peerId]){
+            if((i.audioStream || i.videoStream) && (!streamMap[i.peerId].audioStream && !streamMap[i.peerId].videoStream)){
+              console.log('通话接通1')
+              let name = i.name ? i.name : i.peerId
+              this.$bus.emit('notify', {title: '通话接通', body: `聊天室${this.configData.name}-${name}开始通话`,sound: 'deleng',timeout: 4000})
+            }
             Object.assign(streamMap[i.peerId], i)
           }else{
             resList.push(i)
+            if(this.streamList.length > 0) {
+              console.log('新成员1')
+              let name = i.name ? i.name : i.peerId
+              this.$bus.emit('notify', {title: '新成员', body: `${name}进入聊天室${this.configData.name}`,sound:'dongdeng',timeout: 4000})
+            }
           }
         }
       }
