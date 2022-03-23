@@ -1,5 +1,5 @@
 <template>
-  <div class="search_container">
+  <div class="search_container" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
     <div style="position: absolute; z-index: 4; top:50px; left:90px;right: 50px; display: flex; flex-direction: column;" class="tbgcolor_main tcolor_main">
       <div style="display: flex; flex-direction: row-reverse;" v-show="suggests && suggests.length>0">
         <a style="margin: 0 8px;" @click="closeSuggest()">X</a>
@@ -15,7 +15,10 @@
       <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" autofocus="autofocus" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
         v-model="searchText" @keyup.enter="search()" @input="prepareSuggest()" />
-      <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search"></button>
+      <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search()"></button>
+      <div style="position:absolute; right: 8px; top: 2px; width: 8px;">
+        <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" />
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +48,7 @@ export default {
           url:'https://cn.bing.com/search?q={{}}'
         }
       },
+      showConfigIcon: false,
       searchText:'',
       lastSign: null,
       suggests:[]
@@ -53,6 +57,9 @@ export default {
   computed: {
   },
   created: function() {
+    if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
+      this.configData.data.target_type = '_blank'
+    }
   },
   mounted: function() {
     
@@ -73,7 +80,11 @@ export default {
       }
       this.suggests = []
       var searchUrl = this.source[this.configData.data.source].url.replace('{{}}',this.searchText)
-      window.open(searchUrl)
+      if(this.configData.data.target_type === '_self'){
+        window.location.assign(searchUrl)
+      }else{
+        window.open(searchUrl)
+      }
     },
     prepareSuggest(){
       var sign = Math.floor(Math.random() * 1000000)
@@ -103,6 +114,9 @@ export default {
     },
     closeSuggest() {
       this.suggests = []
+    },
+    toggleConfig() {
+      this.$bus.emit('configWidget',  {'widgetType':'SearchWidgetConfig','widgetName':'搜索','tabIndex':this.tabIndex,'configData':this.configData})
     }
   }
 }

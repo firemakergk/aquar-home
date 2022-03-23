@@ -9,7 +9,7 @@
         <img v-else-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 16px;">
         <img v-else :src="logo_icon" style=" flex-grow: 1; width: 16px;">
       </div>
-      <a target="_blank" :href="configData.href" class="icon_label tcolor_main">{{ configData.name }}</a>
+      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_main">{{ configData.name }}</a>
     </div>
   </div>
 </template>
@@ -60,6 +60,9 @@ export default {
   computed: {
   },
   created: function() {
+    if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
+      this.configData.data.target_type = '_blank'
+    }
   },
   mounted: function() {
   },
@@ -69,10 +72,6 @@ export default {
     toggleConfig() {
       // this.showConfig = !this.showConfig
       this.$bus.emit('configWidget',  {'widgetType':'IconWidgetConfig','widgetName':'图标','tabIndex':this.tabIndex,'configData':this.configData})
-    },
-    updateConfig() {
-      this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
-      this.showConfig = false
     }
   }
 }

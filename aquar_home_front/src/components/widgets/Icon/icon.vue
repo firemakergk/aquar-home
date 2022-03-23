@@ -3,7 +3,7 @@
     <div class="icon_panel">
       <div class="img_span" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
         <div style="flex-grow: 1; width: 8px;" />
-        <a target="_blank" :href="configData.href">
+        <a :target="configData.data.target_type" :href="configData.href">
           <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 48px;">
           <img v-else :src="logo_icon" style=" flex-grow: 1; width: 48px;">
         </a>
@@ -11,7 +11,7 @@
           <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_reverse" style="color: rgba(255,255,255,0.3); font-size: 6px; " title="设置" @click="toggleConfig" />
         </div>
       </div>
-      <a target="_blank" :href="configData.href" class="icon_label tcolor_reverse">{{ configData.name }}</a>
+      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_reverse">{{ configData.name }}</a>
     </div>
   </div>
 </template>
@@ -62,6 +62,9 @@ export default {
   computed: {
   },
   created: function() {
+    if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
+      this.configData.data.target_type = '_blank'
+    }
   },
   mounted: function() {
   },

@@ -15,10 +15,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import IconWidgetConfig from './widgets/Icon/config.vue'
+import SearchWidgetConfig from './widgets/Search/config.vue'
 export default {
   name: 'WidgetConfig',
   components: {
-    IconWidgetConfig
+    IconWidgetConfig,
+    SearchWidgetConfig
   },
   data: function() {
     return {

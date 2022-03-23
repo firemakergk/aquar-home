@@ -67,6 +67,15 @@
           <input v-model="configData.href" style="width: 100%;">
         </div>
       </div>
+      <div class="param_row">
+        <div class="param_name">跳转方式：</div>
+        <div class="param_form">
+          <select v-model="configData.data.target_type">
+            <option value='_blank'>新标签页</option>
+            <option value='_self'>当前页</option>
+          </select>
+        </div>
+      </div>
       <div class="param_row" style="height: 80px;">
         <div class="param_name"></div>
         <div class="param_form">
@@ -124,6 +133,9 @@ export default {
   computed: {
   },
   created: function() {
+    if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
+      this.configData.data.target_type = '_blank'
+    }
   },
   mounted: function() {
   },
