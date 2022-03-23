@@ -41,7 +41,6 @@ AquarHome的核心特性：
 - emby/jellyfin组件
 - ...
 
-
 ## 快速开始
 
 ### Docker方式
@@ -52,7 +51,7 @@ AquarHome的部署推荐使用docker-compose方式。
 
 1.在准备好docker-compose环境后，创建一个新文件夹。
 
-例如: `mkdir aquarhome`
+例如:`mkdir aquarhome`
 
 2.在文件夹中创建一个docker-compose.yml文件。
 
@@ -76,6 +75,7 @@ services:
       - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs #日志文件
   ports:
       - 8172:8172
+      - 10000-10100:10000-10100 #视频聊天组件需要预留100个端口作为流媒体的数据通道
   restart: unless-stopped
 ```
 
@@ -86,20 +86,26 @@ cd aquarhome
 docker-compose up -d
 ```
 
-5.docker-compose正常启动后，访问宿主机在内网中的地址，如192.168.0.117:8172，如果可以看到AquarHome的登录页面，就说明部署成功了。
+5.docker-compose正常启动后，访问宿主机在内网中的地址，如https://192.168.0.117:8172，注意是HTTPS协议，如果部署成功，第一次打开页面时浏览器会报告SSL证书不安全，原因是AquarHome内置了默认的自签名证书，点击“继续前往”如果可以看到AquarHome的登录页面就可以开始设置属于自己的AquarHome了。
 
 ### 源码方式
 
-如果你的环境不方便使用docker，或者你需要根据自己的需求修改AquarHome的代码，可以使用源码方式部署AquarHome。
+如果你的环境不方便使用docker，或者你需要根据自己的需求修改AquarHome的代码，可以使用源码方式部署AquarHome。但由于对mediasoup流媒体服务组件的集成，搭建环境较为繁琐，若你不是开发者则不建议以这种方式部署。
 
-0.首先需要确保环境上安装有nodejs 14+版本，node安装不是本文重点，请参考其他资料安装确认。
+1.由于集成了流媒体服务组件mediasoup，其安装过程中依赖python3环境、配套的pip工具以及gcc等C语言编译工具，再加上AquarHome本身需要的nodejs 14+环境，强烈建议在linux环境下安装，以下建议也按照linux环境给出，安装根据mediasoup的文档要求，AquarHome需要如下环境：
+  1) nodejs version>=14及匹配版本的npm。 
+  2) python version>=3.6及匹配版本的pip命令。
+  3) GNU make
+  4) gcc and g++ >= 4.9 或 clang (with C++11 support)
+  5) 与第4项相对应的cc and c++ 命令
+  6) 中国大陆需要外网访问能力，否则安装mediasoup的脚本无法正常下载必需的组件。
 
-1.从github或码云上下载源码，如果你有git，可以直接使用git clone下载源码。此外也可以在页面上下载zip文件然后在服务器上解压。
+2.从github或码云上下载源码，如果你有git，可以直接使用git clone下载源码。此外也可以在页面上下载zip文件然后在服务器上解压。
 ```
 git clone https://gitee.com/firemaker/aquar-home.git
 ```
 
-2.进入到项目目录下，执行如下语句。脚本每一步都有解释，你可以根据自己的情况自行增减。
+3.进入到项目目录下，执行如下语句。脚本每一步都有解释，你可以根据自己的情况自行增减。
 
 ``` bash
 sudo -i # 以管理员身份进行操作
@@ -135,7 +141,9 @@ AquarHome的开发理念是尽可能轻量化，所以采用了纯javascript的�
 │           ├── 03ac2910226dd17cbb436978d908d852.webp
 │           ├── 0550386419f81fa4c89eb499fa8431b8.webp
 │           ...
-│
+├── cert <====自定义ssl证书目录，若为空则采用系统内置证书，若需要自定义证书，则证书必须以aquarhome.key/crt命名，且采用pem格式。
+│   ├── aquarhome.crt
+│   └── aquarhome.key
 ├── db <====AquarHome的核心配置数据
 │   └── db.json
 ├── icon_img <====图标文件目录，包括上传的与自动抓取的图标
@@ -198,14 +206,22 @@ AquarHome的开发理念是尽可能轻量化，所以采用了纯javascript的�
 
 这种设计不仅可以让你更有力地掌控整个系统，也可以在需要时对系统进行快速的迁移，你只需要将整个数据目录打包，放在想要迁移的地方即可，或者只把db.json文件带走，在新系统里重新上传一遍图标。一切都可见可控。
 
-## 更多组件详细文档
+## 更多详细文档
 
-[图标链接配置说明](https://gitee.com/firemaker/aquar-home-helper/blob/master/app/Icon.md "图标链接配置说明")
+[系统安装与整体介绍](./app/OverView.md "系统安装与整体介绍")
 
-[Docker配置说明](https://gitee.com/firemaker/aquar-home-helper/blob/master/app/Docker.md "Docker配置说明")
+[图标链接配置说明](./app/Icon.md "图标链接配置说明")
 
-[NextCloud配置说明](https://gitee.com/firemaker/aquar-home-helper/blob/master/app/NextCloud.md "NextCloud配置说明")
+[Docker配置说明](./app/Docker.md "Docker配置说明")
 
-[TrueNas配置说明](https://gitee.com/firemaker/aquar-home-helper/blob/master/app/TrueNas.md "TrueNas配置说明")
+[NextCloud配置说明](./app/NextCloud.md "NextCloud配置说明")
 
-[Syncthing配置说明](https://gitee.com/firemaker/aquar-home-helper/blob/master/app/Syncthing.md "Syncthing配置说明")
+[TrueNas配置说明](./app/TrueNas.md "TrueNas配置说明")
+
+[Syncthing配置说明](./app/Syncthing.md "Syncthing配置说明")
+
+[增量备份组件配置说明](./app/ArchivePhase.md  "增量备份组件配置说明")
+
+[Transmission组件配置说明](./app/Transmission.md  "Transmission组件配置说明")
+
+[视频聊天组件配置说明](./app/ChatRoom.md  "视频聊天组件配置说明")

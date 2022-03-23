@@ -129,8 +129,8 @@
           <button class="tcolor_sub" style="margin: 0 4px;" @click="sendWords(null)">发送</button>
         </div>
         <div>
-          <a v-if="!isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
-          <a v-else style="margin: 0 4px;" class="iconfont icon-stopcircle icon tcolor_sub" title="结束视频" @click="changeRecordStatus()" />
+          <a v-if="isInRoom && !isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
+          <a v-else-if="isInRoom && isRecording" style="margin: 0 4px;" class="iconfont icon-stopcircle icon tcolor_sub" title="结束视频" @click="changeRecordStatus()" />
           <a style="margin: 0 4px;" class="iconfont icon-cog icon tcolor_sub" title="设置" @click="toggleLocalConfig()" />
         </div>
       </div>
