@@ -2,6 +2,7 @@ import multer from '@koa/multer'
 import sha256 from 'crypto-js/sha256.js'
 import fs from 'fs'
 import appDao from '../service/db/app-dao.js'
+import themeDao from '../service/db/theme-dao.js'
 import cacheService from '../service/cache-service.js'
 const BG_PATH = '/var/aquardata/bg_img/'
 
@@ -33,8 +34,17 @@ class ConfigController {
     ctx.body = resStr
   }
   async config(ctx, next) {
-    var resStr = await appDao.getConfig()
-    ctx.body = resStr
+    var res = await appDao.getConfig()
+    let themes = themeDao.listNames()
+    res.appearance.themes = themes 
+    let resDetail = null
+    if(res && res.appearance && res.appearance.theme){
+      let themeDetail = themeDao.findOneByName(res.appearance.theme)
+      if(themeDetail){
+        resDetail = themeDetail.detail
+      }
+    }
+    ctx.body = {config: res, themeDetail: resDetail}
   }
   async register(ctx, next) {
     var data = ctx.request.body

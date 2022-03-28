@@ -1,8 +1,14 @@
 <template>
   <div class="config_content">
-    <div style="height: 24px; margin: 0 20px;">外观设置:</div>
+    <div style="height: 24px; margin: 0 20px; display: flex;">
+      <span style="flex-grow: 1;">外观设置:</span>
+      <a v-if="configTheme" class="color_main" @click="toggleCustomTheme()" >X</a>
+    </div>
     <div class="config_panel">
-      <div class="param_panel">
+      <div v-if="configTheme" class="param_panel">
+        <config-theme :config-data="configData.appearance"></config-theme>
+      </div>
+      <div v-else class="param_panel">
         <div class="param_row">
           <div class="param_name">背景色：</div>
           <div class="param_form">
@@ -30,11 +36,23 @@
         <div class="param_row">
           <div class="param_name">主题：</div>
           <div class="param_form">
-            <select name="theme"  v-model="configData.appearance.theme">
-              <option value ="">未选择</option>
-              <option value ="defaultLight">default light</option>
-              <option value ="dark">dark</option>
-            </select>
+            <div style="display: flex; align-items: center;">
+              <div>
+                <select name="theme"  v-model="configData.appearance.theme">
+                  <option value ="">未选择</option>
+                  <option value ="defaultLight">default light</option>
+                  <option value ="dark">dark</option>
+                  <option v-for="(themeName,index) in configData.appearance.themes" :key="'theme_'+ index" :value="themeName" >{{themeName}}</option>
+                </select>
+              </div>
+              <div style="margin: 2px;">
+                <button @click="removeTheme()">删除当前主题</button>
+              </div>
+              <div style="margin: 2px;">
+                <button @click="toggleCustomTheme()">自定义</button>
+              </div>
+            </div>
+            
           </div>
         </div>
         <div class="param_row" style="height: 80px;">
@@ -50,14 +68,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import ConfigTheme from './ConfigTheme.vue'
 
 
 export default {
   name: 'ConfigAppearance',
   components: {
+    ConfigTheme
   },
   data: function() {
     return {
+      configTheme: false,
+      manageTheme: false,
+      themeDetail: null,
       configData: {
         "appearance": {
             "bgColor": "#455A65",
@@ -75,18 +98,44 @@ export default {
   },
   created: function() {
     this.refreshConfig()
+    this.$bus.on('refreshAppearance', this.refreshAppearance)
   },
   mounted: function() {
   },
   beforeDestroy() {
+    this.$bus.off('refreshAppearance', this.refreshAppearance)
   },
   methods: {
     refreshConfig() {
       this.$axios
         .get('/api/config')
         .then(response => {
-          this.configData = response.data
+          let {config, themeDetail} = response.data
+          this.configData = config
+          this.themeDetail = themeDetail
           this.$forceUpdate()
+        })
+    },
+    toggleCustomTheme() {
+      this.configTheme = !this.configTheme
+    },
+    removeTheme() {
+      let themeName = this.configData.appearance.theme
+      if(!themeName){
+        return
+      }
+      if(themeName === 'defaultLight' || themeName === 'dark') {
+        alert('内置主题无法删除')
+        return
+      }
+      if(!confirm(`确认删除主题${themeName}？`)){
+        return
+      }
+      this.$axios.post('/api/theme/remove', {name: themeName})
+      .then(response => {
+          console.log(response.data)
+          this.configData.appearance.theme = 'defaultLight'
+          this.updateConfig()
         })
     },
     uploadImg() {
@@ -113,8 +162,18 @@ export default {
         .then(response => {
           console.log(response.data)
           this.refreshConfig()
-          this.$bus.emit('renderBg', this.configData)
+          // this.$bus.emit('renderBg', {config: this.configData,themeDetail:this.themeDetail})
+          window.location.reload()
         })
+    },
+    async refreshAppearance(appearance){
+      if(appearance){
+        Object.assign(this.configData.appearance, appearance)
+        await this.$axios.post('/api/config/update', this.configData)
+      }
+      this.refreshConfig()
+      // this.$bus.emit('renderBg', {config: this.configData,themeDetail:this.themeDetail})
+      window.location.reload()
     }
   }
 }

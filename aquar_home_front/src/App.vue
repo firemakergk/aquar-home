@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       configData: {},
+      themeDetail: null,
       bgUrl: null,
       blurNum: "blur(0px)",
       bgColor: '#42433E',
@@ -34,8 +35,9 @@ export default {
     this.$axios
       .get('/api/config')
       .then(response => {
-        this.configData = response.data
-        this.renderBg(this.configData)
+        this.configData = response.data.config
+        this.themeDetail = response.data.themeDetail
+        this.renderBg(response.data)
         this.$forceUpdate()
       })
   },
@@ -43,7 +45,8 @@ export default {
     this.$bus.off('renderBg', this.renderBg)
   },
   methods: {
-    renderBg: function(config) {
+    renderBg(data) {
+      let {config, themeDetail} = data
       this.configData = config
       if(config.appearance.bgImg){
         this.bgUrl = 'url(' + config.appearance.bgImg + ')';
@@ -56,9 +59,14 @@ export default {
         this.bgColor = config.appearance.bgColor
       }
       this.curTheme = {'--bgUrl': this.bgUrl,'--bgColor': this.bgColor,'--blurNum':this.blurNum}
-      if(config.appearance.theme && this.themes[config.appearance.theme]){
+      if(themeDetail){
+        this.curTheme = Object.assign(this.curTheme,themeDetail)
+      }else if(config.appearance.theme && this.themes[config.appearance.theme]){
         this.curTheme = Object.assign(this.curTheme,this.themes[config.appearance.theme])
+      }else{
+        this.curTheme = Object.assign(this.curTheme,defaultLight)
       }
+      this.$forceUpdate()
     }
   }
 }

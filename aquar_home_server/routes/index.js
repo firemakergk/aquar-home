@@ -1,6 +1,7 @@
 import koarouter from 'koa-router'
 import widgetController from '../controller/widget-controller.js'
 import configController from '../controller/config-controller.js'
+import themeController from '../controller/theme-controller.js'
 import syncThingController from '../endpoints/syncthing/controller/syncthing-controller.js'
 import rsyncphaseController from '../endpoints/rsync-phase/controller/rsyncphase-controller.js'
 import NextCloudController from '../endpoints/nextcloud/controller/nextcloud-controller.js'
@@ -50,6 +51,11 @@ router.post('/api/config/removeTab', widgetController.removeTab)
 router.post('/api/config/submitTabs', widgetController.submitTabs)
 router.get('/api/cache/info', configController.cacheInfo)
 router.get('/api/cache/clear', configController.clearCache)
+router.get('/api/theme/listNames', themeController.listNames)
+router.get('/api/theme/list', themeController.list)
+router.get('/api/theme/findOne', themeController.findOneByName)
+router.post('/api/theme/saveOrUpdate', themeController.saveOrUpdate)
+router.post('/api/theme/remove', themeController.remove)
 
 router.get('/api/endpoints/syncthing/info',syncThingController.getFoldersInfo)
 router.get('/api/endpoints/archive_phase/prepare',rsyncphaseController.prepareArchive)

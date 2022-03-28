@@ -18,9 +18,14 @@ import fs from 'fs'
 const DB_PATH = '/var/aquardata/db/'
 const __dirname = path.resolve();
 if (!fs.existsSync(DB_PATH+'db.json')){
-  var defaultConfig = fs.readFileSync('./db.json','utf8')
+  let defaultConfig = fs.readFileSync('./db.json','utf8')
   fs.mkdirSync(DB_PATH, { recursive: true });
   fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
+}
+if (!fs.existsSync(DB_PATH+'themes.json')){
+  let defaultConfig = '{"themes":[]}'
+  fs.mkdirSync(DB_PATH, { recursive: true });
+  fs.writeFileSync(DB_PATH+'themes.json',defaultConfig)
 }
 if (!fs.existsSync('./public/assets/bg.jpg')){
   fs.mkdirSync('./public/assets/', { recursive: true });
