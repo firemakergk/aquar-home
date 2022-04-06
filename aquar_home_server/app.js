@@ -14,6 +14,7 @@ import moment from 'moment'
 import appDao from './service/db/app-dao.js'
 import jobService from './service/job-service.js'
 import fs from 'fs'
+import https from 'https'
 
 const DB_PATH = '/var/aquardata/db/'
 const __dirname = path.resolve();
@@ -64,7 +65,7 @@ app.use(async (ctx, next) => {
   await next()
   const end = new Date() 
   const ms = end - start
-  console.log(`${moment().format()} response: ${ctx.method} ${ctx.url}, body:${JSON.stringify(ctx.body)} - duration:${ms}`)
+  console.log(`${moment().format()} response: ${ctx.method} ${ctx.url} - duration:${ms}`)
 })
 
 if(process.env.NODE_ENV != 'dev'){
@@ -88,7 +89,10 @@ app.use(users.routes(), users.allowedMethods())
 // app.on('error', (err, ctx) => {
 //   console.error('server error', err, ctx)
 // });
-
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+})
+axios.defaults.httpsAgent = httpsAgent
 axios.prototype.AXIOS_LOG_CONTENT_TYPES = [
   'text/html',
   'application/json',
