@@ -15,7 +15,7 @@ class WidgetAdvicer {
     }
   }
 
-  async afterWidgetUdpated(tabIndex,widgetData) {
+  async afterWidgetUpdated(tabIndex,widgetData) {
     var advisor = this.widgetAdvicerMap[widgetData.widget]
     if(advisor){
       await advisor.afterWidgetUpdated(tabIndex,widgetData)

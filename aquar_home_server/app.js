@@ -23,6 +23,7 @@ if (!fs.existsSync(DB_PATH+'db.json')){
   fs.mkdirSync(DB_PATH, { recursive: true });
   fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
 }
+appDao.init()
 if (!fs.existsSync(DB_PATH+'themes.json')){
   let defaultConfig = '{"themes":[]}'
   fs.mkdirSync(DB_PATH, { recursive: true });

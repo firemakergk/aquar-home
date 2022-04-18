@@ -6,6 +6,15 @@ class WidgetController {
     var index = ctx.query.index
     var resStr = await appDao.findByCurIndex()
     ctx.body = resStr
+  } 
+  async updateWidgets(ctx, next) {
+    let widgets = ctx.request.body
+    appDao.updateBatch(widgets)
+    for(let {tabIndex, widget} of widgets){
+      var res = await appDao.findOne(tabIndex,widget.id)
+      await widgetAdvicer.afterWidgetUpdated(tabIndex,res)
+    }
+    ctx.body = {code:0,msg:'批量更新成功'}
   }
   async updateById(ctx, next) {
     var data = ctx.request.body

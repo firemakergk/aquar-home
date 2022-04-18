@@ -1,11 +1,16 @@
 import axios from "axios"
 import https from "https"
+import _ from "lodash"
+
 class PveController {
   async queryStatus(ctx, next) {
-    var server = ctx.query.server
-    var node = ctx.query.node
-    var apiToken = ctx.query.apiToken
-    var resData = await query(server, node, apiToken)
+    let server = ctx.query.server
+    let node = ctx.query.node
+    let user = ctx.query.user
+    let tokenId = ctx.query.tokenId
+    let tokenSecret = ctx.query.tokenSecret
+    let authInfo = `PVEAPIToken=${user}!${tokenId}=${tokenSecret}`
+    var resData = await query(server, node, authInfo)
     ctx.body = {code:0, data: resData}
   }
 }
@@ -16,12 +21,11 @@ async function query(server, node, apiToken){
   });
   let pveStatus = await axios({
     method: 'get',
-    url: server + `/api2/json/nodes/${node}/status`,
+    url: server + `api2/json/nodes/${node}/status`,
     headers: { 
       Authorization: apiToken
     },
-    withCredentials:true,
-    httpsAgent: agent
+    // withCredentials:true, httpsAgent: agent
   })
   .then((response) => {
     var data = response.data.data
@@ -33,12 +37,12 @@ async function query(server, node, apiToken){
   })
   let vmList = await axios({
     method: 'get',
-    url: server + '/api2/json/cluster/resources',
+    url: server + `api2/json/nodes/${node}/qemu`,
     headers: { 
       Authorization: apiToken
     },
-    withCredentials:true,
-    httpsAgent: agent
+    // withCredentials:true,
+    // httpsAgent: agent
   })
   .then((response) => {
     var data = response.data.data
@@ -50,7 +54,7 @@ async function query(server, node, apiToken){
   })
   var queryRes = {}
   queryRes.pveStatus = pveStatus
-  queryRes.vmList = vmList 
+  queryRes.vmList = _.sortBy(vmList,i => i.vmid) 
   return queryRes 
 }
 

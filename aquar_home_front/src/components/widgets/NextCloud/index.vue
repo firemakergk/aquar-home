@@ -300,9 +300,7 @@ export default {
             this.$forceUpdate()
           })
           .catch(error => {
-            this.showErrorInfo = true
-            this.errorInfo = error.message
-            console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+            console.log('接口异常,url:'+url+',message:'+error.message)
           })
         plist.push(p)
         if (plist.length >= 5) {

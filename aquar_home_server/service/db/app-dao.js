@@ -1,5 +1,4 @@
 import { LowSync, JSONFileSync } from 'lowdb'
-import lodash from 'lodash'
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import cryptoRandomString from 'crypto-random-string'
@@ -9,10 +8,11 @@ import _ from 'lodash'
 class AppDao {
   DB_PATH = '/var/aquardata/db/'
   db = null
-  constructor() {
+
+  init(){
     this.db = new LowSync(new JSONFileSync(this.DB_PATH+'db.json'))
     this.db.read()
-    this.db.chain = lodash.chain(this.db.data)
+    this.db.chain = _.chain(this.db.data)
   }
 
   saveAppEntry(tabIndex,entry) {
@@ -51,6 +51,14 @@ class AppDao {
     this.db.chain.get('tabs['+tabIndex+'].widgets')
     .find({ id: id })
     .assign(item).value()
+    this.db.write()
+  }
+  updateBatch(widgetList) {
+    for(let {tabIndex, widget} of widgetList){
+      this.db.chain.get('tabs['+tabIndex+'].widgets')
+      .find({ id: widget.id })
+      .assign(widget).value()
+    }
     this.db.write()
   }
   deleteById(tabIndex,id) {
@@ -119,7 +127,7 @@ class AppDao {
   }
   allData() {
     var res = this.db.data
-    res = lodash.cloneDeep(res)
+    res = _.cloneDeep(res)
     delete res.auth
     return res
   }

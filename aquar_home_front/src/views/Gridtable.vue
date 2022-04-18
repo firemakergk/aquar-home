@@ -152,6 +152,9 @@ export default {
         var localTabIndex = localStorage.getItem("curTabIndex")
         this.curTabIndex = localTabIndex ? parseInt(localTabIndex) : 0
         this.tabs = this.data.tabs
+        if(this.curTabIndex >= this.tabs.length){
+          this.curTabIndex = 0
+        }
         this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
@@ -273,12 +276,14 @@ export default {
           this.refreshWidgets(this.curTabIndex)
         })
     },
-    confirmLayout() {
-      for (var i = 0; i < this.layout.length; i++) {
-        var curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
+    async confirmLayout() {
+      let widgets = []
+      for (let i = 0; i < this.layout.length; i++) {
+        let curWidget = _.find(this.widgets, { 'id': this.layout[i].i })
         curWidget.layout = this.layout[i]
-        this.$axios.post('/api/updateById', {'tabIndex':this.curTabIndex,'widget':curWidget})
+        widgets.push({tabIndex: this.curTabIndex, widget:curWidget})
       }
+      await this.$axios.post('/api/updateWidgets', widgets)
       this.editing = false
       this.refreshWidgets(this.curTabIndex)
     },

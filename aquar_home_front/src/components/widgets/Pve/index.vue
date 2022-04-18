@@ -8,9 +8,9 @@
     </div>
     <div v-if="queryData" class="widget_body">
       <div v-show="showConfig" class="float_config">
-        <div class="config_top">
-          <span style="float:left;">设置</span>
-          <a style="float:right; padding:0 4px; color: white;" @click="toggleConfig()"> x </a>
+        <div class="config_top tbgcolor_sub_head tcolor_sub_head">
+          <span style="flex-grow: 1;">设置</span>
+          <a style="padding:0 4px;" @click="toggleConfig()"> x </a>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -38,9 +38,21 @@
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px; text-align: right; padding: 0 2px;">api token：</div>
+            <div style="width:80px; text-align: right; padding: 0 2px;">user：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.api_token" type="text" name="app_key" disabled="disabled" style="display: inline-block; width: 100%;">
+              <input v-model="configData.data.user" type="text" name="server" style="display: inline-block; width: 100%;">
+            </div>
+          </div>
+          <div class="config_row">
+            <div style="width:80px; text-align: right; padding: 0 2px;">tokenID：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="configData.data.token_id" type="text" name="server" style="display: inline-block; width: 100%;">
+            </div>
+          </div>
+          <div class="config_row">
+            <div style="width:80px; text-align: right; padding: 0 2px;">token secret：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="configData.data.token_secret" type="text" name="app_key" disabled="disabled" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">
@@ -52,10 +64,10 @@
         </div>
       </div>
       <div class="widget_content">
-        <div class="node_info">
+        <div class="node_info tcolor_main">
           <div class="node_info_left">
             <div class="node_info_left_top">
-              <div style="font-size: 32px;">{{ configData.data.node }}</div>
+              <div style="font-size: 24px;">{{ configData.data.node }}</div>
               <div>已运行{{ queryData.pveStatus?secondsFormat(queryData.pveStatus.uptime):"" }}</div>
               <div>
                 <span>load 1/5/15min: </span>
@@ -97,12 +109,12 @@
             </div>
           </div>
         </div>
-        <div v-for="item in queryData.vmList" :key="item.id" class="item_list">
-          <div v-if="item.type==='qemu'" class="item_row">
-            <div style="flex-grow: 1;"><span style="margin:0 4px 0 0;">{{ item.name }}</span><span style="color: #90a4ae;">({{ item.id }})</span></div>
-            <div style="width: 80px; text-align: right;">{{ item.maxcpu }}C {{ fileSize(item.maxmem, 0) }} {{ fileSize(item.maxdisk, 0) }}</div>
+        <div v-for="item in queryData.vmList" :key="item.id" class="item_list tcolor_main">
+          <div class="item_row">
+            <div style="flex-grow: 1;"><span style="margin:0 4px 0 0;">{{ item.name }}</span><span style="color: #90a4ae;">({{ item.vmid }})</span></div>
+            <div style="width: 80px; text-align: right;">{{ item.cpus }}C {{ fileSize(item.maxmem, 0) }} {{ fileSize(item.maxdisk, 0) }}</div>
             <!-- <div style="margin: 0 2px; padding: 0 2px;" :class="item.statusClass">{{ item.healthy? "HEALTHY" : "ERROR" }}</div> -->
-            <div style="margin:0 0 0 8px; padding: 0 2px" :class="item.statusClass">{{ item.status.toUpperCase() }}</div>
+            <div style="margin:0 0 0 8px; padding: 0 2px" class="tcolor_reverse" :class="item.statusClass">{{ item.status.toUpperCase() }}</div>
           </div>
         </div>
       </div>
@@ -145,16 +157,18 @@ export default {
     },
     getPveInfo() {
       this.$axios
-        .get('/api/endpoints/pve/queryStatus?server=' + this.configData.data.server + '&node=' + this.configData.data.node + '&apiToken=' + this.configData.data.api_token)
+        .get('/api/endpoints/pve/queryStatus?server=' + this.configData.data.server + 
+        '&node=' + this.configData.data.node + '&user=' + this.configData.data.user + 
+        '&tokenId=' + this.configData.data.token_id + '&tokenSecret=' + this.configData.data.token_secret)
         .then(response => {
           const resData = response.data
           this.queryData = resData.data
           for (var i = 0; i < this.queryData.vmList.length; i++) {
             var item = this.queryData.vmList[i]
             if (item.status === 'running') {
-              item.statusClass = 'stat_ok'
+              item.statusClass = 'tbgcolor_active'
             } else {
-              item.statusClass = 'stat_cancel'
+              item.statusClass = 'tbgcolor_idle'
             }
           }
         })
@@ -204,51 +218,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//widget
-a {
-    color: white;
-  }
-input {
-  font-size:1em;
-  height:2em;
-  border:1px solid;
-  // color:#6a6f77;
-  background-color: #2c2c2c;
-  color: white;
-  border-color: #606060;
-}
-.widget_box {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  float: left;
-  padding: 4px 4px;
-  border-radius: 2px;
-  background-color: rgba(44, 44, 44, 1);
-  box-sizing: border-box;
-  color: white;
-}
-.widget_header {
-  width: 100%;
-  padding: 4px 4px;
-  margin: 0 auto;
-  display: inline-flex;;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-}
-.widget_body {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.widget_content {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  font-size: 14px;
-}
+
 .item_list {
   overflow-y: auto;
   overflow-x: hidden;
@@ -263,43 +233,7 @@ input {
   background-color: darkgrey;
   outline: 0.5px solid slategrey;
 }
-.float_config {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  z-index: 3;
-  overflow-y: auto;
-  background-color: rgba(0,0,0,0.75);
-  font-size: 12px;
-  color: white;
-}
-.float_config::-webkit-scrollbar {
-  width: 1px;
-}
-.float_config::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-}
-.float_config::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 0.5px solid slategrey;
-}
-.config_top {
-  background-color: #000;
-  color: white;
-  top: 0;
-  height: 16px;
-}
-.config_body {
-  height: 100%;
-}
-.config_row {
-  display: flex;
-  align-items: center;
-  padding: 2px 2px;
-}
-// trueNasWidget
+
 .node_info {
   display: flex;
   flex-direction: row;
@@ -352,14 +286,7 @@ input {
 .item_row {
   margin: 2px 0px;
   padding: 4px 2px;
-  color: white;
   display: flex;
 }
 
-.stat_ok {
-  background-color: #2baf2b;
-}
-.stat_cancel {
-  background-color: #455a64;
-}
 </style>

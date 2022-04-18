@@ -5,6 +5,7 @@
         <div style="flex-grow: 1; width: 8px;" />
         <a :target="configData.data.target_type" :href="configData.href">
           <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 48px;">
+          <img v-else-if="configData.data.ico_path" :src="configData.data.ico_path" style=" flex-grow: 1; width: 48px;">
           <img v-else :src="logo_icon" style=" flex-grow: 1; width: 48px;">
         </a>
         <div style="flex-grow: 1; width: 8px;">

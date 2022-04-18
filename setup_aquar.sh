@@ -15,7 +15,7 @@ if ! grep -q '##\[aquar config start\]##' /etc/fstab;
 then
     cat >> /etc/fstab <<EOF
 ##[aquar config start]##
-$nfspath:/mnt/aquar_pool /opt/aquar/storages/aquarpool nfs defaults 0 0
+$nfspath:/mnt/aquar_pool /opt/aquar/storages/aquarpool nfs defaults,_netdev 0 0
 ##[aquar config end]##
 EOF
 else
