@@ -5,6 +5,7 @@ import _ from "lodash"
 class PveController {
   async queryStatus(ctx, next) {
     let server = ctx.query.server
+    server = server.substr(-1) === '/' ? server.substr(0,server.length-1) : server
     let node = ctx.query.node
     let user = ctx.query.user
     let tokenId = ctx.query.tokenId
@@ -21,7 +22,7 @@ async function query(server, node, apiToken){
   });
   let pveStatus = await axios({
     method: 'get',
-    url: server + `api2/json/nodes/${node}/status`,
+    url: server + `/api2/json/nodes/${node}/status`,
     headers: { 
       Authorization: apiToken
     },
@@ -37,7 +38,7 @@ async function query(server, node, apiToken){
   })
   let vmList = await axios({
     method: 'get',
-    url: server + `api2/json/nodes/${node}/qemu`,
+    url: server + `/api2/json/nodes/${node}/qemu`,
     headers: { 
       Authorization: apiToken
     },

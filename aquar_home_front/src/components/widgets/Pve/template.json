@@ -21,7 +21,15 @@
       "text"
     ],
     [
-      "api_token",
+      "user",
+      "text"
+    ],
+    [
+      "token_id",
+      "text"
+    ],
+    [
+      "token_secret",
       "text"
     ]
   ]
