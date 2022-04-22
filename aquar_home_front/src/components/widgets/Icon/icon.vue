@@ -3,7 +3,7 @@
     <div class="icon_panel">
       <div class="img_span" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
         <div style="flex-grow: 1; width: 8px;" />
-        <a :target="configData.data.target_type" :href="configData.href">
+        <a :target="configData.data.target_type" :href="href">
           <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 48px;">
           <img v-else-if="configData.data.ico_path" :src="configData.data.ico_path" style=" flex-grow: 1; width: 48px;">
           <img v-else :src="logo_icon" style=" flex-grow: 1; width: 48px;">
@@ -19,6 +19,7 @@
 
 <script>
 import logo_icon from './img/aquar.png'
+const REG_PIP = /(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/g
 export default {
   name: 'IconWidget',
   components: {
@@ -30,6 +31,7 @@ export default {
   data: function() {
     return {
       logo_icon,
+      href: '#',
       showConfigIcon: false,
       showConfig: false,
       showCropper: false,
@@ -65,6 +67,13 @@ export default {
   created: function() {
     if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
       this.configData.data.target_type = '_blank'
+    }
+    this.href = this.configData.href
+    if(this.configData.data.addr_translate === '1'){
+      let domain = window.location.hostname
+      if(domain && domain.match(REG_PIP)){
+        this.href = this.configData.data.private_href
+      }
     }
   },
   mounted: function() {

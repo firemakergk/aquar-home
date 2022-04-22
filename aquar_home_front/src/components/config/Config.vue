@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
-    <div class="config_header tbgcolor_sub_head">
+  <div class="container tbgcolor_main tcolor_main">
+    <div class="config_header tbgcolor_sub_head tcolor_reverse">
       <span style="flex-grow: 1; margin: 0 10px;">设置</span>
-      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_sub_head" @click="close" />
+      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
     <div class="config_container tbgcolor_main">
-      <div class="config_sidebar tbgcolor_sub_head">
+      <div class="config_sidebar tbgcolor_config_tab">
         <a v-for="(menu,index) in menus" :key="index" class="menu_item tcolor_sub_head" 
         @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a>
       </div>
@@ -80,8 +80,6 @@ export default {
 .container {
   border-radius: 2px;
   margin: 4px;
-  background-color: rgba(255,255,255,1);
-  color: rgb(44,44,44);
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
@@ -91,7 +89,6 @@ export default {
   align-items: center;
   height: 24px;
   border-radius:2px 2px 0 0 ;
-  color: white;
 }
 .config_container{
   // min-height: 200px;

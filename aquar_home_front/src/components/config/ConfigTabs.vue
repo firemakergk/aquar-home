@@ -5,7 +5,7 @@
       <div class="param_panel">
         <div style="margin: 6px 0;"><button @click="addTab()">添加</button></div>
         <table class="tab_table" cellspacing="0">
-          <tr class="tab_head tbgcolor_sub_head">
+          <tr class="tab_head tbgcolor_sub_head tcolor_reverse">
             <th class="tab_cell">顺序</th>
             <th class="tab_cell" style="width: 120px;">名称</th>
             <th class="tab_cell">操作</th>

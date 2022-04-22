@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <div class="config_header tbgcolor_sub_head tcolor_main">
+    <div class="config_header tbgcolor_sub_head tcolor_reverse">
       <span style="flex-grow: 1; margin: 0 10px;">{{widgetName}}设置</span>
-      <a style="margin: 0 4px;" class="iconfont icon-times icon" @click="close" />
+      <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
     <div class="config_content_single tbgcolor_config tcolor_main">
       <div class="widget_config_panel">

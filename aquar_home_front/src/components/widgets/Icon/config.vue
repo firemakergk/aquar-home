@@ -49,7 +49,7 @@
                   :limitMinSize="option.limitMinSize"/>
                 <a :ref="'downloadDom'+configData.id" :href="downImg" style="display: none;" download="demo.png" />
               </div>
-              <div v-show="showCropper" style="margin: 10px; color: rgb(44,44,44);"><a @click="comfirmIcon">确定</a></div>
+              <div v-show="showCropper" style="margin: 10px;" class="tcolor_main"><a @click="comfirmIcon">确定</a></div>
             </div>
             
           </div>
@@ -74,6 +74,21 @@
             <option value='_blank'>新标签页</option>
             <option value='_self'>当前页</option>
           </select>
+        </div>
+      </div>
+      <div class="param_row">
+        <div class="param_name">内网转换：</div>
+        <div class="param_form">
+          <select v-model="configData.data.addr_translate">
+            <option value='0'>关</option>
+            <option value='1'>开</option>
+          </select>
+        </div>
+      </div>
+      <div class="param_row">
+        <div class="param_name">内网地址：</div>
+        <div class="param_form">
+          <input v-model="configData.data.private_href" style="width: 100%;">
         </div>
       </div>
       <div class="param_row" style="height: 80px;">
@@ -135,6 +150,9 @@ export default {
   created: function() {
     if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
       this.configData.data.target_type = '_blank'
+    }
+    if(!this.configData.data.addr_translate){
+      this.configData.data.addr_translate = '0'
     }
   },
   mounted: function() {

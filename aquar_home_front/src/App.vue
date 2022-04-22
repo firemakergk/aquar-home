@@ -343,6 +343,9 @@ div:focus {
 .tbgcolor_main {
   background-color: var(--tbgcolor_main,white);
 }
+.tbgcolor_config_tab {
+  background-color: var(--tbgcolor_config_tab,#669999);
+}
 .tbgcolor_config {
   background-color: var(--tbgcolor_config,#fff);
 }

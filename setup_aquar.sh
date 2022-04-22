@@ -226,36 +226,73 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
-  gitlab:
-    image: 'gitlab/gitlab-ce:latest'
-    restart: unless-stopped
-    hostname: 'gitlab'
-    environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://39.100.115.231/'
-        # Add any other gitlab.rb configuration here, each on its own line
-    ports:
-      - '8083:80'
-      - '8084:443'
-      - '8822:22'
-    volumes:
-      - '/opt/aquar/storages/apps/gitlab/config:/etc/gitlab'
-      - '/opt/aquar/storages/apps/gitlab/logs:/var/log/gitlab'
-      - '/opt/aquar/storages/apps/gitlab/data:/var/opt/gitlab'
-  # aquarhome:
-  #   image: aquar-home 
-  #   container_name: aquarhome 
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Asia/Shanghai
-  #   volumes:
-  #     - /opt/aquar/storages/apps/aquarhome/data:/var/aquardata
-  #     - /opt/aquar/storages/aquarpool:/opt/aquarpool
-  #     - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs
-  #   ports:
-  #     - 8172:8172
+  # gitlab:
+  #   image: 'gitlab/gitlab-ce:latest'
   #   restart: unless-stopped
+  #   hostname: 'gitlab'
+  #   environment:
+  #     GITLAB_OMNIBUS_CONFIG: |
+  #       external_url 'https://39.100.115.231/'
+  #       # Add any other gitlab.rb configuration here, each on its own line
+  #   ports:
+  #     - '8083:80'
+  #     - '8084:443'
+  #     - '8822:22'
+  #   volumes:
+  #     - '/opt/aquar/storages/apps/gitlab/config:/etc/gitlab'
+  #     - '/opt/aquar/storages/apps/gitlab/logs:/var/log/gitlab'
+  #     - '/opt/aquar/storages/apps/gitlab/data:/var/opt/gitlab'
+  filerun:
+    image: filerun/filerun
+    container_name: filerun
+    environment:
+      FR_DB_HOST: mariadb
+      FR_DB_PORT: 3306
+      FR_DB_NAME: filerun
+      FR_DB_USER: root
+      FR_DB_PASS: root
+      APACHE_RUN_USER: www-data
+      APACHE_RUN_USER_ID: 1000
+      APACHE_RUN_GROUP: www-data
+      APACHE_RUN_GROUP_ID: 1000
+    depends_on:
+      - mariadb
+    ports:
+      - "8008:80"
+    volumes:
+      - /opt/aquar/storages/apps/filerun/html:/var/www/html
+      - /opt/aquar/storages/aquarpool:/user-files
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: 0:0 
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+    environment:
+      # Optional: put your config options customization here. Examples:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: error  
+      ND_SESSIONTIMEOUT: 72h
+      ND_BASEURL: ""
+    volumes:
+      - "/opt/aquar/storages/apps/navidrome/data:/data"
+      - "/opt/aquar/storages/aquarpool/music:/music:ro"
+  aquarhome:
+    image: finetu/aquarhome:latest
+    container_name: aquarhome 
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+    volumes:
+      - /opt/aquar/storages/apps/aquarhome/data:/var/aquardata
+      - /opt/aquar/storages/aquarpool:/opt/aquarpool
+      - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs
+    ports:
+      - 8172:8172
+      - 10000-10100:10000-10100
+    restart: unless-stopped
 EOF
 mkdir -p /opt/aquar/src/docker-compose/mariadb.init.d
 touch /opt/aquar/src/docker-compose/mariadb.init.d/init.sql
@@ -265,8 +302,9 @@ CREATE DATABASE IF NOT EXISTS piwigo;
 CREATE DATABASE IF NOT EXISTS shinobi;
 CREATE DATABASE IF NOT EXISTS ccio;
 CREATE DATABASE IF NOT EXISTS photoprism;
+CREATE DATABASE IF NOT EXISTS filerun;
 CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';
-GRANT ALL PRIVILEGES ON . TO 'root'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 EOF
 cat >  /etc/docker/daemon.json <<EOF
 {

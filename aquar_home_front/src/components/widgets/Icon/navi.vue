@@ -9,7 +9,7 @@
         <img v-else-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 16px;">
         <img v-else :src="logo_icon" style=" flex-grow: 1; width: 16px;">
       </div>
-      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_main">{{ configData.name }}</a>
+      <a :target="configData.data.target_type" :href="href" class="icon_label tcolor_main">{{ configData.name }}</a>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ export default {
   data: function() {
     return {
       logo_icon,
+      href: '#',
       showConfigIcon: false,
       showConfig: false,
       showCropper: false,
@@ -62,6 +63,13 @@ export default {
   created: function() {
     if(this.configData.data.target_type !== '_blank' && this.configData.data.target_type !== '_self'){
       this.configData.data.target_type = '_blank'
+    }
+    this.href = this.configData.href
+    if(this.configData.data.addr_translate === '1'){
+      let domain = window.location.hostname
+      if(domain && domain.match(REG_PIP)){
+        this.href = this.configData.data.private_href
+      }
     }
   },
   mounted: function() {

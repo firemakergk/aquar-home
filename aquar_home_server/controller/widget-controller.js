@@ -22,7 +22,7 @@ class WidgetController {
     console.log(data)
     appDao.updateById(data.tabIndex,data.widget.id,data.widget)
     var res = await appDao.findOne(data.tabIndex,data.widget.id)
-    await widgetAdvicer.afterWidgetUdpated(data.tabIndex,res)
+    await widgetAdvicer.afterWidgetUpdated(data.tabIndex,res)
     ctx.body = res
   }
   async addWidget(ctx, next) {
