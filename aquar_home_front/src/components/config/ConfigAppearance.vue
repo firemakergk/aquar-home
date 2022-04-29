@@ -9,11 +9,14 @@
         <config-theme :config-data="configData.appearance"></config-theme>
       </div>
       <div v-else class="param_panel">
-        <div class="param_row">
+        <!-- <div class="param_row">
           <div class="param_name">背景色：</div>
           <div class="param_form">
             <input type="text" size="4" name="bgColor" v-model="configData.appearance.bgColor" />
           </div>
+        </div> -->
+        <div class="param_row">
+          <v-text-field dense label="背景色" v-model="configData.appearance.bgColor" ></v-text-field>
         </div>
         <div class="param_row">
           <div class="param_name">背景图：</div>

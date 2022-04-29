@@ -12,9 +12,12 @@ const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 module.exports = {
   publicPath: '/',
   outputDir: 'dist',
+
   // assetsDir: 'assets',
   lintOnSave: process.env.NODE_ENV === 'development',
+
   productionSourceMap: false,
+
   devServer: {
     host: '0.0.0.0',
     port: port,
@@ -88,18 +91,7 @@ module.exports = {
     },
     // before: require('./mock/mock-server.js')
   },
-  configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
-    name: 'Aquar Home',
-    resolve: {
-      extensions: ['.js', '.vue', '.json'],
-      alias: {
-        '@': resolve('src')
-      }
-    },
-    devtool: 'source-map'
-  },
+
   // chainWebpack(config) {
   //   // config.resolve.alias.set('@', resolve('./src'))
   //   // it can improve the speed of the first screen, it is recommended to turn on preload
@@ -112,10 +104,8 @@ module.exports = {
   //       include: 'initial'
   //     }
   //   ])
-
   //   // when there are many pages, it will cause too many meaningless requests
   //   config.plugins.delete('prefetch')
-
   //   // set svg-sprite-loader
   //   config.module
   //     .rule('svg')
@@ -132,7 +122,6 @@ module.exports = {
   //       symbolId: 'icon-[name]'
   //     })
   //     .end()
-
   //   config
   //     .when(process.env.NODE_ENV !== 'development',
   //       config => {
@@ -173,4 +162,20 @@ module.exports = {
   //       }
   //     )
   // }
+  configureWebpack: {
+    // provide the app's title in webpack's name field, so that
+    // it can be accessed in index.html to inject the correct title.
+    name: 'Aquar Home',
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+      alias: {
+        '@': resolve('src')
+      }
+    },
+    devtool: 'source-map'
+  },
+
+  transpileDependencies: [
+    'vuetify'
+  ]
 }

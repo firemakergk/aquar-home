@@ -5,6 +5,7 @@ import animate from 'animate.css'
 import './assets/fonts/iconfont.css'
 import router from './router'
 import axios from './service/axios.js'
+import vuetify from './plugins/vuetify'
 
 Vue.use(animate)
 Vue.prototype.$axios = axios
@@ -13,5 +14,6 @@ Vue.use(VueBus)
 
 new Vue({
   router:router,
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')
