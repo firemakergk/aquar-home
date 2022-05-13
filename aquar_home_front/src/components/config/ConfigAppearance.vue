@@ -9,34 +9,19 @@
         <config-theme :config-data="configData.appearance"></config-theme>
       </div>
       <div v-else class="param_panel">
-        <!-- <div class="param_row">
-          <div class="param_name">背景色：</div>
-          <div class="param_form">
-            <input type="text" size="4" name="bgColor" v-model="configData.appearance.bgColor" />
-          </div>
-        </div> -->
         <div class="param_row">
           <v-text-field dense label="背景色" v-model="configData.appearance.bgColor" ></v-text-field>
         </div>
         <div class="param_row">
-          <div class="param_name">背景图：</div>
-          <div class="param_form">
-            <input type="file" value="test" name="bgImg" ref="bgImg" @change="uploadImg()" />
-          </div>
+          <v-file-input dense accept="image/*" label="背景图" name="bgImg" ref="bgImg" @change="uploadImg()"></v-file-input>
+          <v-btn depressed small @click="clearImg()" style="margin:0 6px;">清空</v-btn>
         </div>
         <div class="param_row">
-          <div class="param_name"></div>
-          <div class="param_form">
-            <button type="button" @click="clearImg()">清空</button>
-          </div>
+           <v-text-field dense label="背景模糊" v-model="configData.appearance.bgBlur" size="2" name="bgBlur" ></v-text-field>
         </div>
         <div class="param_row">
-          <div class="param_name">背景图模糊：</div>
-          <div class="param_form">
-            <input type="text" size="2" name="bgBlur" v-model="configData.appearance.bgBlur" />px
-          </div>
-        </div>
-        <div class="param_row">
+           <!-- <v-select :items="themeList" item-text="themeName" item-value="themeName" label="主题" ></v-select> -->
+           <v-select :items="['aaa','bbb']" label="主题" ></v-select>
           <div class="param_name">主题：</div>
           <div class="param_form">
             <div style="display: flex; align-items: center;">
@@ -91,7 +76,11 @@ export default {
             "bgBlur": 0,
             "theme": "vscode"
           }
-      }
+      },
+      themeList: [
+        {themeName:"defaultLight"},
+        {themeName:"dark"},
+      ]
     }
   },
   computed: {
@@ -102,6 +91,11 @@ export default {
   created: function() {
     this.refreshConfig()
     this.$bus.on('refreshAppearance', this.refreshAppearance)
+    if(this.configData.appearance.themes){
+      for(let theme of this.configData.appearance.themes){
+        this.themeList.push(theme)
+      }
+    }
   },
   mounted: function() {
   },
@@ -201,6 +195,7 @@ export default {
   align-items: center;
   border-top: solid #ccc thin;
   font-size: 14px;
+  padding:16px 4px;
 }
 
 .param_row {

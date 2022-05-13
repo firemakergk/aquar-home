@@ -1,10 +1,9 @@
 <template>
-  <div id="app" :style="curTheme" class="app-main" >
-    <div>
-      <!-- <grid-table /> -->
+  <v-app :style="curTheme" class="app-main">
+    <v-main>
       <router-view />
-    </div>
-  </div>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
