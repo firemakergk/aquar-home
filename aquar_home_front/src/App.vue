@@ -246,7 +246,7 @@ div:focus {
 }
 
 .config_content {
-  padding: 10px;
+  /* padding: 10px; */
   top: 0;
   left: 80px;
   right: 0;
@@ -254,8 +254,10 @@ div:focus {
   position: absolute;
   display: flex;
   flex-direction: column;
-  background-color: var(--tbgcolor_config,white);
+  background-color: rgb(244,243,244);
   color: var(--tcolor_main,black);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .float_config {
