@@ -3,28 +3,23 @@
     <!-- <div class="demo-card__primary">
       <div style="height: 24px; margin: 0 20px; display: flex;">
         <span style="flex-grow: 1;">外观设置:</span>
-        <a v-if="configTheme" class="color_main" @click="toggleCustomTheme()" >X</a>
+        
       </div>
     </div> -->
-    <div :class="{'hide':!configTheme, 'config_panel':true}" style="width: 100%;">
+    <!-- <div :class="{'hide':!configTheme, 'config_panel':true}" style="width: 100%;"> -->
+    <div v-if="configTheme" style="width: 100%;">
+      <div style="display: flex; ">
+        <span style="flex-grow: 1;">自定义主题</span>
+        <a class="color_main" style="margin: 0 4px;" @click="toggleCustomTheme()" >X</a>
+      </div>
       <config-theme :config-data="configData.appearance"></config-theme>
     </div>
-    <div :class="{'hide':configTheme, 'config_panel':true}">
+    <div v-else >
+    <!-- <div :class="{'hide':configTheme, 'config_panel':true}"> -->
       <div  class="mdc-layout-grid" style="width: 100%;">
         <div class="mdc-layout-grid__inner param_row">
           <div class="mdc-layout-grid__cell--span-12">
-            <div class="aq-textfield mdc-text-field mdc-text-field--outlined " style="width: 100%">
-              <div class="mdc-notched-outline">
-                <span class="mdc-notched-outline__leading" ></span>
-                <!-- <span class="mdc-notched-outline__leading"></span> -->
-                <div class="mdc-notched-outline__notch">
-                  <label for="背景色：" class="mdc-floating-label">背景色</label>
-                </div>
-                <span class="mdc-notched-outline__trailing"></span>
-                <!-- <span class="mdc-notched-outline__trailing"></span> -->
-              </div>
-              <input type="text" id="firstname" class="mdc-text-field__input" v-model="configData.appearance.bgColor">
-            </div>
+            <aq-textfield :label="'背景色'" v-model="configData.appearance.bgColor"></aq-textfield>
           </div>
         </div>
         <div class="mdc-layout-grid__inner param_row">
@@ -53,35 +48,26 @@
         </div>
         <div class="mdc-layout-grid__inner param_row">
           <div class="mdc-layout-grid__cell--span-12">
-            <div class="aq-textfield mdc-text-field mdc-text-field--outlined " style="width: 100%">
-              <div class="mdc-notched-outline">
-                <span class="mdc-notched-outline__leading" ></span>
-                <!-- <span class="mdc-notched-outline__leading"></span> -->
-                <div class="mdc-notched-outline__notch" >
-                  <label for="背景模糊" class="mdc-floating-label">背景模糊</label>
-                </div>
-                <span class="mdc-notched-outline__trailing"></span>
-                <!-- <span class="mdc-notched-outline__trailing"></span> -->
-              </div>
-              <input type="text" id="bgBlur" class="mdc-text-field__input" v-model="configData.appearance.bgBlur">
-            </div>
+            <aq-textfield :label="'背景模糊'" v-model="configData.appearance.bgBlur"></aq-textfield>
           </div>
         </div>
         <div class="mdc-layout-grid__inner param_row">
           <div class="mdc-layout-grid__cell--span-6" style="width: 100%">
-            <div class="aq-select mdc-select mdc-select--outlined">
-              <div class="mdc-select__anchor" aria-labelledby="outlined-select-label">
+            <!-- <div class="aq-select mdc-select mdc-select--outlined">
+              <div class="mdc-select__anchor" 
+                aria-labelledby="outlined-select-label"
+                role="button"
+                aria-haspopup="listbox"
+                aria-expanded="false">
                 <span class="mdc-notched-outline">
                   <span class="mdc-notched-outline__leading" ></span>
-                  <!-- <span class="mdc-notched-outline__leading"></span> -->
                   <span class="mdc-notched-outline__notch"  >
                     <span id="outlined-select-label" class="mdc-floating-label">主题</span>
                   </span>
                   <span class="mdc-notched-outline__trailing" ></span>
-                  <!-- <span class="mdc-notched-outline__trailing"></span> -->
                 </span>
                 <span class="mdc-select__selected-text-container">
-                  <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+                  <span class="mdc-select__selected-text">esss{{configData.appearance.theme}}</span>
                 </span>
                 <span class="mdc-select__dropdown-icon">
                   <svg
@@ -108,20 +94,40 @@
                     <span class="mdc-list-item__ripple"></span>
                     <span class="mdc-list-item__text">未选择</span>
                   </li>
-                  <li class="mdc-list-item" data-value="defaultLight" @click="selectTheme('defaultLight')">
+                  <li  :class="[{'mdc-list-item--selected': (configData.appearance.theme === 'defaultLight')}, 'mdc-list-item']"  data-value="defaultLight" @click="selectTheme('defaultLight')" >
                     <span class="mdc-list-item__ripple"></span>
                     <span class="mdc-list-item__text">defaultLight</span>
                   </li>
-                  <li class="mdc-list-item" data-value="dark" @click="selectTheme('dark')">
+                  <li :class="[{'mdc-list-item--selected': (configData.appearance.theme === 'dark')}, 'mdc-list-item']" data-value="dark" @click="selectTheme('dark')" >
                     <span class="mdc-list-item__ripple"></span>
                     <span class="mdc-list-item__text">dark</span>
                   </li>
-                <li class="mdc-list-item" v-for="(themeName,index) in configData.appearance.themes" :key="'theme_'+ index" :data-value="themeName" @click="selectTheme(themeName)">
+                <li class="mdc-list-item" v-for="(themeName,index) in configData.appearance.themes" 
+                  
+                  :key="'theme_'+ index" @click="selectTheme(themeName)"
+                  :class="[{'mdc-list-item--selected': (configData.appearance.theme === themeName)}, 'mdc-list-item']">
                     <span class="mdc-list-item__ripple"></span>
                     <span class="mdc-list-item__text">{{themeName}}</span>
                   </li> 
                 </ul>
               </div>
+            </div> -->
+            <div class="mdc-select">
+              <i class="mdc-select__dropdown-icon"></i>
+              <select class="mdc-select__native-control">
+                <option value="" disabled selected></option>
+                <option value="grains">
+                  Bread, Cereal, Rice, and Pasta
+                </option>
+                <option value="vegetables">
+                  Vegetables
+                </option>
+                <option value="fruit">
+                  Fruit
+                </option>
+              </select>
+              <label class="mdc-floating-label">Pick a Food Group</label>
+              <div class="mdc-line-ripple"></div>
             </div>
           </div>
           <div class="mdc-layout-grid__cell--span-3" >
@@ -155,16 +161,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import ConfigTheme from './ConfigTheme.vue'
-import {MDCTextField} from '@material/textfield';
-import {MDCSelect} from '@material/select';
-
-
-var textField = null;
+import AqTextfield from '../form/AqTextfield.vue'
 
 export default {
   name: 'ConfigAppearance',
   components: {
-    ConfigTheme
+    ConfigTheme,
+    AqTextfield
   },
   data: function() {
     return {
@@ -192,22 +195,15 @@ export default {
     this.$bus.on('refreshAppearance', this.refreshAppearance)
   },
   mounted: function() {
-    this.initmdc()
+    this.$nextTick(() => {
+        this.$bus.emit('renderMdc',null)
+      });
   },
   beforeDestroy() {
     this.$bus.off('refreshAppearance', this.refreshAppearance)
   },
   methods: {
-    initmdc(){
-      let textFields = document.querySelectorAll('.mdc-text-field');
-      for (let textField of textFields) {
-        MDCTextField.attachTo(textField);
-      }
-      let selects = document.querySelectorAll('.mdc-select');
-      for (let select of selects) {
-        MDCSelect.attachTo(select);
-      }
-    },
+    
     refreshConfig() {
       this.$axios
         .get('/api/config')
@@ -219,9 +215,9 @@ export default {
         })
     },
     toggleCustomTheme() {
+      this.configTheme = !this.configTheme
       this.$nextTick(() => {
-        this.configTheme = !this.configTheme
-        this.initmdc()
+        this.$bus.emit('renderMdc',null)
       });
     },
     removeTheme() {
@@ -292,78 +288,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-//https://material-components.github.io/material-components-web-catalog/#/component/text-field?type=filled
-//https://material.io/develop/web/supporting/layout-grid
-@use "@material/layout-grid/mdc-layout-grid";
-@use '@material/button/mdc-button';
-@use '@material/button';
-@use "@material/floating-label/mdc-floating-label";
-@use "@material/line-ripple/mdc-line-ripple";
-@use "@material/notched-outline/mdc-notched-outline";
-@use "@material/textfield";
-@use "@material/card";
-@use "@material/list/mdc-list";
-@use "@material/menu-surface/mdc-menu-surface";
-@use "@material/menu/mdc-menu";
-@use "@material/select/styles";
-@use "@material/select";
-
-
-.demo-width-class {
-  width: 400px;
-}
-
-@include card.core-styles;
-@include textfield.core-styles;
-
-.aq-button {
-  @include button.height(32px);
-}
-
-.aq-textfield {
-  @include textfield.outlined-height(32px);
-  @include textfield.outline-shape-radius(0px);
-}
-
-.aq-textfield .mdc-notched-outline__leading {
-  border-top: none;
-  border-left: none;
-}
-
-.aq-textfield .mdc-notched-outline__notch {
-  border-top: none;
-}
-
-.aq-textfield .mdc-notched-outline__trailing {
-  border-top: none;
-  border-right: none;
-}
-
-.aq-select {
-  @include select.outlined-height(32px);
-  @include select.outline-shape-radius(0px);
-}
-
-.aq-select .mdc-notched-outline__leading {
-  border-top: none;
-  border-left: none;
-}
-
-.aq-select .mdc-notched-outline__notch {
-  border-top: none;
-}
-
-.aq-select .mdc-notched-outline__trailing {
-  border-top: none;
-  border-right: none;
-}
-
-.filled-textfield {
-  // @include textfield.height(40px);
-  @include textfield.density(-2);
-} 
-
 .config_panel {
   margin: 0;
 }

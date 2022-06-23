@@ -10,6 +10,9 @@
 <script>
 import defaultLight from '@/assets/themes/defaultlight.json'
 import dark from '@/assets/themes/dark.json'
+import {MDCTextField} from '@material/textfield';
+import {MDCSelect} from '@material/select';
+
 export default {
   name: 'App',
   components: {
@@ -30,6 +33,7 @@ export default {
   },
   created: function() {
     this.$bus.on('renderBg', this.renderBg)
+    this.$bus.on('renderMdc',this.renderMdc)
   },
   mounted: function() {
     this.$axios
@@ -42,7 +46,8 @@ export default {
       })
   },
   beforeDestroy() {
-    this.$bus.off('renderBg', this.renderBg)
+    this.$bus.off('renderBg')
+    this.$bus.off('renderMdc')
   },
   methods: {
     renderBg(data) {
@@ -67,12 +72,94 @@ export default {
         this.curTheme = Object.assign(this.curTheme,defaultLight)
       }
       this.$forceUpdate()
-    }
+    },
+    renderMdc(){
+      let textFields = document.querySelectorAll('.mdc-text-field');
+      console.log('textFields:' + textFields.length)
+      for (let textField of textFields) {
+        MDCTextField.attachTo(textField);
+      }
+      let selects = document.querySelectorAll('.mdc-select');
+      for (let select of selects) {
+        MDCSelect.attachTo(select);
+      }
+    },
   }
 }
 </script>
 
-<style>
+<style lang="scss" >
+
+@use "@material/layout-grid/mdc-layout-grid";
+@use '@material/button/mdc-button';
+@use '@material/button';
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/textfield";
+@use "@material/card";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/select/styles";
+@use "@material/select";
+
+@include card.core-styles;
+@include textfield.core-styles;
+
+.aq-button {
+  @include button.height(32px);
+}
+.aq-textfield-outlined {
+  @include textfield.outlined-height(32px);
+  @include textfield.outline-shape-radius(0px);
+}
+
+.aq-textfield {
+  @include textfield.outlined-height(32px);
+  @include textfield.outline-shape-radius(0px);
+}
+
+.aq-textfield .mdc-notched-outline__leading {
+  border-top: none;
+  border-left: none;
+}
+
+.aq-textfield .mdc-notched-outline__notch {
+  border-top: none;
+}
+
+.aq-textfield .mdc-notched-outline__trailing {
+  border-top: none;
+  border-right: none;
+}
+
+.aq-select {
+  @include select.outlined-height(32px);
+  @include select.outline-shape-radius(0px);
+}
+
+.aq-select .mdc-notched-outline__leading {
+  border-top: none;
+  border-left: none;
+}
+
+.aq-select .mdc-notched-outline__notch {
+  border-top: none;
+}
+
+.aq-select .mdc-notched-outline__trailing {
+  border-top: none;
+  border-right: none;
+}
+
+.filled-textfield {
+  // @include textfield.height(40px);
+  @include textfield.density(-2);
+} 
+
+
+
 body {
   position: relative;
   height: 100%;

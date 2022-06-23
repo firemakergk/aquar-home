@@ -30,6 +30,26 @@
       </div>
       <div v-else class="param_panel">
         <div v-if="curWidget" class="param_warp">
+          <div  class="mdc-layout-grid" style="width: 100%;">
+            <div class="mdc-layout-grid__inner param_row">
+              <div class="mdc-layout-grid__cell--span-12">
+                <div class="aq-textfield mdc-text-field mdc-text-field--outlined " style="width: 100%">
+                  <div class="mdc-notched-outline">
+                    <span class="mdc-notched-outline__leading" ></span>
+                    <!-- <span class="mdc-notched-outline__leading"></span> -->
+                    <div class="mdc-notched-outline__notch">
+                      <label for="组件名称" class="mdc-floating-label">组件名称</label>
+                    </div>
+                    <span class="mdc-notched-outline__trailing"></span>
+                    <!-- <span class="mdc-notched-outline__trailing"></span> -->
+                  </div>
+                  <input type="text" id="firstname" class="mdc-text-field__input" v-model="curWidget.name">
+                </div>
+              </div>
+            </div>
+          </div>
+
+
           <div class="param_row">
             <span class="param_name">
               组件名称：
@@ -136,6 +156,7 @@ export default {
   created: function() {
   },
   mounted: function() {
+    this.$bus.emit('renderMdc',null)
   },
   beforeDestroy() {
   },
@@ -149,6 +170,9 @@ export default {
     toConfigDetail(widget) {
       this.curWidget = Object.assign({}, widget)
       this.configDetail = true
+      this.$nextTick(() => {
+        this.$bus.emit('renderMdc',null)
+      });
     },
     toChoose() {
       this.curWidget = null
@@ -212,12 +236,13 @@ export default {
   border-top: solid #ccc thin;
 }
 .param_warp {
-  width: 400px;
+  width: 100%;
+  padding: 10px;
 }
 .param_row {
-  display: flex;
   align-items: center;
   width: 100%;
+  padding: 8px 0px;
 }
 .param_name {
   width: 120px;

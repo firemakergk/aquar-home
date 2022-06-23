@@ -20,7 +20,7 @@
             </div>
             <div>
               <!-- <code-mirror v-model="importText" :options="cmOptions" /> -->
-              <textarea ref="mycode" class="code_editor" v-model="themeText" style="height:200px;width:600px;"></textarea>
+              <textarea ref="mycode" class="code_editor" v-model="themeText" style="height:200px;width:600px;">test</textarea>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default {
   data: function() {
     return {
       baseThemeName: this.configData.theme,
-      themeText: "",
+      themeText: "test",
       editor: null,
       customTheme: {},
     }
