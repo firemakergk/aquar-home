@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div class="config_header tbgcolor_sub_head tcolor_reverse">
+  <div class="aq_container">
+    <div class="config_header">
       <span style="flex-grow: 1; margin: 0 10px;">{{widgetName}}设置</span>
       <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
@@ -70,14 +70,14 @@ export default {
   width: 100%;
   display: block;
 }
-.container {
+.aq_container {
   border-radius: 2px;
-  margin: 4px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
 }
 .config_header {
+  background-color: #E6F0FC;
   display: flex;
   align-items: center;
   height: 24px;
@@ -92,9 +92,6 @@ export default {
   flex-direction: column;
 }
 .widget_config_panel {
-  margin: 10px 0 0 0;
-  padding: 10px;
-  // width:100%;
   height: 100%;
   overflow-y: auto;
 }
@@ -103,7 +100,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
-  border-top: solid #ccc thin;
 }
 .icon_panel {
   display: flex;

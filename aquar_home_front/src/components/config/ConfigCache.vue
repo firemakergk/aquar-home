@@ -1,6 +1,22 @@
 <template>
   <div class="config_content">
-    <div style="height: 24px; margin: 0 20px;">缓存设置:</div>
+    <v-container class="lighten-5">
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          *缓存主要包含历史上上传过的图片，自动抓取的ico图标，以及部分应用生成的图片缩略图等。清理缓存不会影响正在使用的图标，但会清空所有缩略图缓存。
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="3">
+          <span>缓存大小：</span>
+          <span>{{cacheSize}}</span>
+        </v-col>
+        <v-col cols="2">
+          <v-btn depressed small color="primary" @click="clearCache()" style="margin:0 4px; width: 100%;">清理</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <!-- <div style="height: 24px; margin: 0 20px;">缓存设置:</div>
     <div class="config_panel">
       <div class="param_panel">
         <div class="param_row">
@@ -21,7 +37,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -105,7 +121,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-top: solid #ccc thin;
   font-size: 14px;
 }
 

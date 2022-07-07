@@ -1,13 +1,38 @@
 <template>
   <div class="config_content">
-    <div style="height: 24px; margin: 0 20px;">帐户设置:</div>
+    <v-container class="lighten-5">
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-text-field dense hide-details label="用户名" v-model="userName" ></v-text-field> 
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-text-field dense hide-details type="password" label="密码" v-model="password" ></v-text-field> 
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="2">
+          <v-btn depressed small outlined @click="logout()" style="margin:0 4px; width: 100%;">退出登录</v-btn>
+        </v-col>
+        <v-col cols="2">
+          <v-btn depressed small outlined  @click="destoryAccount()" style="margin:0 4px; width: 100%;">注销帐户</v-btn>
+        </v-col>
+        <v-col cols="5">
+        </v-col>
+        <v-col cols="3">
+          <v-btn depressed small  color="primary" @click="updateAccount()" style="margin:0 4px; width: 100%;">重置帐户</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <!-- <div style="height: 24px; margin: 0 20px;">帐户设置:</div>
     <div class="config_panel">
       <div class="param_panel">
         <div class="param_row">
           <div class="param_name">用户名：</div>
           <div class="param_form">
             <input type="text"  name="userName" placeholder="用户名" v-model="userName" />
-            
+            <v-text-field dense hide-details label="用户名" v-model="userName" ></v-text-field> 
           </div>
         </div>
         <div class="param_row">
@@ -32,7 +57,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -116,7 +141,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-top: solid #ccc thin;
   font-size: 14px;
 }
 

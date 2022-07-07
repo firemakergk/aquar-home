@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="widget_container">
     <div class="icon_panel">
       <div class="img_span" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
         <div style="flex-grow: 1; width: 8px;" />
@@ -106,7 +106,7 @@ export default {
   width: 100%;
   display: block;
 }
-.container {
+.widget_container {
   width: 100%;
   height: 100%;
 }

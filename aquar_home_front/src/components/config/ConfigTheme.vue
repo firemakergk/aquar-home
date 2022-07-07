@@ -1,27 +1,44 @@
 <template>
   <div class="batch_panel">
-    <div class="param_row">
-      <div class="param_form">
-        <div style="display: flex; flex-direction: row; align-items:stretch;">
-          <div style="width: 0; flex-grow: 1; display: flex; flex-direction: column; margin: 0 4px;">
-            <div style="display: flex; flex-direction: row; align-items: center; margin: 4px 0;">
-              <div style="flex-grow:1;">主题名称：<input v-model="customTheme.name" type="text" style="width: 120px;" /></div>
-              <div>
-                <span>重置为：</span>
-                <select name="theme"  v-model="baseThemeName">
-                  <option value ="">未选择</option>
-                  <option value ="defaultLight">default light</option>
-                  <option value ="dark">dark</option>
-                  <option v-for="(themeName,index) in configData.themes" :key="'theme_'+ index" :value="themeName" >{{themeName}}</option>
-                </select>
-                <button @click="resetBase()">重置</button>
-              </div>
-              <div><button @click="submitTheme()">提交</button></div>
-            </div>
+    <div class="param_form">
+      <div style="display: flex; flex-direction: row; align-items:stretch;">
+        <div style="width: 0; flex-grow: 1; display: flex; flex-direction: column; margin: 0 4px;">
+          <v-container class="pa-0">
+            <v-row align="end" dense class="py-2 ">
+              <v-col cols="4">
+                <v-text-field  hide-details="true" label="主题名称" height="30" v-model="customTheme.name" class="py-0 my-0" ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-select hide-details="true" dense :items="themeList" label="重置为" ></v-select>
+              </v-col>
+              <v-col cols="2">
+                <v-btn depressed small outlined @click="resetBase()" style="margin:0 2px; width: 100%;">重置</v-btn>
+              </v-col>
+              <v-col cols="2">
+                <v-btn depressed small color="primary" @click="submitTheme()" style="margin:0 2px; width: 100%;">提交</v-btn>
+              </v-col>
+              <v-col cols="1">
+                <v-btn icon small color="primary" @click="back()" style="margin:0 2px; width: 100%;" title="返回" ><v-icon>mdi-arrow-left-top-bold</v-icon></v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+          <!-- <div style="display: flex; flex-direction: row; align-items: center; margin: 4px 0;">
+            <div style="flex-grow:1;">主题名称：<input v-model="customTheme.name" type="text" style="width: 120px;" /></div>
             <div>
-              <!-- <code-mirror v-model="importText" :options="cmOptions" /> -->
-              <textarea ref="mycode" class="code_editor" v-model="themeText" style="height:200px;width:600px;"></textarea>
+              <span>重置为：</span>
+              <select name="theme"  v-model="baseThemeName">
+                <option value ="">未选择</option>
+                <option value ="defaultLight">default light</option>
+                <option value ="dark">dark</option>
+                <option v-for="(themeName,index) in configData.themes" :key="'theme_'+ index" :value="themeName" >{{themeName}}</option>
+              </select>
+              <button @click="resetBase()">重置</button>
             </div>
+            <div><button @click="submitTheme()">提交</button></div>
+          </div> -->
+          <div>
+            <!-- <code-mirror v-model="importText" :options="cmOptions" /> -->
+            <textarea ref="mycode" class="code_editor" v-model="themeText" style="height:200px;width:600px;"></textarea>
           </div>
         </div>
       </div>
@@ -60,6 +77,11 @@ export default {
       baseThemeName: this.configData.theme,
       themeText: "",
       editor: null,
+      themeInitList: [
+        {text:"defaultLight", value: "defaultLight"},
+        {text:"dark", value: "dark"}
+      ],
+      themeList: [],
       customTheme: {},
     }
   },
@@ -85,6 +107,15 @@ export default {
         type: 'chromedevtool'
       }
     })
+    this.themeList = []
+    for(let theme of this.themeInitList){
+      this.themeList.push(theme)
+    }
+    if(this.configData.themes){
+      for(let theme of this.configData.themes){
+        this.themeList.push({text:theme, value:theme})
+      }
+    }
     this.$forceUpdate()
   },
   beforeDestroy() {
@@ -111,6 +142,9 @@ export default {
         .get('/api/theme/findOne?name=' + name)
         return res.data.detail
       }
+    },
+    back(){
+      this.$bus.emit('toggleCustomTheme')
     },
     submitTheme(){
       this.customTheme.detail = JSON.parse(this.editor.getValue())

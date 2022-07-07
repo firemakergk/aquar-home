@@ -3,13 +3,18 @@
     <div class="dashboard_header tbgcolor_head">
       <div class="logo">
         <img style="height: 20px;" :src="logo_aquar">
-        <span style="margin: 4px;" class="tcolor_sub_head">Aquar</span>
       </div>
-      <div class="page_tabs">
+      <!-- <div class="page_tabs">
         <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab" :class="index == curTabIndex ? 'tbgcolor_tab_selected tcolor_tab_selected':'tbgcolor_tab tcolor_tab'">
           <a @click="toTab(index)" class="tcolor_reverse">{{tab.title}}</a>
         </div>
-      </div>
+      </div> -->
+      <v-tabs v-model="curTabIndex">
+        <v-tabs-slider ></v-tabs-slider>
+        <v-tab v-for="(tab,index) in tabs"  :key="'tab1_'+index" @click="toTab(index)">
+          {{ tab.title }}
+        </v-tab>
+      </v-tabs>
       <div style="flex-grow: 1" />
       <a style="margin: 0 4px; padding: 0 4px; border-right: solid thin #ccc;" class="iconfont icon-question-circle icon tcolor_disable" title="设置" target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" />
       <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon tcolor_reserve" title="设置布局" @click="editing=true" />
@@ -53,16 +58,12 @@
         </keep-alive>
       </grid-item>
     </grid-layout>
-    <div v-show="showConfigPanel" class="config_layer">
-      <div class="config_panel">
+    <v-dialog eager v-model="showConfigPanel" width="600px" height="500px">
         <config />
-      </div>
-    </div>
-    <div v-show="showWidgetConfig" class="config_layer">
-      <div class="config_panel">
-        <widget-config />
-      </div>
-    </div>
+    </v-dialog>
+    <v-dialog eager v-model="showWidgetConfig" width="600px" height="500px">
+      <widget-config />
+    </v-dialog>
   </div>
 </template>
 
@@ -498,6 +499,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-right: 40px;
 }
 .grid_container {
   margin: 0;

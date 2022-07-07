@@ -1,9 +1,11 @@
 <template>
-  <v-app :style="curTheme" class="app-main">
-    <v-main>
-      <router-view />
-    </v-main>
-  </v-app>
+  <div :style="curTheme" class="app-main">
+    <v-app style="background: none;" >
+      <v-main>
+        <router-view />
+      </v-main>
+    </v-app>
+  </div>
 </template>
 
 <script>
@@ -71,7 +73,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '~vuetify/src/components/VTextField/_variables.scss';
+$text-field-solo-dense-control-min-height: 20px;
+$text-field-line-height: 10px;
+@import '~vuetify/src/components/VTextField/VTextField.sass';
 body {
   position: relative;
   height: 100%;
@@ -150,7 +156,7 @@ div:focus {
   flex-direction: column;
   padding: 4px 4px;
   border-radius: 2px;
-  background-color: var(--widget_box_bgcolor,rgba(255,255,255, 0.7));
+  background-color: var(--widget_box_bgcolor,rgba(255,255,255, 0.2));
   backdrop-filter: blur(24px);
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
   box-sizing: border-box;
@@ -246,15 +252,11 @@ div:focus {
 
 .config_content {
   padding: 10px;
-  top: 0;
-  left: 80px;
-  right: 0;
-  bottom: 0;
-  position: absolute;
   display: flex;
   flex-direction: column;
   background-color: var(--tbgcolor_config,white);
   color: var(--tcolor_main,black);
+  overflow-y: auto;
 }
 
 .float_config {

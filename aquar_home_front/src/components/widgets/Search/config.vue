@@ -1,22 +1,20 @@
 <template>
   <div class="content">
-    <div class="param_panel">
-      <div class="param_row">
-        <div class="param_name">跳转方式：</div>
-        <div class="param_form">
-          <select v-model="configData.data.target_type">
-            <option value='_blank'>新标签页</option>
-            <option value='_self'>当前页</option>
-          </select>
-        </div>
-      </div>
-      <div class="param_row" style="height: 80px;">
-        <div class="param_name"></div>
-        <div class="param_form">
-          <button type="button" class="submit_button" @click="updateConfig()">提交</button>
-        </div>
-      </div>
-    </div>
+    <v-container class="lighten-5">
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-select hide-details dense :items="targetTypeList" label="跳转方式" v-model="configData.data.target_type" ></v-select>
+        </v-col>
+      </v-row>
+      <v-row justify="end" align="center" dense class="py-2">
+        <v-col cols="3">
+          <v-btn depressed small color="primary" @click="updateConfig()" style="margin:0 4px; width: 100%;">
+            <v-icon small>mdi-check</v-icon>
+            提交
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -29,6 +27,10 @@ export default {
   },
   data: function() {
     return {
+      targetTypeList: [
+        {text:"当前页", value: "_self"},
+        {text:"新标签页", value: "_blank"}
+      ],
     }
   },
   computed: {

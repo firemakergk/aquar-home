@@ -1,7 +1,7 @@
 import axios from "axios"
 import router from '../router.js'
 let config = {
-  timeout: 10000,
+  timeout: 60000,
   withCredentials: true
 }
 const instance = axios.create(config)

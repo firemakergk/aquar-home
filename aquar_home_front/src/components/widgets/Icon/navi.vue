@@ -1,5 +1,5 @@
 <template>
-  <div class="container" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
+  <div class="widget_container" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
     <div style="position:absolute; right:4px; width: 8px;">
       <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" />
     </div>
@@ -87,7 +87,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.container {
+.widget_container {
   width: 100%;
   height: 100%;
 }

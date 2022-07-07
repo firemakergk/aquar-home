@@ -1,13 +1,22 @@
 <template>
-  <div class="container tbgcolor_main tcolor_main">
-    <div class="config_header tbgcolor_sub_head tcolor_reverse">
+  <div class="aq_container tbgcolor_main tcolor_main">
+    <div class="config_header">
       <span style="flex-grow: 1; margin: 0 10px;">设置</span>
       <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
     <div class="config_container tbgcolor_main">
-      <div class="config_sidebar tbgcolor_config_tab">
-        <a v-for="(menu,index) in menus" :key="index" class="menu_item tcolor_sub_head" 
-        @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a>
+      <div class="config_sidebar">
+        <!-- <a v-for="(menu,index) in menus" :key="index" class="menu_item tcolor_sub_head" 
+        @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a> -->
+        <v-list dense class="pa-0">
+          <v-list-item-group v-model="curMenu" color="primary">
+            <v-list-item v-for="(menu,index) in menus" :key="'menu_'+index">
+              <v-list-item-content>
+                <v-list-item-title v-text="menu.name" ></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
       </div>
       <div class="config_panel">
         <keep-alive>
@@ -77,9 +86,8 @@ export default {
 
 <style lang="scss" scoped>
 
-.container {
+.aq_container {
   border-radius: 2px;
-  margin: 4px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
@@ -89,6 +97,7 @@ export default {
   align-items: center;
   height: 24px;
   border-radius:2px 2px 0 0 ;
+  background-color: #E6F0FC;
 }
 .config_container{
   // min-height: 200px;
@@ -103,13 +112,16 @@ export default {
   font-size: 16px;
   display: flex;
   flex-direction: column;
+  box-shadow: 4px -2px 4px -4px rgba(0, 0, 0, .3);
 }
 .menu_item {
   padding: 8px 4px;
 }
 .config_panel {
   margin: 0;
-  width:100%;
+  margin-left: 6px;
+  flex-grow: 1;
+  flex-shrink: 1;
   height: 100%;
   overflow-y: auto;
 }
@@ -138,7 +150,6 @@ export default {
   // flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-top: solid #ccc thin;
 }
 .param_warp {
   width: 480px;

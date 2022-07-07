@@ -1,17 +1,27 @@
 <template>
   <div class="content">
-    <div class="param_panel">
-      <div class="param_row">
-        <div class="param_name">ico图片：</div>
-        <div class="param_form">
-          <img v-show="configData.data.ico_path" style="width: 16px; height: 16px; margin: 0 8px;" :src="configData.data.ico_path">
-          <button style="margin: 0 4px;" @click="clearIco()"><span class="iconfont icon-delete icon" style="font-size: 14px;">清空</span></button>
-          <button style="margin: 0 4px;" @click="refreshIco()"><span class="iconfont icon-sync-alt icon" style="font-size: 14px;">重新抓取</span></button>
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">图标图片：</div>
-        <div class="param_form">
+    <v-container class="lighten-5">
+      <v-row align="center" dense class="py-2">
+        <v-col cols="3" class="d-flex flex-row justify-start">
+          <span>ico图标：</span>
+          <v-img contain height="20px" max-width="20px" :src="configData.data.ico_path" class="mx-2"></v-img>
+        </v-col>
+        <v-col cols="2">
+          <v-btn depressed small outlined @click="clearIco()" style="margin:0 4px; width: 100%;">
+            <v-icon small>mdi-delete</v-icon>
+            清空
+          </v-btn>
+        </v-col>
+        <v-col cols="2" >
+          <v-btn depressed small outlined @click="refreshIco()" style="margin:0 4px; width: 100%;">
+            <v-icon small>mdi-refresh</v-icon>
+            重新抓取
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12" class="d-flex flex-row justify-start align-start">
+          <span>图片图标：</span>
           <div style="display: flex; align-items: stretch;">
             <div class="icon_warp" @mouseover="showUpload=true" @mouseleave="showUpload=false">
               <div v-show="showUpload" class="icon_cover">
@@ -49,55 +59,50 @@
                   :limitMinSize="option.limitMinSize"/>
                 <a :ref="'downloadDom'+configData.id" :href="downImg" style="display: none;" download="demo.png" />
               </div>
-              <div v-show="showCropper" style="margin: 10px;" class="tcolor_main"><a @click="comfirmIcon">确定</a></div>
+              <!-- <div v-show="showCropper" style="margin: 10px;" class="tcolor_main"><a @click="comfirmIcon">确定</a></div> -->
+              <v-btn depressed small outlined v-show="showCropper" @click="comfirmIcon" style="margin:4px 4px; width: 50px;">
+                <v-icon small>mdi-content-cut</v-icon>
+                确定
+              </v-btn>
             </div>
-            
           </div>
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">名称：</div>
-        <div class="param_form">
-          <input v-model="configData.name" style="width: 100%;">
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">链接地址：</div>
-        <div class="param_form">
-          <input v-model="configData.href" style="width: 100%;">
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">跳转方式：</div>
-        <div class="param_form">
-          <select v-model="configData.data.target_type">
-            <option value='_blank'>新标签页</option>
-            <option value='_self'>当前页</option>
-          </select>
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">内网转换：</div>
-        <div class="param_form">
-          <select v-model="configData.data.addr_translate">
-            <option value='0'>关</option>
-            <option value='1'>开</option>
-          </select>
-        </div>
-      </div>
-      <div class="param_row">
-        <div class="param_name">内网地址：</div>
-        <div class="param_form">
-          <input v-model="configData.data.private_href" style="width: 100%;">
-        </div>
-      </div>
-      <div class="param_row" style="height: 80px;">
-        <div class="param_name"></div>
-        <div class="param_form">
-          <button type="button" class="submit_button" @click="updateConfig()">提交</button>
-        </div>
-      </div>
-    </div>
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-text-field dense hide-details label="标题" v-model="configData.name" ></v-text-field> 
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-text-field dense hide-details label="链接地址" v-model="configData.href" ></v-text-field> 
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-select hide-details dense :items="targetTypeList" label="跳转方式" v-model="configData.data.target_type" ></v-select>
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
+        <v-col cols="12" class="d-flex flex-row justify-start align-center">
+          <span>内网地址转换:</span>
+          <v-switch dense hide-details true-value="1" false-value="0" v-model="configData.data.addr_translate" :label="` ${configData.data.addr_translate === '0'?'关':'开'}`" style="margin: 0px 0px 0px 8px;"></v-switch>
+        </v-col>
+      </v-row>
+      <v-row v-show="configData.data.addr_translate === '1'" align="center" dense class="py-2">
+        <v-col cols="12">
+          <v-text-field dense hide-details label="内网地址" v-model="configData.data.private_href" ></v-text-field> 
+        </v-col>
+      </v-row>
+      <v-row justify="end" align="center" dense class="py-2">
+        <v-col cols="3">
+          <v-btn depressed small color="primary" @click="updateConfig()" style="margin:0 4px; width: 100%;">
+            <v-icon small>mdi-check</v-icon>
+            提交
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -142,7 +147,11 @@ export default {
       },
       previews: {},
       downImg: '#',
-      previewStyle1: {}
+      previewStyle1: {},
+      targetTypeList: [
+        {text:"当前页", value: "_self"},
+        {text:"新标签页", value: "_blank"}
+      ],
     }
   },
   computed: {
@@ -284,6 +293,7 @@ export default {
   padding: 10px;
   display: flex;
   flex-direction: column;
+  font-size: 14px;
 }
 
 .param_panel {

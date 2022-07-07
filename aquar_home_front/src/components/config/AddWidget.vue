@@ -1,11 +1,11 @@
 <template>
   <div class="config_content">
-    <div v-show="!configDetail" class="config_panel">
-      <div style="height: 24px; margin: 0 20px;">选择组件(1/2):</div>
+    <div v-show="!configDetail" class="config_panel" transition="scroll-x-transition" >
+      <div style="height: 24px; margin: 0 0 0 32px;" >选择组件(1/2):</div>
       <div class="widget_list">
         <a v-for="(widget,index) in widgets" :key="index" class="icon_panel" @click="toConfigDetail(widget)">
           <div class="img_span">
-            <img v-if="widget.widget === 'SyncthingWidget'" :src="logo_syncthing" style="width: 60px;">
+            <img v-if="widget.widget === 'SyncthingWidget'" :src="logo_syncthing" style="width: 60px;" >
             <img v-if="widget.widget === 'ArchivePhaseWidget'" :src="logo_archivephase" style="width: 60px;">
             <img v-if="widget.widget === 'NextCloudWidget'" :src="logo_nextcloud" style="width: 60px;">
             <img v-if="widget.widget === 'IconWidget'" :src="logo_icon" style="width: 60px;">
@@ -20,48 +20,44 @@
         </a>
       </div>
     </div>
-    <div v-show="configDetail" class="config_panel">
-      <div style="height: 24px; margin: 0 0 0 20px; display: flex;">
-        <span style="flex-grow: 1">设置组件参数(2/2):</span>
+    <div v-show="configDetail" class="config_panel" >
+      <div style="height: 24px; margin: 0; display: flex; border-bottom: solid #ccc thin;">
+        <span style="flex-grow: 1; margin: 0 0 0 32px;">设置组件参数(2/2):</span>
         <span v-show="curWidget && curWidget.widget === 'IconWidget'"><button @click="toggleBatch()">批量导入</button></span>
       </div>
-      <div class="param_panel" v-if="showBatch">
+      <div class="config_panel" v-if="showBatch">
         <batch-import/>
       </div>
-      <div v-else class="param_panel">
-        <div v-if="curWidget" class="param_warp">
-          <div class="param_row">
-            <span class="param_name">
-              组件名称：
-            </span>
-            <div class="param_form">
-              <input v-model="curWidget.name" type="text" style="width: 100%;">
-            </div>
-          </div>
-          <div class="param_row">
-            <span class="param_name">
-              链接地址：
-            </span>
-            <div class="param_form">
-              <input v-model="curWidget.href" type="text" style="width: 100%;">
-            </div>
-          </div>
-          <div v-for="(param,index) in curWidget.required_params" :key="index" class="param_row">
-            <span class="param_name">
-              <label style="color: red;">*</label>{{ param[0] }}：
-            </span>
-            <div v-if="param[1]==='text'" class="param_form">
-              <input v-model="curWidget.data[param[0]]" type="text" style="width: 100%;">
-            </div>
-            <div v-if="param[1]==='password'" class="param_form">
-              <input v-model="curWidget.data[param[0]]" type="password" style="width: 100%;">
-            </div>
-          </div>
-          <div class="submit_panel">
-            <a class="submit_button iconfont icon-reply icon tcolor_main" title="返回" @click="toChoose" />
-            <a class="submit_button iconfont icon-check icon tcolor_active" title="提交" @click="submit" />
-          </div>
-        </div>
+      <div v-else class="pa-4">
+        <v-container v-if="curWidget" class="pa-0" transition="scroll-x-transition">
+          <v-row align="end" dense class="py-2 ">
+            <v-col cols="12">
+              <v-text-field  hide-details="true" label="组件名称" height="30" v-model="curWidget.name" class="py-0 my-0" ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row align="end" dense class="py-2 ">
+            <v-col cols="12">
+              <v-text-field  hide-details="true" label="链接地址" height="30" v-model="curWidget.href" class="py-0 my-0" ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row  v-for="(param,index) in curWidget.required_params" :key="index" align="end" dense class="py-2" >
+            <v-col cols="12">
+              <v-text-field  hide-details="true" :label="param[0]" height="30" v-model="curWidget.data[param[0]]" class="py-0 my-0" ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row  align="center" justify="center" dense class="py-2" >
+            <v-col cols="4">
+              <v-btn small outlined @click="toChoose" style="margin:0 2px; width: 100%;" title="返回" ><v-icon left>mdi-arrow-left-top-bold</v-icon>返回</v-btn>
+            </v-col>
+            <v-col cols="4">
+              <v-btn small color="primary" @click="submit" style="margin:0 2px; width: 100%;" title="提交" ><v-icon left>mdi-check-bold</v-icon>提交</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- <div class="submit_panel">
+          <a class="submit_button iconfont icon-reply icon tcolor_main" title="返回" @click="toChoose" />
+          <a class="submit_button iconfont icon-check icon tcolor_active" title="提交" @click="submit" />
+        </div> -->
       </div>
       
     </div>
@@ -204,12 +200,11 @@ export default {
 }
 .param_panel {
   display: flex;
-  position: absolute;
   top: 36px;
   left: 0;
   right: 0;
   bottom: 0;
-  border-top: solid #ccc thin;
+  padding: 10px 0;
 }
 .param_warp {
   width: 400px;
