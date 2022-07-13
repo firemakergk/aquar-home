@@ -30,13 +30,21 @@
           </v-row>
           <v-row align="center" dense class="py-2">
             <v-col cols="6">
-              <v-select hide-details dense :items="themeList" label="主题" v-model="configData.appearance.theme" ></v-select>
+              <v-select hide-details dense disabled :items="themeList" label="主题" v-model="configData.appearance.theme" ></v-select>
             </v-col>
             <v-col cols="3">
-              <v-btn depressed small outlined @click="removeTheme()" style="margin:0 4px; width: 100%;">删除当前主题</v-btn>
+              <v-btn depressed small outlined disabled @click="removeTheme()" style="margin:0 4px; width: 100%;">删除当前主题</v-btn>
             </v-col>
-            <v-col cols="3">
-              <v-btn depressed small outlined @click="toggleCustomTheme()" style="margin:0 4px; width: 100%;">自定义</v-btn>
+            <v-col cols="2">
+              <v-btn depressed small outlined disabled @click="toggleCustomTheme()" style="margin:0 4px; width: 100%;">自定义</v-btn>
+            </v-col>
+            <v-col cols="1">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                </template>
+                <span>由于引入了新UI框架，自定义主题功能暂停使用，并将主题锁定在默认的白色主题下</span>
+              </v-tooltip>
             </v-col>
           </v-row>
           <v-row justify="end" align="center" dense class="py-2">

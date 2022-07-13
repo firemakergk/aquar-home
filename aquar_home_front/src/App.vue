@@ -60,13 +60,15 @@ export default {
         this.bgColor = config.appearance.bgColor
       }
       this.curTheme = {'--bgUrl': this.bgUrl,'--bgColor': this.bgColor,'--blurNum':this.blurNum}
-      if(themeDetail){
-        this.curTheme = Object.assign(this.curTheme,themeDetail)
-      }else if(config.appearance.theme && this.themes[config.appearance.theme]){
-        this.curTheme = Object.assign(this.curTheme,this.themes[config.appearance.theme])
-      }else{
-        this.curTheme = Object.assign(this.curTheme,defaultLight)
-      }
+      // if(themeDetail){
+      //   this.curTheme = Object.assign(this.curTheme,themeDetail)
+      // }else if(config.appearance.theme && this.themes[config.appearance.theme]){
+      //   this.curTheme = Object.assign(this.curTheme,this.themes[config.appearance.theme])
+      // }else{
+      //   this.curTheme = Object.assign(this.curTheme,defaultLight)
+      // }
+      //由于暂未梳理好vuetify与原先的主题自定义方式的融合逻辑，暂时禁用自定义主题
+      this.curTheme = Object.assign(this.curTheme,defaultLight)
       this.$forceUpdate()
     }
   }
