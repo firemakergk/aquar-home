@@ -4,7 +4,7 @@
       <div style="display: flex; flex-direction: row-reverse;" v-show="suggests && suggests.length>0">
         <a style="margin: 0 8px;" @click="closeSuggest()">X</a>
       </div>
-      <a v-for="(sugword,index) in suggests" :key="index" style="display:block; margin: 4px;" @click="search(sugword)">{{sugword}}</a>
+      <a v-for="(sugword,index) in suggests" :key="index" :class="selectedIndex===index? 'tbgcolor_info tcolor_reverse': ''" style="display:block; margin: 4px;" @click="search(sugword)" @mouseover="suggestMove(null,index)">{{sugword}}</a>
     </div>
     <div class="search_panel tbgcolor_main">
       <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source" @change="changeSource()">
@@ -14,7 +14,7 @@
       </select>
       <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" autofocus="autofocus" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
-        v-model="searchText" @keyup.enter="search()" @input="prepareSuggest()" />
+        v-model="searchText" @keyup.enter="search()" @keyup.up="suggestMove(-1,null)" @keyup.down="suggestMove(1,null)" @input="prepareSuggest()" />
       <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search()"></button>
       <div style="position:absolute; right: 8px; top: 2px; width: 8px;">
         <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" />
@@ -51,7 +51,8 @@ export default {
       showConfigIcon: false,
       searchText:'',
       lastSign: null,
-      suggests:[]
+      suggests:[],
+      selectedIndex: null,
     }
   },
   computed: {
@@ -70,9 +71,7 @@ export default {
     changeSource(){
       const reqData = { tabIndex:this.tabIndex, id: this.configData.id, source: this.configData.data.source }
       this.$axios.post('/api/endpoints/search/changeSource', reqData)
-        .then(response => {
-          console.log(response.data)
-        })
+        .then(response => {})
     },
     search(word) {
       if(word){
@@ -85,6 +84,30 @@ export default {
       }else{
         window.open(searchUrl)
       }
+      this.selectedIndex == null
+    },
+    suggestMove(step,toIndex) {
+      if(step){
+        if(this.selectedIndex == null){
+          this.selectedIndex = -1
+        }
+        let tempIndex = this.selectedIndex + step
+        if(tempIndex < 0){
+          this.selectedIndex = 0
+        }else if(tempIndex > this.suggests.length-1){
+          this.selectedIndex = this.suggests.length-1
+        }else{
+          this.selectedIndex = tempIndex
+        }
+      }else if(toIndex != null){
+        this.selectedIndex = toIndex
+      }else {
+        this.selectedIndex = null
+      }
+      if(this.selectedIndex >= 0 && this.selectedIndex < this.suggests.length){
+        this.searchText = this.suggests[this.selectedIndex]
+      }
+      
     },
     prepareSuggest(){
       var sign = Math.floor(Math.random() * 1000000)
@@ -92,11 +115,7 @@ export default {
       setTimeout(()=>{this.checkSuggest(sign)},500)
     },
     checkSuggest(sign){
-      console.log("check suggest!")
-      console.log(sign)
-      console.log(this.lastSign)
       if(this.lastSign && sign === this.lastSign){
-        console.log("check suggest success!!")
         this.suggest()
       }
     },
@@ -109,7 +128,6 @@ export default {
         .catch(error => {
           this.showErrorInfo = true
           this.errorInfo = error.message
-          console.log('url:'+error+',message:'+error.message)
         })
     },
     closeSuggest() {
