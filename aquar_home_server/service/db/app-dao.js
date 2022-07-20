@@ -131,6 +131,10 @@ class AppDao {
     delete res.auth
     return res
   }
+  getTab(index) {
+    let res = this.db.chain.get('tabs['+index+']').value()
+    return res
+  }
   updateTabs(data) {
     this.db.data.tabs = data
     this.db.write()

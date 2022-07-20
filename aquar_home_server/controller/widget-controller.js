@@ -1,6 +1,9 @@
 import appDao from '../service/db/app-dao.js'
 import { v4 as uuidv4 } from 'uuid'
 import widgetAdvicer from '../service/widget-advicer.js'
+import layoutUtil from '../utils/layout-util.js'
+import _ from 'lodash'
+
 class WidgetController {
   async list(ctx, next) {
     var index = ctx.query.index
@@ -48,6 +51,18 @@ class WidgetController {
     appDao.deleteById(data.tabIndex, data.id)
     var resStr = await appDao.findByCurIndex()
     ctx.body = resStr
+  }
+  async moveWidget(ctx, next) {
+    let data = ctx.request.body
+    let sourceWidget = _.cloneDeep(appDao.findOne(data.fromTab, data.widgetId))
+    let targetTab = appDao.getTab(data.toTab)
+    let layoutList = targetTab.widgets.map(w => w.layout)
+    let newLocation = layoutUtil.findLocationFitable(layoutList)
+    sourceWidget.layout.x = newLocation.x
+    sourceWidget.layout.y = newLocation.y
+    appDao.saveAppEntry(data.toTab, sourceWidget)
+    appDao.deleteById(data.fromTab,  data.widgetId)
+    ctx.body = {code:0,msg:'组件移动成功'}
   }
   async allData(ctx, next) {
     var resStr = await appDao.allData()

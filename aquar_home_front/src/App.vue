@@ -321,7 +321,7 @@ div:focus {
 }
 
 .tcolor_reverse {
-  color: var(--tcolor_reverse,#FFF);
+  color: var(--tcolor_reverse,#FFF) !important;
 }
 
 .tcolor_main {

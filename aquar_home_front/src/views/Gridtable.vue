@@ -9,9 +9,9 @@
           <a @click="toTab(index)" class="tcolor_reverse">{{tab.title}}</a>
         </div>
       </div> -->
-      <v-tabs v-model="curTabIndex">
+      <v-tabs>
         <v-tabs-slider ></v-tabs-slider>
-        <v-tab v-for="(tab,index) in tabs"  :key="'tab1_'+index" @click="toTab(index)">
+        <v-tab v-for="(tab,index) in tabs" :disabled="editing"  :key="'tab_'+index" @click="toTab(index)">
           {{ tab.title }}
         </v-tab>
       </v-tabs>
@@ -49,8 +49,9 @@
         @resize="resizeEvent"
       >
         <div v-show="editing" class="vue-draggable-handle tbgcolor_mask_reverse">
-          <span style="font-size: 14px; margin: 2px 10px; flex-grow: 1;" class="tcolor_reverse">点此拖动</span>
-          <a style="font-size: 10px;  margin: 4px;" class="iconfont icon-delete icon tcolor_error" @click="removeWidget(widget.id)" />
+          <span style="font-size: 14px; margin: 1px 0px; flex-grow: 1;" class="tcolor_reverse">点此拖动</span>
+          <a @click="preMoveWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-arrow-right-top-bold</v-icon></a>
+          <a @click="removeWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-delete</v-icon></a>
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
@@ -418,6 +419,15 @@ export default {
         .then(() => {
           this.refreshWidgets(this.curTabIndex)
         })
+    },
+     preMoveWidget(id) {
+      let tmpWidgets = _.filter(this.widgets, {'id':id})
+      if(!tmpWidgets){
+        alert("未找到要移动的组件")
+        return
+      }
+      let targetWidget = tmpWidgets[0]
+      this.$bus.emit('configWidget',  {'widgetType':'WidgetMove','widgetName':"",'tabIndex':this.curTabIndex,'configData':targetWidget})
     },
     toTab(index) {
       if(this.editing){
