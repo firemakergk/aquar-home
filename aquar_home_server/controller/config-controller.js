@@ -1,16 +1,18 @@
 import multer from '@koa/multer'
+import mime from 'mime-types'
 import sha256 from 'crypto-js/sha256.js'
 import fs from 'fs'
 import appDao from '../service/db/app-dao.js'
 import themeDao from '../service/db/theme-dao.js'
 import cacheService from '../service/cache-service.js'
 const BG_PATH = '/var/aquardata/bg_img/'
+const IMPORT_FILE_PATH = '/tmp/'
 
 if (!fs.existsSync(BG_PATH)){
   fs.mkdirSync(BG_PATH, { recursive: true });
 }
 
-const storage = multer.diskStorage({
+const bgImgStorage = multer.diskStorage({
   destination: BG_PATH,
   filename(ctx,file,cb){
     const filenameArr = 'webp'
@@ -21,8 +23,20 @@ const storage = multer.diskStorage({
   }
 })
 
+const importDataStorage = multer.diskStorage({
+  destination: IMPORT_FILE_PATH,
+  filename(ctx,file,cb){
+    console.log('ctx')
+    let fileName = 'importdata.zip'
+    cb(null, fileName)
+    ctx.fileName = fileName 
+    file.fileName =fileName 
+  }
+})
+
 class ConfigController {
-  upload = multer({storage})
+  bgImgUpload = multer({storage:bgImgStorage})
+  importDataUpload = multer({storage:importDataStorage})
   async uploadBgImg(ctx, next) {
     ctx.body = {code:0, data: {img_path: '/bg_img/'+ctx.request.file.imgName}}
   }
@@ -30,7 +44,7 @@ class ConfigController {
     var data = ctx.request.body
     // data = JSON.parse(data)
     appDao.updateConfig(data)
-    var resStr = await appDao.getConfig()
+    let resStr = await appDao.getConfig()
     ctx.body = resStr
   }
   async config(ctx, next) {
@@ -47,9 +61,9 @@ class ConfigController {
     ctx.body = {config: res, themeDetail: resDetail}
   }
   async register(ctx, next) {
-    var data = ctx.request.body
-    var userName = data.userName
-    var password = data.password
+    let data = ctx.request.body
+    let userName = data.userName
+    let password = data.password
     
     if(!userName || !password){
       ctx.body = {code:-1, msg:"用户名和密码不能为空"}
@@ -63,9 +77,9 @@ class ConfigController {
     ctx.body = {code:0, msg:"修改登录信息成功"}
   }
   async login(ctx, next) {
-    var data = ctx.request.body
-    var userName = data.userName
-    var password = data.password
+    let data = ctx.request.body
+    let userName = data.userName
+    let password = data.password
     ctx.body = appDao.checkAuth(userName,password)
   }
   async destoryAccount(ctx, next) {
@@ -73,12 +87,24 @@ class ConfigController {
     ctx.body = {code:0, msg:"帐户注销成功"}
   }
   async cacheInfo(ctx, next) {
-    var cacheSize = await cacheService.cacheSize()
+    let cacheSize = await cacheService.cacheSize()
     ctx.body = {code:0, data:cacheSize}
   }
   async clearCache(ctx, next) {
     await cacheService.clearCache()
     ctx.body = {code:0, msg:"缓存已清理"}
+  }
+  async exportData(ctx, next) {
+    console.log('exportData start')
+    await cacheService.exportData()
+    console.log('exportData done')
+    let mimeType = mime.lookup('zip')
+    ctx.response.set("content-type", mimeType)
+    ctx.body = fs.createReadStream(cacheService.DATA_EXPORT_PATH)
+  }
+  async importData(ctx, next) {
+    let res = await cacheService.importData()
+    ctx.body = res 
   }
 }
 

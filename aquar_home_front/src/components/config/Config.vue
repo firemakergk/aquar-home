@@ -34,7 +34,7 @@ import AddWidget from './AddWidget.vue'
 import ConfigAppearance from './ConfigAppearance.vue'
 import ConfigTabs from './ConfigTabs.vue'
 import ConfigAccount from './ConfigAccount.vue'
-import ConfigCache from './ConfigCache.vue'
+import ConfigData from './ConfigData.vue'
 import ConfigAbout from './ConfigAbout.vue'
 
 export default {
@@ -44,7 +44,7 @@ export default {
     ConfigAppearance,
     ConfigTabs,
     ConfigAccount,
-    ConfigCache,
+    ConfigData,
     ConfigAbout
   },
   data: function() {
@@ -54,7 +54,7 @@ export default {
         {'name':'添加组件',component:'AddWidget'},
         {'name':'分页设置',component:'ConfigTabs'},
         {'name':'帐户设置',component:'ConfigAccount'},
-        {'name':'缓存设置',component:'ConfigCache'},
+        {'name':'数据设置',component:'ConfigData'},
         {'name':'关于',component:'ConfigAbout'}
       ],
       curMenu: 0

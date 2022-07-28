@@ -148,6 +148,9 @@ export default {
         })
     },
     uploadImg(file) {
+      if(!file){
+        return
+      }
       var imgFile = file;
       var formData = new FormData()
       formData.append('bgImg', imgFile)

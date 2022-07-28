@@ -41,9 +41,9 @@
               </v-col>
               <v-col cols="4">
               </v-col>
-              <v-col cols="4">
+              <!-- <v-col cols="4">
                 <v-btn depressed small color="primary" @click="updateConfig()" style="margin:0 4px; width: 100%;">提交</v-btn>
-              </v-col>
+              </v-col> -->
             </v-row>
           </v-container>
         </v-list>

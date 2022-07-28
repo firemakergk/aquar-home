@@ -157,7 +157,11 @@ export default {
         if(this.curTabIndex >= this.tabs.length){
           this.curTabIndex = 0
         }
-        this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
+        if(this.tabs && this.tabs.length > 0){
+          this.widgets = _.cloneDeep(this.tabs[this.curTabIndex].widgets)
+        }else {
+          this.widgets = []
+        }
         this.layout = []
         for (var i = 0; i < this.widgets.length; i++) {
           this.layout.push(Object.assign(this.widgets[i].layout, { i: this.widgets[i].id }))
