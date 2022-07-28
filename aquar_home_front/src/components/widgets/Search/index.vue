@@ -7,11 +7,7 @@
       <a v-for="(sugword,index) in suggests" :key="index" :class="selectedIndex===index? 'tbgcolor_info tcolor_reverse': ''" style="display:block; margin: 4px;" @click="search(sugword)" @mouseover="suggestMove(null,index)">{{sugword}}</a>
     </div>
     <div class="search_panel tbgcolor_main">
-      <select name="source" class="tbgcolor_main tcolor_main tbcolor"  v-model="configData.data.source" @change="changeSource()">
-        <option class="tcolor_main" value ="baidu">百度</option>
-        <option class="tcolor_main" value ="bing">Bing</option>
-        <option class="tcolor_main" value ="google">Google</option>
-      </select>
+      <v-select hide-details dense :items="sourceList" v-model="configData.data.source" @change="changeSource()" style="width: 120px;" ></v-select>
       <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" autofocus="autofocus" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
         v-model="searchText" @keyup.enter="search()" @keyup.up="suggestMove(-1,null)" @keyup.down="suggestMove(1,null)" @input="prepareSuggest()" />
@@ -48,6 +44,11 @@ export default {
           url:'https://cn.bing.com/search?q={{}}'
         }
       },
+      sourceList: [
+        {text:"百度", value: "baidu"},
+        {text:"Bing", value: "bing"},
+        {text:"Google", value: "google"}
+      ],
       showConfigIcon: false,
       searchText:'',
       lastSign: null,
