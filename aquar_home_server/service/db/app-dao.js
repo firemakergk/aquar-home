@@ -4,13 +4,20 @@ import jwt from 'jsonwebtoken'
 import cryptoRandomString from 'crypto-random-string'
 import moment from 'moment'
 import _ from 'lodash'
+const DB_PATH = '/var/aquardata/db/'
 
 class AppDao {
-  DB_PATH = '/var/aquardata/db/'
   db = null
-
+  constructor(){
+    if (!fs.existsSync(DB_PATH+'db.json')){
+      let defaultConfig = fs.readFileSync('./db.json','utf8')
+      fs.mkdirSync(DB_PATH, { recursive: true });
+      fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
+    }
+    this.init()
+  }
   init(){
-    this.db = new LowSync(new JSONFileSync(this.DB_PATH+'db.json'))
+    this.db = new LowSync(new JSONFileSync(DB_PATH+'db.json'))
     this.db.read()
     this.db.chain = _.chain(this.db.data)
   }
@@ -43,9 +50,21 @@ class AppDao {
     return null 
   }
   findByCurIndex() {
-    var index = this.db.chain.get('config.current_index').value()
+    let index = this.db.chain.get('config.current_index').value()
     index = index ? index:0;
     return this.db.data.tabs[index].widgets
+  }
+  findByWidget(widget) {
+    let resList = []
+    let tabs = this.db.chain.get('tabs').value()
+    for(let tab of tabs){
+      let widgets = _.filter(tab.widgets,{'widget':widget})
+      if(!widgets || widgets.length === 0){
+        continue
+      }
+      resList.push(...widgets)
+    }
+    return resList 
   }
   updateById(tabIndex,id,item) {
     this.db.chain.get('tabs['+tabIndex+'].widgets')

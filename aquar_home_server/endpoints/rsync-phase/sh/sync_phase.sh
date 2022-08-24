@@ -30,7 +30,8 @@ if [ ! $source_dir ]; then
 fi
 archive_dir=${archive_dir:="${source_dir}_archive"}
 mkdir -p $archive_dir
-archive_name=${archive_name:=`date '+%Y%m%d'`}
+# archive_name=${archive_name:=`date '+%Y%m%d'`}
+archive_name=${archive_name:=""}
 echo "source_dir    = ${source_dir}"
 echo "archive_dir   = ${archive_dir}"
 echo "archive_name  = ${archive_name}"

@@ -18,12 +18,7 @@ import https from 'https'
 
 const DB_PATH = '/var/aquardata/db/'
 const __dirname = path.resolve();
-if (!fs.existsSync(DB_PATH+'db.json')){
-  let defaultConfig = fs.readFileSync('./db.json','utf8')
-  fs.mkdirSync(DB_PATH, { recursive: true });
-  fs.writeFileSync(DB_PATH+'db.json',defaultConfig)
-}
-appDao.init()
+
 if (!fs.existsSync(DB_PATH+'themes.json')){
   let defaultConfig = '{"themes":[]}'
   fs.mkdirSync(DB_PATH, { recursive: true });

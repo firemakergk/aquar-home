@@ -1,7 +1,10 @@
 <template>
   <div class="widget_box">
     <div class=" widget_header">
-      <img style="height:20px; " src="./img/rsync.jpg">
+      <!-- <img style="height:20px; " src="./img/rsync.jpg"> -->
+      <span  style="height:20px;" >
+        <v-icon style="font-size: 18px;  margin: 2px;">mdi-folder-sync</v-icon>
+      </span>
       <span style="padding: 0 10px;">{{ configData.name }}</span>
       <span style="flex-grow: 1;" />
       <a style="margin: 0 4px;" class="iconfont icon-plus icon" title="新增" @click="toggleAddItem()" />
@@ -36,6 +39,49 @@
             <div style="width:80px; text-align: right; margin: 0 4px;">归档名称：</div>
             <div style="flex-grow: 1;">
               <input v-model="newItem.phase_name" type="text" style="display: inline-block; width: 100%;">
+            </div>
+            <div>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                </template>
+                <span>
+                  留空代表输出路径文件夹完全备份归档源文件夹。<br/>
+                  若填写归档名称，则会在输出路径下新建相应的子文件夹，并同步归档源中存在而输出路径下不存在的所有文件。<br/>
+                  归档名称支持日期表达式，例如：<br/>
+                  "${yyyy-mm-dd_HH:MM:ss}归档"会被解析为"2022-08-24_14:45:32归档"<br/>
+                  "yyyy${yyyymmdd}归档"会被解析为"yyyy20220824归档"
+                </span>
+              </v-tooltip>
+            </div>
+          </div>
+          <div class="config_row">
+            <div style="width:80px; text-align: right; margin: 0 4px;">定时表达式：</div>
+            <div style="flex-grow: 1;">
+              <input v-model="newItem.cron" type="text" placeholder='cron表达式,如:"0 0 3 * * *"表示每日3点0分0秒触发' style="display: inline-block; width: 100%;">
+            </div>
+            <div>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                </template>
+                <span>
+                  cron表达式从左至右的含义如下：<br/>
+                  秒: 0-59<br/>
+                  分: 0-59<br/>
+                  小时: 0-23<br/>
+                  日期号: 1-31<br/>
+                  月份号: 0-11<br/>
+                  星期号: 0-6<br/>
+                  -------------------<br/>
+                  举例：<br/>
+                  每分钟0秒执行：0 * * * * *<br/>
+                  每十分钟执行：0 */10 * * * *<br/>
+                  每日3点整执行：0 0 3 * * *<br/>
+                  每天9点至17点间每30分钟执行：0 */30 9-17 * * *<br/>
+                  周一至周五每天11点30分0秒执行：00 30 11 * * 1-5<br/>
+                </span>
+              </v-tooltip>
             </div>
           </div>
           <div class="config_row">
@@ -87,11 +133,14 @@
           <div class="bar_base">
             <div class="item_info">
               <span style="padding: 0 4px;" class="tcolor_main">{{ item.name }}</span>
-              <span class="tcolor_sub" style="font-size:12px; width: 120px;">{{ item.source }}</span>
+              <span class="tcolor_sub" style=" font-size:12px; width: 160px;">
+                上次同步时间：{{ item.lastSyncTime? item.lastSyncTime:"---" }}
+              </span>
+              <!-- <span class="tcolor_sub" style="font-size:12px; width: 120px;">{{ item.source }}</span>
               <span style="padding: 0 4px;" class="tcolor_sub"> >> </span>
               <span class="tcolor_sub" style=" font-size:12px; width: 160px;">
                 {{ item.archive_dir_name+ "/" +[item.phase_name?item.phase_name:nowDate] }}
-              </span>
+              </span> -->
             </div>
             <a style="margin: 0 4px;flex-shrink: 0;" class="iconfont icon-cog icon" title="设置" @click="toggleConfigSingle(index)" />
             <!-- <a style="margin: 0 6px; width: 32px;" @click="prepareArchive(index)">启动</a> -->
@@ -100,19 +149,19 @@
           <div v-show="configBarTable[index]" class="bar_config tcolor_main animate__animated animate__fadeIn">
             <div style="flex-grow: 1;">
               <div class="config_row">
-                <div class="config_left">名称：</div>
+                <div class="config_left">名称<span style="color:red;">*</span>：</div>
                 <div style="flex-grow: 1;">
                   <input v-model="item.name" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
               </div>
               <div class="config_row">
-                <div class="config_left">归档源：</div>
+                <div class="config_left">归档源<span style="color:red;">*</span>：</div>
                 <div style="flex-grow: 1;">
                   <input v-model="item.source" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
               </div>
               <div class="config_row">
-                <div class="config_left">输出路径：</div>
+                <div class="config_left">输出路径<span style="color:red;">*</span>：</div>
                 <div style="flex-grow: 1;">
                   <input v-model="item.archive_dir_name" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
@@ -122,11 +171,54 @@
                 <div style="flex-grow: 1;">
                   <input v-model="item.phase_name" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
+                <div>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                    </template>
+                    <span>
+                      留空代表输出路径文件夹完全备份归档源文件夹。<br/>
+                      若填写归档名称，则会在输出路径下新建相应的子文件夹，并同步归档源中存在而输出路径下不存在的所有文件。<br/>
+                      归档名称支持日期表达式，例如：<br/>
+                      "${yyyy-mm-dd_HH:MM:ss}归档"会被解析为"2022-08-24_14:45:32归档"<br/>
+                      "yyyy${yyyymmdd}归档"会被解析为"yyyy20220824归档"
+                    </span>
+                  </v-tooltip>
+                </div>
+              </div>
+              <div class="config_row">
+                <div class="config_left">定时表达式：</div>
+                <div style="flex-grow: 1;">
+                  <input v-model="item.cron" type="text" name="name" placeholder='cron表达式,如:"0 0 3 * * *"表示每日3点0分0秒触发' style="display: inline-block; width: 100%;">
+                </div>
+                <div>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                    </template>
+                    <span>
+                      cron表达式从左至右的含义如下：<br/>
+                      秒: 0-59<br/>
+                      分: 0-59<br/>
+                      小时: 0-23<br/>
+                      日期号: 1-31<br/>
+                      月份号: 0-11<br/>
+                      星期号: 0-6<br/>
+                      -------------------<br/>
+                      举例：<br/>
+                      每分钟0秒执行：0 * * * * *<br/>
+                      每十分钟执行：0 */10 * * * *<br/>
+                      每日3点整执行：0 0 3 * * *<br/>
+                      每天9点至17点间每30分钟执行：0 */30 9-17 * * *<br/>
+                      周一至周五每天11点30分0秒执行：00 30 11 * * 1-5<br/>
+                    </span>
+                  </v-tooltip>
+                </div>
               </div>
             </div>
             <div style="width: 90px; text-align: right;">
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-check icon tcolor_active" title="确定" @click="submitConfigSingle(index)" />
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-delete icon tcolor_error" title="移除" @click="removeItem(index)" />
+              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-check icon tcolor_active" title="确定" @click="submitConfigSingle(item.id)" />
+              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-delete icon tcolor_error" title="移除" @click="removeItem(item.id)" />
             </div>
           </div>
         </div>
@@ -201,13 +293,7 @@ export default {
       this.executeEnable = false
       const items = this.configData.data.items
       const curItem = items[this.preparedIndex]
-      let paramStr = 'source=' + curItem.source
-      if (curItem.archive_dir_name) {
-        paramStr += '&archiveDir=' + curItem.archive_dir_name
-      }
-      if (curItem.phase_name) {
-        paramStr += '&archiveName=' + curItem.phase_name
-      }
+      let paramStr = `tabIndex=${this.tabIndex}&id=${this.configData.id}&itemId=${curItem.id}`
       this.$axios
         .get('/api/endpoints/archive_phase/start?' + paramStr)
         .then(response => {
@@ -223,8 +309,9 @@ export default {
       this.$forceUpdate()
       console.log(this.configBarTable)
     },
-    submitConfigSingle(index) {
-      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, index: index, item: this.configData.data.items[index] }
+    submitConfigSingle(itemId) {
+      let item = _.find(this.configData.data.items, it => {return it.id === itemId})
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, item: item }
       this.$axios.post('/api/endpoints/archive_phase/updateItem', reqData)
         .then(response => {
           console.log(response.data)
@@ -250,11 +337,14 @@ export default {
       this.configData.data.items = items
       this.$forceUpdate()
     },
-    removeItem(index) {
-      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, index: index }
+    removeItem(itemId) {
+      const reqData = { tabIndex:this.tabIndex, id: this.configData.id, itemId: itemId }
       this.$axios.post('/api/endpoints/archive_phase/removeItem', reqData)
         .then(response => {
           console.log(response.data)
+          if(!response.data || response.data.code != 0){
+            return
+          }
           var items = response.data.data
           this.refreshItems(items)
         })
@@ -350,7 +440,7 @@ export default {
 }
 
 .config_left {
-  width:80px;
+  width:100px;
   text-align: right;
   margin: 0 2px;
 }
