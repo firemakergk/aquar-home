@@ -31,7 +31,7 @@
       :is-resizable="editing"
       :vertical-compact="false"
       :use-css-transforms="false"
-      :margin="[2, 1]"
+      :margin="[6, 6]"
       @breakpoint-changed="breakpointChangedEvent"
     >
       <grid-item

@@ -55,11 +55,14 @@
         </div>
       </div>
       <div class="widget_content">
-        <div v-for="item in syncthingInfo" :key="item.id">
-          <div class="stat_base tcolor_reverse" :class="item.statClass">
-            <span style="flex-grow: 1;">{{ item.id }}</span>
+        <div v-for="(item,index) in syncthingInfo" :key="'item_'+index">
+          <div class="stat_base" :class="index != syncthingInfo.length-1? 'border_bt':''" >
+            <span style="flex-grow: 1;flex-shrink: 1;">{{ item.id }}</span>
             <span style="margin-right:10px;">{{ item.localFiles }}/{{ item.globalFiles }}</span>
-            <span style="span: 6px; margin-right:6px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
+            <v-chip small label :class="item.statClass" >{{ item.status }}</v-chip>
+            <!-- <span :class="item.statClass"  >
+              <span style="padding: 6px; color: rgba(0,0,0,0.6);">{{ item.status }}</span>
+            </span> -->
           </div>
         </div>
       </div>
@@ -148,5 +151,7 @@ export default {
   margin: 2px 0px;
   padding: 4px 2px;
   display: flex;
+  align-items: center;
 }
+
 </style>

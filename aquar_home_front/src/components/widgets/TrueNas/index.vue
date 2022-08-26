@@ -53,17 +53,20 @@
         </div>
       </div>
       <div class="widget_content">
-        <div v-for="item in poolInfo" :key="item.id" class="item_row tcolor_reverse">
+        <div v-for="(item,index) in poolInfo" :key="'pool_item_'+index" class="item_row" :class="index != poolInfo.length-1? 'border_bt':''">
           <div style="flex-grow: 1;" class="tcolor_main">{{ item.name }}</div>
           <div style="width: 140px; position: relative; ">
-            <div style="position: absolute; height: 100%; display: flex; align-items: center; justify-content: center;">{{ item.used + "/" + item.total }}</div>
-            <div class="process_bar tbgcolor_idle">
-              <div class="process tbgcolor_info" :style="{width: (item.usedBytes * 100/item.totalBytes).toFixed(1).toString() + '%'}" />
+            <div style="position: absolute; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+            <div class="process_bar tpcolor_idle">
+              <div class="process tpcolor_info" :style="{width: (item.usedBytes * 100/item.totalBytes).toFixed(1).toString() + '%'}" />
               <!-- <div style="z-index: 2;">{{ item.used + "/" + item.total }}</div> -->
             </div>
           </div>
-          <div style="margin: 0 2px; padding: 0 2px;" :class="item.healthClass">{{ item.healthy? "HEALTHY" : "ERROR" }}</div>
-          <div style="margin: 0 2px; padding: 0 2px" :class="item.statusClass">{{ item.status }}</div>
+          <div>{{ item.used + "/" + item.total }}</div>
+          <!-- <div style="margin: 0 2px; padding: 0 2px;" :class="item.healthClass">{{ item.healthy? "HEALTHY" : "ERROR" }}</div> -->
+          <!-- <div style="margin: 0 2px; padding: 0 2px" :class="item.statusClass">{{ item.status }}</div> -->
+          <v-chip small label :class="item.statusClass" class="mx-1" >{{ item.status }}</v-chip>
+          <v-chip small label :class="item.healthClass" class="mx-1">{{ item.healthy? "HEALTHY" : "ERROR" }}</v-chip>
         </div>
       </div>
     </div>
@@ -165,11 +168,12 @@ export default {
 .process_bar {
   margin: 4px 0;
   width: 100%;
-  height: 16px;
+  height: 8px;
 }
 .process {
   // margin: 4px;
   height: 100%;
+  // border-right: 2px solid var(--v-primary-lighten4,#99CCFF) !important;;
 }
 
 </style>

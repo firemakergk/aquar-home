@@ -109,6 +109,7 @@ export default {
 .widget_container {
   width: 100%;
   height: 100%;
+  
 }
 
 .icon_warp {

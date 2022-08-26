@@ -1,6 +1,6 @@
 <template>
   <div class="aq_container tbgcolor_main tcolor_main">
-    <div class="config_header">
+    <div class="widget_header">
       <span style="flex-grow: 1; margin: 0 10px;">设置</span>
       <a style="margin: 0 4px;" class="iconfont icon-times icon tcolor_reverse" @click="close" />
     </div>
@@ -97,7 +97,6 @@ export default {
   align-items: center;
   height: 24px;
   border-radius:2px 2px 0 0 ;
-  background-color: #E6F0FC;
 }
 .config_container{
   // min-height: 200px;

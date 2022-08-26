@@ -11,12 +11,14 @@
 <script>
 import defaultLight from '@/assets/themes/defaultlight.json'
 import dark from '@/assets/themes/dark.json'
+import colors from 'vuetify/lib/util/colors'
 export default {
   name: 'App',
   components: {
   },
   data() {
     return {
+      colors: colors,
       configData: {},
       themeDetail: null,
       bgUrl: null,
@@ -156,25 +158,28 @@ div:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 4px 4px;
-  border-radius: 2px;
+  padding: 0;
+  border-radius: 4px;
   background-color: var(--widget_box_bgcolor,rgba(255,255,255, 0.2));
   backdrop-filter: blur(24px);
-  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
+  // box-shadow: 0 2px 4px 1px rgba(0, 0, 0, .3);
   box-sizing: border-box;
   color: var(--widget_box_color,rgb(44,44,44));
-  border-top: var(--tbtcolor,#ccc) solid thin;
+  // border-top: var(--tbtcolor,#ccc) solid thin;
 }
 .widget_header {
   width: 100%;
-  padding: 4px 4px;
+  padding: 8px 8px;
+  border-radius: 4px 4px 0 0 ;
   margin: 0 auto;
   display: inline-flex;;
   justify-content: center;
   align-items: center;
   font-size: 14px;
+  background-color: var(--v-secondary-lighten4,rgba(255,255,255, 0.2));
 }
 .widget_body {
+  padding: 8px;
   width: 100%;
   height: 100%;
   position: relative;
@@ -185,7 +190,7 @@ div:focus {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   flex-grow: 1;
 }
@@ -198,6 +203,8 @@ div:focus {
   right: 0;
   bottom: 0;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex-grow: 1;
 }
 .widget_content_list {
@@ -316,6 +323,12 @@ div:focus {
   vertical-align: center;
 }
 
+.border_bt{
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--tbcolor,#e5e6e7);
+}
+
 .tcolor {
   color: var(--tcolor,#000);
 }
@@ -371,28 +384,28 @@ div:focus {
   color: var(--tcolor_tab_selected,white);
 }
 .tbgcolor_sub_head {
-  background-color: var(--tbgcolor_sub_head,#669999);
+  background-color: var(--v-secondary-lighten2,#669999);
 }
 .tcolor_sub_head {
-  color: var(--tcolor_sub_head,white);
+  // color: var(--tcolor_sub_head,white);
 }
 .tbgcolor_disable {
-  background-color: var(--tbgcolor_disable,#ccc);
+  background-color: var(--v-secondary-lighten1,#ccc) !important;
 }
 .tbgcolor_idle {
-  background-color: var(--tbgcolor_idle,#669999);
+  background-color: var(--v-primary-lighten4,#669999) !important;
 }
 .tbgcolor_info {
-  background-color: var(--tbgcolor_info,#99CCFF);
+  background-color: var(--v-primary-accent1,#99CCFF) !important;
 }
 .tbgcolor_active {
-  background-color: var(--tbgcolor_active,#009933);
+  background-color: var(--v-accent-lighten2,#009933) !important;
 }
 .tbgcolor_warn {
-  background-color: var(--tbgcolor_warn,#FF9900);
+  background-color: var(--v-warning-lighten2,#FF9900) !important;
 }
 .tbgcolor_error {
-  background-color: var(--tbgcolor_error,#FF6666);
+  background-color: var(--v-error-lighten1,#FF6666) !important;
 }
 .tbgcolor_mask_info {
   background-color: var(--tbgcolor_mask_info,rgba(255,255,255, 1));
@@ -403,6 +416,14 @@ div:focus {
 .tbgcolor_mask_reverse {
   background-color: var(--tbgcolor_mask_reverse,rgba(0,0,0, 0.4));
 }
+
+.tpcolor_idle {
+  background-color: var(--v-primary-lighten4,#669999) !important;
+}
+.tpcolor_info {
+  background-color: var(--v-primary-base,#99CCFF) !important;
+}
+
 .tbcolor {
   border-color: var(--tbcolor,#e5e6e7);
 }

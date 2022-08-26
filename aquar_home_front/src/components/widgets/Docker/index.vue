@@ -43,11 +43,12 @@
         </div>
       </div>
       <div class="widget_content">
-        <div v-for="(item,index) in containerList" :key="'con_'+index">
-          <div class="row_base tcolor_reverse tbgcolor_idle" >
+        <div v-for="(item,index) in containerList" :key="'con_'+index" :class="index != containerList.length-1? 'border_bt':''">
+          <div class="row_base" >
             <span style="flex-grow: 1; flex-shrink:1;  overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
-            <span style="flex-shrink:0; margin-right:10px; color: rgba(255,255,255,0.6);">{{ item.status }}</span>
-            <span class="state_span" :class="item.statClass">{{ item.state.toUpperCase() }}</span>
+            <span style="flex-shrink:0; margin-right:10px; ">{{ item.status }}</span>
+            <!-- <span class="state_span" :class="item.statClass">{{ item.state.toUpperCase() }}</span> -->
+            <v-chip small label :class="item.statClass" class="mx-1" >{{ item.state.toUpperCase() }}</v-chip>
           </div>
         </div>
       </div>

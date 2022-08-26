@@ -1,7 +1,7 @@
 {
     "--a_color": "#05264c",
     "--widget_box_color": "rgb(44,44,44)",
-    "--widget_box_bgcolor": "rgba(255,255,255, 0.7)",
+    "--widget_box_bgcolor": "rgba(255,255,255,1)",
     "--error_info_gbcolor": "rgba(0,0,0,0.75)",
     "--tcolor_reverse": "#FFF",
     "--tcolor_main": "#24292e",
