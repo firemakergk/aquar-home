@@ -29,23 +29,23 @@
             </v-col>
           </v-row>
           <v-row align="center" dense class="py-2">
-            <v-col cols="6">
-              <v-select hide-details dense disabled :items="themeList" label="主题" v-model="configData.appearance.theme" ></v-select>
+            <v-col cols="12">
+              <v-select hide-details dense :items="themeList" label="主题" v-model="configData.appearance.theme" ></v-select>
             </v-col>
-            <v-col cols="3">
+            <!-- <v-col cols="3">
               <v-btn depressed small outlined disabled @click="removeTheme()" style="margin:0 4px; width: 100%;">删除当前主题</v-btn>
             </v-col>
             <v-col cols="2">
               <v-btn depressed small outlined disabled @click="toggleCustomTheme()" style="margin:0 4px; width: 100%;">自定义</v-btn>
-            </v-col>
-            <v-col cols="1">
+            </v-col> -->
+            <!-- <v-col cols="1">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
                 </template>
                 <span>由于引入了新UI框架，自定义主题功能暂停使用，并将主题锁定在默认的白色主题下</span>
               </v-tooltip>
-            </v-col>
+            </v-col> -->
           </v-row>
           <v-row justify="end" align="center" dense class="py-2">
             <v-col cols="4">
@@ -85,7 +85,14 @@ export default {
         {text:"defaultLight", value: "defaultLight"},
         {text:"dark", value: "dark"}
       ],
-      themeList: []
+      themeList: [
+        {text:"light", value: "light"},
+        {text:"light_purple", value: "light_purple"},
+        {text:"light_teal", value: "light_teal"},
+        {text:"dark", value: "dark"},
+        {text:"dark_cyan", value: "dark_cyan"},
+        {text:"dark_green", value: "dark_green"}
+      ]
     }
   },
   computed: {
@@ -112,16 +119,16 @@ export default {
           let {config, themeDetail} = response.data
           this.configData = config
           this.themeDetail = themeDetail
-          this.themeList = []
-          for(let theme of this.themeInitList){
-            this.themeList.push(theme)
-          }
-          if(this.configData.appearance.themes){
+          // this.themeList = []
+          // for(let theme of this.themeInitList){
+          //   this.themeList.push(theme)
+          // }
+          // if(this.configData.appearance.themes){
             
-            for(let theme of this.configData.appearance.themes){
-              this.themeList.push({text:theme, value:theme})
-            }
-          }
+          //   for(let theme of this.configData.appearance.themes){
+          //     this.themeList.push({text:theme, value:theme})
+          //   }
+          // }
           this.$forceUpdate()
         })
     },
@@ -175,6 +182,7 @@ export default {
           console.log(response.data)
           this.refreshConfig()
           // this.$bus.emit('renderBg', {config: this.configData,themeDetail:this.themeDetail})
+          localStorage.removeItem('theme')
           window.location.reload()
         })
     },

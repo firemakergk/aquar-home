@@ -26,7 +26,6 @@ const bgImgStorage = multer.diskStorage({
 const importDataStorage = multer.diskStorage({
   destination: IMPORT_FILE_PATH,
   filename(ctx,file,cb){
-    console.log('ctx')
     let fileName = 'importdata.zip'
     cb(null, fileName)
     ctx.fileName = fileName 
@@ -43,12 +42,17 @@ class ConfigController {
   async updateConfig(ctx, next) {
     var data = ctx.request.body
     // data = JSON.parse(data)
+    data.appearance.cacheSerial = sha256(Math.random().toString()).toString().substring(0,16)
     appDao.updateConfig(data)
     let resStr = await appDao.getConfig()
     ctx.body = resStr
   }
   async config(ctx, next) {
     var res = await appDao.getConfig()
+    if(!res.appearance.cacheSerial || res.appearance.cacheSerial === '0'){
+      res.appearance.cacheSerial = sha256(Math.random().toString()).toString().substring(0,16)
+      appDao.updateConfig(res)
+    }
     let themes = themeDao.listNames()
     res.appearance.themes = themes 
     let resDetail = null
@@ -58,7 +62,7 @@ class ConfigController {
         resDetail = themeDetail.detail
       }
     }
-    ctx.body = {config: res, themeDetail: resDetail}
+    ctx.body = {config: res, theme: resDetail}
   }
   async register(ctx, next) {
     let data = ctx.request.body

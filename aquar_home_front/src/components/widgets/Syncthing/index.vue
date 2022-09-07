@@ -4,7 +4,10 @@
       <img style="height:20px; " src="./img/syncthing.png">
       <span style="padding: 0 10px;"><a target="_blank" :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
+      <!-- <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <div class="widget_body">
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
@@ -19,7 +22,7 @@
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
           <div class="config_row">

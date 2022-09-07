@@ -54,10 +54,6 @@
             </v-col>
           </v-row>
         </v-container>
-        <!-- <div class="submit_panel">
-          <a class="submit_button iconfont icon-reply icon tcolor_main" title="返回" @click="toChoose" />
-          <a class="submit_button iconfont icon-check icon tcolor_active" title="提交" @click="submit" />
-        </div> -->
       </div>
       
     </div>

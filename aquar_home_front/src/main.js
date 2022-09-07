@@ -12,6 +12,8 @@ Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 Vue.use(VueBus)
 
+// console.log(vuetify.theme.dark)
+
 new Vue({
   router:router,
   vuetify,

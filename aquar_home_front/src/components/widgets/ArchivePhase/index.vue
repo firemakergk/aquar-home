@@ -2,21 +2,28 @@
   <div class="widget_box">
     <div class=" widget_header">
       <!-- <img style="height:20px; " src="./img/rsync.jpg"> -->
-      <span  style="height:20px;" >
+      <span  style="height:20px; display: flex; align-items: center;" >
         <v-icon style="font-size: 18px;  margin: 2px;">mdi-folder-sync</v-icon>
       </span>
-      <span style="padding: 0 10px;">{{ configData.name }}</span>
+      <span style="padding: 0 10px;" >{{ configData.name }}</span>
       <span style="flex-grow: 1;" />
-      <a style="margin: 0 4px;" class="iconfont icon-plus icon" title="新增" @click="toggleAddItem()" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
+      <!-- <a style="margin: 0 4px;" class="iconfont icon-plus icon" title="新增" @click="toggleAddItem()" />
+      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="toggleConfig()" title="新增">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-plus</v-icon>
+      </v-btn>
+      <v-btn icon small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <div class="widget_body">
-      <div v-show="showAddItem" class="float_config tbgcolor_config tcolor_main">
+      <div v-show="showAddItem" class="float_config tcolor_main">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleAddItem()"> x </a>
+          <!-- <a style="padding:0 4px; " @click="toggleAddItem()"> x </a> -->
+          <v-icon class="tcolor_sub_head" @click="toggleAddItem()" >mdi-close</v-icon>
         </div>
-        <div style="flex-grow: 1;" class="config_body tbgcolor_config">
+        <div style="flex-grow: 1;" class="config_body">
           <div class="config_row">
             <div style="width:80px; text-align: right; margin: 0 4px;">名称：</div>
             <div style="flex-grow: 1;">
@@ -94,9 +101,14 @@
       </div>
       <div v-show="showConsole" class="float_console">
         <div class="console_top">
-          <span style="float:left;">控制台</span>
-          <a style="float:right; padding:0 4px; color: white;" @click="toggleConsole()"> x </a>
-          <a style="float:right; padding:0 8px;" :class="[executeEnable?'tcolor_active':'tcolor_disable', 'iconfont icon-paper-plane icon']" title="执行" @click="startArchive()" />
+          <div style="flex-grow: 1;">
+            <span class="mx-2">执行控制台</span>
+          </div>
+          <div style="display: flex;">
+            <v-icon :class="[executeEnable?'tcolor_active':'tcolor_disable', 'mx-2']" title="执行" style="font-size:20px; " @click="startArchive()" >mdi-rocket-launch</v-icon>
+            <v-icon class="tcolor_sub_head" @click="toggleConsole()" >mdi-close</v-icon>
+            <!-- <a class="tcolor_reverse" style="float:right; padding:0 4px;" @click="toggleConsole()"> x </a> -->
+          </div>
         </div>
         <div class="console_body">
           <textarea v-model="console" class="console_area" />
@@ -105,7 +117,7 @@
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -147,7 +159,7 @@
             <a style="margin: 0 4px;flex-shrink: 0;" class="iconfont icon-sync-alt icon" title="启动" @click="prepareArchive(index)" />
           </div>
           <div v-show="configBarTable[index]" class="bar_config tcolor_main animate__animated animate__fadeIn">
-            <div style="flex-grow: 1;">
+            <div style="">
               <div class="config_row">
                 <div class="config_left">名称<span style="color:red;">*</span>：</div>
                 <div style="flex-grow: 1;">
@@ -216,9 +228,9 @@
                 </div>
               </div>
             </div>
-            <div style="width: 90px; text-align: right;">
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-check icon tcolor_active" title="确定" @click="submitConfigSingle(item.id)" />
-              <a style=" display:block; margin: 0 10px; padding:8px 0; width: 32px; float: right;" class="iconfont icon-delete icon tcolor_error" title="移除" @click="removeItem(item.id)" />
+            <div style="display: flex; justify-content: end;">
+              <v-btn small outlined color="primary" @click="submitConfigSingle(item.id)" style="margin:0 2px; " title="更新" ><v-icon left>mdi-check-bold</v-icon>更新</v-btn>
+              <v-btn small outlined @click="removeItem(item.id)" style="margin:0 2px; " title="删除" ><v-icon left>mdi-delete</v-icon>删除</v-btn>
             </div>
           </div>
         </div>
@@ -386,7 +398,9 @@ export default {
 }
 .bar_config {
   display: flex;
+  flex-direction: column;
   padding: 10px 8px;
+  
 }
 
 .float_console {
@@ -402,20 +416,21 @@ export default {
 }
 
 .console_top {
+  display: flex;
+  align-items: center;
   background-color: #222;
   color: #fff;
   top: 0;
-  height: 20px;
+  height: 24px;
 }
 .console_body {
   height: 100%;
   overflow: auto;
   overflow-wrap: break-word;
-  color: white;
 }
 .console_area {
   width: 100%;
-  top: 0;
+  top: 24px;
   left: 0;
   right: 0;
   bottom: 0px;
@@ -426,10 +441,9 @@ export default {
   appearance: none;
   text-align: inherit;
   font-size: 10px;
-  color: white;
-  background-color: rgb(0,0,0);
-  top: 20px;
-  position: absolute;
+  color: #fff;
+  background-color: #263238;
+  padding: 8px;
 }
 .exec_enabled {
   color: #67C23A;

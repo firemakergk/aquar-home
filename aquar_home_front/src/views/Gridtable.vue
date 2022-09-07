@@ -4,22 +4,30 @@
       <div class="logo">
         <img style="height: 20px;" :src="logo_aquar">
       </div>
-      <!-- <div class="page_tabs">
-        <div v-for="(tab,index) in tabs"  :key="'tab_'+index" class="page_tab" :class="index == curTabIndex ? 'tbgcolor_tab_selected tcolor_tab_selected':'tbgcolor_tab tcolor_tab'">
-          <a @click="toTab(index)" class="tcolor_reverse">{{tab.title}}</a>
-        </div>
-      </div> -->
-      <v-tabs>
+      <v-tabs :value="curTabIndex">
         <v-tabs-slider ></v-tabs-slider>
         <v-tab v-for="(tab,index) in tabs" :disabled="editing"  :key="'tab_'+index" @click="toTab(index)">
           {{ tab.title }}
         </v-tab>
       </v-tabs>
       <div style="flex-grow: 1" />
-      <a style="margin: 0 4px; padding: 0 4px; border-right: solid thin #ccc;" class="iconfont icon-question-circle icon tcolor_disable" title="设置" target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" />
+      <!-- <a style="margin: 0 4px; padding: 0 4px; border-right: solid thin #ccc;" class="iconfont icon-question-circle icon tcolor_disable" title="帮助" target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" />
       <a v-if="!editing && curViewSize==='lg'" style="margin: 0 4px;" class="iconfont icon-gallery-view icon tcolor_reserve" title="设置布局" @click="editing=true" />
       <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="confirmLayout()" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" />
+      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" /> -->
+      <v-btn icon small target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" title="帮助">
+        <v-icon class="tcolor_sub" style="font-size:20px;" >mdi-help-circle-outline</v-icon>
+      </v-btn>
+      <v-divider class="mx-1" vertical></v-divider>
+      <v-btn v-if="!editing && curViewSize==='lg'" icon small  @click="editing=true" title="设置布局">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-view-dashboard</v-icon>
+      </v-btn>
+      <v-btn v-else-if="editing" icon small @click="confirmLayout()" title="确定布局">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-check-bold</v-icon>
+      </v-btn>
+      <v-btn icon small @click="toggleConfigPanel()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <grid-layout
       :layout.sync="layout"
@@ -48,10 +56,10 @@
         @move="moveEvent"
         @resize="resizeEvent"
       >
-        <div v-show="editing" class="vue-draggable-handle tbgcolor_mask_reverse">
-          <span style="font-size: 14px; margin: 1px 0px; flex-grow: 1;" class="tcolor_reverse">点此拖动</span>
-          <a @click="preMoveWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-arrow-right-top-bold</v-icon></a>
-          <a @click="removeWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-delete</v-icon></a>
+        <div v-show="editing" class="vue-draggable-handle tbgcolor_mask_error">
+          <span style="font-size: 14px; margin: 1px 0px; flex-grow: 1;" class="tcolor_white">点此拖动</span>
+          <a @click="preMoveWidget(widget.id)" ><v-icon class="tcolor_white" style="font-size: 14px;  margin: 2px;">mdi-arrow-right-top-bold</v-icon></a>
+          <a @click="removeWidget(widget.id)" ><v-icon class="tcolor_white" style="font-size: 14px;  margin: 2px;">mdi-delete</v-icon></a>
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
@@ -480,9 +488,9 @@ export default {
   justify-content: space-between;
   padding: 0;
   margin-bottom: 4px;
-  box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, .3);
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, .3);
 }
-.page_tabs {
+/* .page_tabs {
   padding: 0 20px;
   height: 28px;
   display: flex;
@@ -507,7 +515,7 @@ export default {
   font-size: 18px;
   height: 24px;
   padding: 0 6px;
-}
+} */
 
 .logo {
   display: flex;

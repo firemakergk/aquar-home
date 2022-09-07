@@ -6,8 +6,6 @@
     </div>
     <div class="config_container tbgcolor_main">
       <div class="config_sidebar">
-        <!-- <a v-for="(menu,index) in menus" :key="index" class="menu_item tcolor_sub_head" 
-        @click="toTab(index)" :class="{'tbgcolor_content tcolor_reverse': index == curMenu}">{{menu.name}}</a> -->
         <v-list dense class="pa-0">
           <v-list-item-group v-model="curMenu" color="primary">
             <v-list-item v-for="(menu,index) in menus" :key="'menu_'+index">

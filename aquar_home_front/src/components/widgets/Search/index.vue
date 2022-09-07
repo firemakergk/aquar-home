@@ -12,8 +12,11 @@
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
         v-model="searchText" @keyup.enter="search()" @keyup.up="suggestMove(-1,null)" @keyup.down="suggestMove(1,null)" @input="prepareSuggest()" />
       <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search()"></button>
-      <div style="position:absolute; right: 8px; top: 2px; width: 8px;">
-        <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" />
+      <div style="position:absolute; right: 12px; top: 2px; width: 8px;">
+        <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" /> -->
+        <v-btn v-show="showConfigIcon" icon x-small @click="toggleConfig()" title="设置">
+          <v-icon class="tcolor_primary" style="font-size:12px;" >mdi-cog</v-icon>
+        </v-btn>
       </div>
     </div>
   </div>

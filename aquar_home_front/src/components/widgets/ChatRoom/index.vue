@@ -1,12 +1,22 @@
 <template>
-  <div class="widget_box">
+  <div class="widget_box_vuetify">
     <div class="widget_header vue-draggable-handle">
       <img style="height:20px; " src="./img/chatroom.png">
       <span style="padding: 0 10px;">{{ configData.name }}</span>
       <span style="flex-grow: 1;" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" />
-      <a v-if="isInRoom" style="margin: 0 4px;" class="iconfont icon-poweroff icon tcolor_sub" title="退出" @click="leftRoom()" />
-      <a v-else style="margin: 0 4px;" class="iconfont icon-radioboxfill icon tcolor_sub" title="加入" @click="joinRoom()" />
+      <!-- <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" /> -->
+      <v-btn v-if="isInRoom" icon small @click="leftRoom()" title="退出">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-logout</v-icon>
+      </v-btn>
+      <v-btn v-else icon small @click="joinRoom()" title="加入">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-login</v-icon>
+      </v-btn>
+      <v-btn icon small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
+      <!-- <a v-if="isInRoom" style="margin: 0 4px;" class="iconfont icon-poweroff icon tcolor_sub" title="退出" @click="leftRoom()" />
+      <a v-else style="margin: 0 4px;" class="iconfont icon-radioboxfill icon tcolor_sub" title="加入" @click="joinRoom()" /> -->
+      
     </div>
     <div class="widget_body_noscroll">
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
@@ -21,73 +31,90 @@
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_reverse"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
-          <div class="config_row">
-            <div style="width:100px; text-align: right; padding: 0 2px;">名称：</div>
+          <div class="chat_config_row">
+            <!-- <div style="width:100px; text-align: right; padding: 0 2px;">名称：</div> -->
             <div style="flex-grow: 1;">
-              <input v-model="configData.name" type="text" name="name" style="display: inline-block; width: 100%;">
+              <!-- <input v-model="configData.name" type="text" name="name" style="display: inline-block; width: 100%;"> -->
+              <v-text-field dense hide-details label="名称" v-model="configData.name" ></v-text-field> 
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:100px; text-align: right; padding: 0 2px;">自动进入房间：</div>
+          <div class="chat_config_row">
+            <!-- <div style="width:100px; text-align: right; padding: 0 2px;">自动进入房间：</div> -->
             <div style="flex-grow: 1;">
-              <select v-model="configData.data.auto_join">
+              <!-- <select v-model="configData.data.auto_join">
                 <option value='true'>是</option>
                 <option value='false'>否</option>
-              </select>
+              </select> -->
+              <v-select hide-details dense :items="[{text:'是',value: true},{text:'否',value: false}]" label="自动进入房间" v-model="configData.data.auto_join" ></v-select> 
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:100px; text-align: right; padding: 0 2px;">宣告IP列表
-              <span class="iconfont icon-question-circle icon tcolor_sub" title="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址"></span>：</div>
+          <div class="chat_config_row">
+            <!-- <div style="width:100px; text-align: right; padding: 0 2px;">宣告IP列表
+              <span class="iconfont icon-question-circle icon tcolor_sub" title="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址"></span>：</div> -->
             <div style="flex-grow: 1;">
-              <textarea class="ips_textarea" placeholder="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址" v-model="announcedIpsString" name="announcedIps" style="display: inline-block; width: 100%;"></textarea>
+              <!-- <textarea class="ips_textarea" placeholder="视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址" v-model="announcedIpsString" name="announcedIps" style="display: inline-block; width: 100%;"></textarea> -->
+              <v-textarea dense rows="4" label="宣告IP列表" hide-details class="ips_textarea" 
+                placeholder="内网或公网IP" 
+                v-model="announcedIpsString" name="announcedIps" ></v-textarea>
+            </div>
+            <div style="text-align:start;">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" >mdi-help-circle-outline</v-icon>
+                </template>
+                <span>视频连接需要指定服务器的IP地址才可以正常建立，此处可以填写多个IP地址，每行一个地址,如：<br/>127.0.0.1<br/>192.168.0.106<br/>192.168.0.107<br/>39.100.XXX.XXX</span>
+              </v-tooltip>
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:100px;" />
-            <div style="flex-grow: 5;">
-              <button @click="updateConfig" >确定</button>
+          <div class="chat_config_row">
+            <div style="flex-grow: 1;"/>
+            <div>
+              <!-- <button @click="updateConfig" >确定</button> -->
+              <v-btn depressed small color="primary" @click="updateConfig()" style="margin:0 4px;">确定</v-btn>
             </div>
           </div>
         </div>
       </div>
-      <div v-show="showLocalConfig" class="local_config">
+      <div v-show="showLocalConfig" class="local_config tbgcolor_main">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">本地参数设置</span>
-          <a style="padding:0 4px; " @click="toggleLocalConfig()" class="tcolor_reverse"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleLocalConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
-          <div class="config_row">
-            <div style="width:60px; text-align: right; padding: 0 2px;">昵称：</div>
-            <div style="flex-grow: 1;">
-              <input v-model="localData.name" type="text" name="name" style="display: inline-block; width: 100%;">
+          <div class="chat_config_row">
+            <!-- <div style="width:60px; text-align: right; padding: 0 2px;">昵称：</div> -->
+            <div style="flex-grow: 1; ">
+              <!-- <input v-model="localData.name" type="text" name="name" style="display: inline-block; width: 100%;"> -->
+              <v-text-field densese hide-details="true" label="昵称" height="24" v-model="localData.name" class="py-0 my-0" ></v-text-field>
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:60px; text-align: right; padding: 0 2px;">视频源：</div>
+          <div class="chat_config_row">
+            <!-- <div style="width:60px; text-align: right; padding: 0 2px;">视频源：</div> -->
             <div style="flex-grow: 1;">
-              <select v-model="localCamSelect">
+              <v-select hide-details dense :items="localCamerasSelect" label="视频源" v-model="localCamSelect" ></v-select>
+              <!-- <select v-model="localCamSelect">
                 <option value ="-1">未选择</option>
                 <option v-for="(cam,index) in localCameras" :key="'localcam_'+index" :value="cam.index" >{{cam.label}}</option>
-              </select>
+              </select> -->
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:60px; text-align: right; padding: 0 2px;">音频源：</div>
+          <div class="chat_config_row">
+            <!-- <div style="width:60px; text-align: right; padding: 0 2px;">音频源：</div> -->
             <div style="flex-grow: 1;">
-              <select v-model="localMicSelect">
+              <v-select hide-details dense :items="localMicsSelect" label="音频源" v-model="localMicSelect" ></v-select>
+              <!-- <select v-model="localMicSelect">
                 <option value ="-1">未选择</option>
                 <option v-for="(mic,index) in localMics" :key="'localmic_'+index" :value="mic.index" >{{mic.label}}</option>
-              </select>
+              </select> -->
             </div>
           </div>
-          <div class="config_row">
-            <div style="width:80px;" />
-            <div style="flex-grow: 5;">
-              <button @click="updateLocalConfig" >确定</button>
+          <div class="chat_config_row">
+            <div style="flex-grow: 1;">
+              <!-- <button @click="updateLocalConfig" >确定</button> -->
+              <v-btn depressed small outlined @click="updateLocalConfig()" class="tcolor_primary" style="margin:0 4px;">确定</v-btn>
             </div>
           </div>
         </div>
@@ -125,13 +152,24 @@
       </div>
       <div class="chat_menu">
         <div style="flex-grow: 1; display: flex;">
-          <input v-model="words" type="text" width="50" style="flex-grow: 1;" @focus="showWordsList = true" @keyup.enter="sendWords(null)" />
-          <button class="tcolor_sub" style="margin: 0 4px;" @click="sendWords(null)">发送</button>
+          <input v-model="words" type="text" width="50" style="flex-grow: 1;" placeholder="发送文字" @focus="showWordsList = true" @keyup.enter="sendWords(null)" />
+          <!-- <v-text-field densese single-line outlined  hide-details="true" label="" height="30" v-model="words"  class="py-0 my-0" @focus="showWordsList = true" @keyup.enter="sendWords(null)"  ></v-text-field> -->
+          <!-- <v-button class="tcolor_sub" style="margin: 0 4px;" @click="sendWords(null)">发送</v-button> -->
+          <v-btn depressed small outlined  @click="sendWords(null)" class="tcolor_primary" style="margin:0 4px;">发送</v-btn>
         </div>
         <div>
-          <a v-if="isInRoom && !isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
+          <!-- <a v-if="isInRoom && !isRecording" style="margin: 0 4px;" class="iconfont icon-recordfill icon tcolor_sub" title="开始视频" @click="changeRecordStatus()" />
           <a v-else-if="isInRoom && isRecording" style="margin: 0 4px;" class="iconfont icon-stopcircle icon tcolor_sub" title="结束视频" @click="changeRecordStatus()" />
-          <a style="margin: 0 4px;" class="iconfont icon-cog icon tcolor_sub" title="设置" @click="toggleLocalConfig()" />
+          <a style="margin: 0 4px;" class="iconfont icon-cog icon tcolor_sub" title="设置" @click="toggleLocalConfig()" /> -->
+          <v-btn v-if="isInRoom && !isRecording" icon small @click="changeRecordStatus()" title="开始视频">
+            <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-video</v-icon>
+          </v-btn>
+          <v-btn v-else-if="isInRoom && isRecording" icon small @click="changeRecordStatus()" title="结束视频">
+            <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-video-off</v-icon>
+          </v-btn>
+          <v-btn icon small @click="toggleLocalConfig()" title="设置">
+            <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog-outline</v-icon>
+          </v-btn>
         </div>
       </div>
     </div>
@@ -170,7 +208,9 @@ export default {
       words: null,
       localData: {name: '',device: {}},
       localCameras: [],
+      localCamerasSelect:[{text:'未选择',value:'-1'}],
       localMics: [],
+      localMicsSelect:[{text:'未选择',value:'-1'}],
       localCamSelect: -1,
       localMicSelect: -1,
       viewList: [
@@ -407,7 +447,9 @@ export default {
         tmp.forEach(d => d.index = index++)
         console.log('初始化localCameras',this.localCameras)
         this.localCameras = _.filter(tmp,{'kind':'videoinput'})
+        this.localCamerasSelect = this.localCameras.map( c => { return {text: c.label, value: c.index}})
         this.localMics = _.filter(tmp,{'kind':'audioinput'})
+        this.localMicsSelect = this.localMics.map( m => { return {text: m.label, value: m.index}})
         this.syncLocalData(stream)
       })
     },
@@ -554,10 +596,11 @@ export default {
 }
 
 .chat_menu {
+  padding: 4px;
   display: flex;
   align-items: center;
   width: 100%;
-  height: 30px;
+  height: 36px;
   z-index: 5;
 }
 .self_view {
@@ -623,16 +666,15 @@ export default {
   width: 400px;;
   top: 0;
   right: 0;
-  bottom: 30px;
+  bottom: 36px;
   position: absolute;
   font-size: 12px;
   z-index: 6;
-  background-color: var(--tbgcolor_config,white);
 }
 .words_info {
   left: 0;
   right: 0;
-  bottom: 30px;
+  bottom: 36px;
   height: 60%;
   position: absolute;
   z-index: 5;
@@ -649,7 +691,7 @@ export default {
 .words_info_hide {
   left: 0;
   right: 0;
-  bottom: 30px;
+  bottom: 36px;
   height: 32px;
   position: absolute;
   z-index: 5;
@@ -665,5 +707,16 @@ export default {
   outline: none;
   width: 100%;
   height: 80px;
+}
+
+.chat_config_row {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  margin: 16px 0;
+}
+.chat_config_row input {
+  border: none;
+  border-radius: none;
 }
 </style>

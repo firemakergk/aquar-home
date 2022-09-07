@@ -9,10 +9,13 @@
           <img v-else :src="logo_icon" style=" flex-grow: 1; width: 48px;">
         </a>
         <div style="flex-grow: 1; width: 8px;">
-          <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_reverse" style="color: rgba(255,255,255,0.3); font-size: 6px; " title="设置" @click="toggleConfig" />
+          <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_reverse" style="color: rgba(255,255,255,0.3); font-size: 6px; " title="设置" @click="toggleConfig" /> -->
+          <v-btn v-show="showConfigIcon" icon x-small @click="toggleConfig()" title="设置">
+            <v-icon class="tcolor_primary" style="font-size:8px; opacity: 40%;" >mdi-cog</v-icon>
+          </v-btn>
         </div>
       </div>
-      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_reverse">{{ configData.name }}</a>
+      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_white">{{ configData.name }}</a>
     </div>
   </div>
 </template>

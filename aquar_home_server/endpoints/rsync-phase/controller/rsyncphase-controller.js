@@ -63,7 +63,6 @@ class RsyncphaseController {
   }
   async updateItem(ctx, next) {
     // let nowDate = new Date()
-    console.log(dateFormat("yyyy-mmfd-dd HHfff:MMabc:ssabc"))
     var id = ctx.request.body.id
     var item = ctx.request.body.item
     var tabIndex = ctx.request.body.tabIndex

@@ -4,13 +4,16 @@
       <img style="height:20px; " src="./img/pve.png">
       <span style="padding: 0 10px;"><a :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
-      <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" />
+      <!-- <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <div v-if="queryData" class="widget_body">
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px;" @click="toggleConfig()"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -217,17 +220,16 @@ export default {
                 data: this.chartData.data.d1,
                 fill: false,
                 borderColor: [
-                    this.$vuetify.theme.themes.light.primary.base,
+                    this.$vuetify.theme.current['--tbgcolor_info']
                 ],
                 borderWidth: 1
             },{
                 label: 'load15',
                 data: this.chartData.data.d15,
                 fill: true,
-                borderColor: [
-                    this.$vuetify.theme.themes.light.primary.lighten4
-                ],
-                pointRadius:0,
+                borderColor: this.$vuetify.theme.current['--tbgcolor_info']+'20',
+                backgroundColor:this.$vuetify.theme.current['--tcolor_primary']+'20',
+                pointRadius:1,
                 borderWidth: 1
             }]
         },
@@ -421,7 +423,7 @@ export default {
   margin: 4px 0;
   width: 100%;
   height: 8px;
-  background-color: #455a64;
+  // background-color: #455a64;
 }
 .process {
   // margin: 4px;

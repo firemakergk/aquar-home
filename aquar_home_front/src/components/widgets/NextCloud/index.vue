@@ -4,7 +4,10 @@
       <img style="height:20px; " src="./img/nextcloud.png">
       <a style="padding: 0 10px;" target="_blank" :href="configData.href">{{ configData.name }}</a>
       <span style="flex-grow: 1;" />
-      <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" />
+      <!-- <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <div class="widget_body">
       <div v-show="showInit" class="float_config">
@@ -41,7 +44,7 @@
       <div v-show="showConfig" class="float_config">
         <div class="config_top tbgcolor_sub_head tcolor_sub_head">
           <span style="flex-grow: 1;">设置</span>
-          <a style="padding:0 4px; " @click="toggleConfig()" class="tcolor_sub_head"> x </a>
+          <v-icon class="tcolor_sub_head" @click="toggleConfig()" >mdi-close</v-icon>
         </div>
         <div class="config_body">
           <div class="config_row">
@@ -91,7 +94,7 @@
       <div class="widget_content">
         <div class="explorer_header">
           <span class="path_span">
-            <input v-model="path" type="text" class="tbgcolor_config tcolor_main" style="width:100%; height: 20px; font-size: 8px; " >
+            <input v-model="path" type="text" class="tcolor_main" style="width:100%; height: 20px; font-size: 8px; " >
           </span>
           <span class="button_span">
             <a :class="[{'a_disabled tcolor_disable': (!refreshEnable)}, 'iconfont icon-search icon tcolor_sub']" style="margin: 0 4px;" title="转到" @click="refreshView(false)" />

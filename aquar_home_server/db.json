@@ -10,7 +10,8 @@
       "bgColor": "#455A65",
       "bgImg": "/assets/bg.jpg",
       "bgBlur": "0",
-      "theme": "vscode"
+      "theme": "vscode",
+      "themeSerial":"0"
     }
   },
   "tabs": [

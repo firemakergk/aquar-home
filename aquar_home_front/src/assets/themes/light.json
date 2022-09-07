@@ -1,0 +1,41 @@
+{
+  "serial":"0",
+  "name":"light",
+  "dark": false,
+  "vuetify":{
+    "primary": "${colors.indigo}",
+    "secondary": "${colors.grey}",
+    "accent": "${colors.green}",
+    "warning": "${colors.amber}",
+    "error": "${colors.deepOrange}",
+    "shades": {
+      "bg": "${colors.shades.white}"
+    }
+  },
+  "ui":{
+    "--tcolor_reverse": "${vuetify.shades.bg}",
+    "--tcolor_main": "${vuetify.secondary.darken4}",
+    "--tcolor_primary": "${vuetify.primary.base}",
+    "--tcolor_sub": "${vuetify.secondary.darken2}",
+    "--tcolor_active": "${vuetify.accent.base}",
+    "--tcolor_error": "${vuetify.error.darken1}",
+    "--tcolor_warn": "${vuetify.warning.darken1}",
+    "--tcolor_disable": "${vuetify.secondary.base}",
+    "--tbgcolor_main": "${vuetify.shades.bg}",
+    "--tbgcolor_config": "${vuetify.shades.bg}",
+    "--tbgcolor_head": "${vuetify.shades.bg}",
+    "--tbgcolor_sub_head": "${vuetify.secondary.lighten2}",
+    "--tbgcolor_sub_head2": "${vuetify.secondary.lighten3}",
+    "--tbgcolor_disable": "${vuetify.secondary.lighten1}",
+    "--tbgcolor_idle": "${vuetify.primary.lighten4}",
+    "--tbgcolor_info": "${colors.blue.lighten2}",
+    "--tbgcolor_active": "${vuetify.accent.lighten2}",
+    "--tbgcolor_warn": "${vuetify.warning.lighten2}",
+    "--tbgcolor_error": "${vuetify.error.lighten1}",
+    "--tbgcolor_mask_info": "${vuetify.shades.bg}",
+    "--tbgcolor_mask_error": "${vuetify.secondary.darken4}e0",
+    "--tpcolor_idle": "${vuetify.primary.lighten4}",
+    "--tpcolor_info": "${vuetify.primary.base}",
+    "--tbcolor": "${vuetify.secondary.lighten2}"
+  }
+}

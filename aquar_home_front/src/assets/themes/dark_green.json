@@ -2,7 +2,7 @@
   "name":"dark",
   "dark": true,
   "vuetify":{
-    "primary": "${colors.orange}",
+    "primary": "${colors.lightGreen}",
     "secondary": "${colors.grey}",
     "accent": "${colors.green}",
     "warning": "${colors.amber}",

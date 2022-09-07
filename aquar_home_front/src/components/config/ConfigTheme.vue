@@ -61,8 +61,8 @@ require('codemirror/mode/javascript/javascript');
 require("codemirror/addon/lint/json-lint");
 require( 'codemirror-colorpicker' );
 
-import defaultLight from '@/assets/themes/defaultlight.json'
-import dark from '@/assets/themes/dark.json'
+// import light from '@/assets/themes/light.json'
+// import dark from '@/assets/themes/dark.json'
 
 const RE_DATA = /^.+,.+/i
 export default {
@@ -78,7 +78,7 @@ export default {
       themeText: "",
       editor: null,
       themeInitList: [
-        {text:"defaultLight", value: "defaultLight"},
+        {text:"light", value: "light"},
         {text:"dark", value: "dark"}
       ],
       themeList: [],
@@ -136,7 +136,7 @@ export default {
       if(name === "defaultLight") {
         return defaultLight 
       }else if(name === "dark") {
-        return dark 
+        return null
       }else {
         let res = await this.$axios
         .get('/api/theme/findOne?name=' + name)

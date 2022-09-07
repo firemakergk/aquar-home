@@ -1,7 +1,10 @@
 <template>
   <div class="widget_container" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
-    <div style="position:absolute; right:4px; width: 8px;">
-      <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" />
+    <div style="position:absolute; right:12px; width: 8px;">
+      <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" /> -->
+      <v-btn v-show="showConfigIcon" icon x-small @click="toggleConfig()" title="设置">
+        <v-icon class="tcolor_primary" style="font-size:8px; opacity: 40%;" >mdi-cog</v-icon>
+      </v-btn>
     </div>
     <div class="navi_panel tbgcolor_main">
       <div class="img_span">
