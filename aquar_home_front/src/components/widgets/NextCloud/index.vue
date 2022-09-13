@@ -37,7 +37,6 @@
       </div>
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
         <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
-          <!-- <span  class="iconfont icon-times-circle-fill icon" style="font-size: 24px;"></span> -->
           <v-icon class="tcolor_main" style="font-size: 32px;" >mdi-close-circle</v-icon>
           <span  style="font-size: 24px;">连接失败</span>
         </div>
