@@ -34,7 +34,7 @@
       :responsive="!editing"
       :col-num="12"
       :col-width="20"
-      :row-height="40"
+      :row-height="60"
       :is-draggable="editing"
       :is-resizable="editing"
       :vertical-compact="false"
@@ -67,10 +67,10 @@
         </keep-alive>
       </grid-item>
     </grid-layout>
-    <v-dialog eager v-model="showConfigPanel" width="600px" height="500px">
+    <v-dialog eager v-model="showConfigPanel" width="800px">
         <config />
     </v-dialog>
-    <v-dialog eager v-model="showWidgetConfig" width="600px" height="500px">
+    <v-dialog eager v-model="showWidgetConfig" width="800px">
       <widget-config />
     </v-dialog>
   </div>

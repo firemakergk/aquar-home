@@ -84,6 +84,27 @@
         </v-col>
       </v-row>
       <v-row align="center" dense class="py-2">
+        <v-col cols="6">
+          <v-select hide-details dense :items="bgTypeList" label="背景类型" @change="bgTypeChanged()" v-model="configData.data.bg_type" ></v-select>
+        </v-col>
+        <v-col cols="6" style="display: flex; align-items:flex-end">
+          <div>
+            <v-icon :style="'color:'+configData.data.bg_color" style="position: relative; bottom: -2px;" >mdi-solid</v-icon>
+          </div>
+          <div style="flex-grow: 1;">
+            <v-text-field :disabled='bgColorDisabled' dense hide-details label="背景色" v-model="configData.data.bg_color" ></v-text-field> 
+          </div>
+          <div>
+            <v-btn :disabled='bgColorDisabled' small icon @click="toggleColorPicker(true)" title="选择颜色">
+              <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-palette-outline</v-icon>
+              <div v-show="showColorPicker"  style="position: absolute; top: -300px; left: -200px;">
+                <v-color-picker mode="hexa" dot-size="12" v-model="configData.data.bg_color"></v-color-picker>
+              </div>
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row align="center" dense class="py-2">
         <v-col cols="12" class="d-flex flex-row justify-start align-center">
           <span>内网地址转换:</span>
           <v-switch dense hide-details true-value="1" false-value="0" v-model="configData.data.addr_translate" :label="` ${configData.data.addr_translate === '0'?'关':'开'}`" style="margin: 0px 0px 0px 8px;"></v-switch>
@@ -109,6 +130,12 @@
 <script>
 import { VueCropper } from 'vue-cropper'
 import logo_icon from './img/aquar.png'
+
+const BG_TYPE_NONE = "0"
+const BG_TYPE_THEME = "1"
+const BG_TYPE_CUST = "2" 
+const BG_TYPE_AUTO = "3"
+
 export default {
   name: 'IconWidgetConfig',
   components: {
@@ -143,7 +170,7 @@ export default {
         enlarge: 1,
         mode: 'contain',
         maxImgSize: 3000,
-        limitMinSize: [100, 100]
+        limitMinSize: [100, 100],
       },
       previews: {},
       downImg: '#',
@@ -152,6 +179,13 @@ export default {
         {text:"当前页", value: "_self"},
         {text:"新标签页", value: "_blank"}
       ],
+      bgTypeList: [
+        {text:"无", value: "0"},
+        {text:"跟随主题", value: "1"},
+        {text:"自定义", value: "2"}
+      ],
+      bgColorDisabled: true,
+      showColorPicker: false
     }
   },
   computed: {
@@ -163,6 +197,7 @@ export default {
     if(!this.configData.data.addr_translate){
       this.configData.data.addr_translate = '0'
     }
+    this.bgTypeChanged()
   },
   mounted: function() {
   },
@@ -261,6 +296,8 @@ export default {
     updateConfig() {
       this.$bus.emit('update',  {'tabIndex':this.tabIndex,'widget':this.configData})
       this.$bus.emit('closeWidgetConfig', null)
+      window.location.reload()
+      // this.$bus.emit('refreshPage', null)
     },
     clearIco() {
       this.configData.data.ico_path = ''
@@ -272,6 +309,24 @@ export default {
       .then(response => {
         this.configData.data.ico_path = response.data.data.data.ico_path
       })
+    },
+    bgTypeChanged(){
+      let bgType = this.configData.data.bg_type
+      if(!bgType || bgType === BG_TYPE_NONE){
+        this.configData.data.bg_color = '#00000000'
+        this.bgColorDisabled = true
+      }else if(bgType === BG_TYPE_THEME){
+        this.configData.data.bg_color = this.$vuetify.theme.current['--tbgcolor_main']
+        this.bgColorDisabled = true
+      }else if(bgType === BG_TYPE_CUST){
+        if(!this.configData.data.bg_color){
+          this.configData.data.bg_color = this.$vuetify.theme.current['--tbgcolor_main']
+        }
+        this.bgColorDisabled = false
+      }
+    },
+    toggleColorPicker(){
+      this.showColorPicker = !this.showColorPicker
     }
   }
 }

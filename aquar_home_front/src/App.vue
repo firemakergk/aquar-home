@@ -27,7 +27,8 @@ export default {
       configData: {},
       theme: null,
       bgImg: null,
-      blurNum: "blur(0px)",
+      blurStyle: "blur(0px)",
+      bgOffset: "0px",
       bgColor: '#42433E',
       themes: {
         "light":light,
@@ -37,7 +38,7 @@ export default {
     }
   },
   created: function() {
-    this.$bus.on('renderBg', this.renderBg)
+    this.$bus.on('refreshPage', this.initTheme)
     this.initTheme()
   },
   mounted: function() {
@@ -59,7 +60,7 @@ export default {
       })
   },
   beforeDestroy() {
-    this.$bus.off('renderBg', this.renderBg)
+    this.$bus.off('refreshPage', this.initTheme)
   },
   methods: {
     initTheme(){
@@ -71,6 +72,7 @@ export default {
         this.renderBg(defaultTheme)
         ThemeService.updateCache(defaultTheme)
       }
+      this.$forceUpdate() 
     },
     renderBg(data) {
       let {config, theme} = data
@@ -79,15 +81,17 @@ export default {
         if(config.appearance.bgImg){
           this.bgImg = 'url(' + config.appearance.bgImg + ')';
           if(config.appearance.bgBlur){
-            this.blurNum = 'blur(' + config.appearance.bgBlur + 'px)';
+            this.blurStyle = 'blur(' + config.appearance.bgBlur + 'px)';
+            this.bgOffset = 0 - Math.round(parseInt(config.appearance.bgBlur)*1.6) + 'px'
           }
         }else{
           this.bgImg = null;
-          this.blurNum = 0;
+          this.blurStyle = 'blur(0);'
+          this.bgOffset = '0'
           this.bgColor = config.appearance.bgColor? config.appearance.bgColor:"#42433E"
         }
       }
-      this.curTheme = {'--bgUrl': this.bgImg,'--bgColor': this.bgColor,'--blurNum':this.blurNum}
+      this.curTheme = {'--bgUrl': this.bgImg,'--bgColor': this.bgColor,'--blurStyle':this.blurStyle, '--bgOffset':this.bgOffset}
       if(theme){
         ThemeService.setupVuetifyTheme(this, theme)
         this.curTheme = Object.assign(this.curTheme,theme.ui)
@@ -168,16 +172,19 @@ div:focus {
 .app-main::before{
   content:'';
   position:fixed;
-  width:100%;
-  height:100%;
+  top: var(--bgOffset,0);
+  bottom: var(--bgOffset,0);
+  left: var(--bgOffset,0);
+  right: var(--bgOffset,0);
   background:transparent center center no-repeat fixed;
   background-image: var(--bgUrl,null);
   background-color: var(--bgColor);
   background-size: cover;
+  background-position: center;
   /* overflow:hidden; */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
-  filter:var(--blurNum);
+  filter:var(--blurStyle);
   z-index:-2;
 }
 .widget_box {

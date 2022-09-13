@@ -4,13 +4,31 @@ class NextCloudController {
   
   async login(ctx, next) {
     var server = ctx.query.server
-    var res = await nextcloudService.login(server)
-    ctx.body = {code:0, data: res}
+    var res = null
+    try{
+      res = await nextcloudService.login(server)
+    } catch(e){
+      ctx.response.status = 502
+      ctx.body = {code: -1 ,msg:`请求失败，请检查配置是否正确，调试信息e.message:${e.message}`}
+      return
+    }
+    if(!res){
+      ctx.body = {code: -1 ,msg:"请求失败"}
+    }else{
+        ctx.body = {code: 0, data: res}
+    }
   }
   async poll(ctx, next) {
     var server = ctx.query.server
     var token = ctx.query.token
-    var res = await nextcloudService.poll(server, token)
+    var res = null
+    try{
+      res = await nextcloudService.poll(server, token)
+    } catch(e){
+      ctx.response.status = 502
+      ctx.body = {code: -1 ,msg:`请求失败，请检查配置是否正确，调试信息e.message:${e.message}`}
+      return
+    }
     if(!res){
       ctx.body = {code: -1 ,msg:"请求失败"}
     }else{
@@ -22,7 +40,14 @@ class NextCloudController {
     var path = ctx.request.body.path
     var username = ctx.request.body.username
     var apppassword = ctx.request.body.apppassword
-    var res = await nextcloudService.query(server, path, username, apppassword)
+    var res = null
+    try{
+      res = await nextcloudService.query(server, path, username, apppassword)
+    } catch(e){
+      ctx.response.status = 502
+      ctx.body = {code: -1 ,msg:`请求失败，请检查配置是否正确，调试信息e.message:${e.message}`}
+      return
+    }
     if(!res){
       ctx.body = {code: -1 ,msg:"请求失败"}
     }else{

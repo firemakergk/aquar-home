@@ -5,6 +5,9 @@
       <a style="padding: 0 10px;" target="_blank" :href="configData.href">{{ configData.name }}</a>
       <span style="flex-grow: 1;" />
       <!-- <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="init()" title="刷新">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-reload</v-icon>
+      </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
       </v-btn>
@@ -34,7 +37,8 @@
       </div>
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
         <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
-          <span  class="iconfont icon-times-circle-fill icon" style="font-size: 24px;"></span>
+          <!-- <span  class="iconfont icon-times-circle-fill icon" style="font-size: 24px;"></span> -->
+          <v-icon class="tcolor_main" style="font-size: 32px;" >mdi-close-circle</v-icon>
           <span  style="font-size: 24px;">连接失败</span>
         </div>
         <div style="padding: 0 2px; word-wrap:break-word; display: flex; flex-direction: column; justify-content: center;align-items: center;">
@@ -197,9 +201,14 @@ export default {
           this.showErrorInfo = false
         })
         .catch(error => {
-          this.showErrorInfo = true
-          this.errorInfo = error.message
-          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          if(error.response && error.response.status === 502){
+            this.showErrorInfo = true
+            this.errorInfo = error.response.data.msg
+          }else{
+            this.showErrorInfo = true
+            this.errorInfo = error.message
+            console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          }
         })
     },
     gotoLogin() {
@@ -224,9 +233,14 @@ export default {
           this.init()
         })
         .catch(error => {
-          this.showErrorInfo = true
-          this.errorInfo = error.message
-          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          if(error.response && error.response.status === 502){
+            this.showErrorInfo = true
+            this.errorInfo = error.response.data.msg
+          }else{
+            this.showErrorInfo = true
+            this.errorInfo = error.message
+            console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          }
         })
     },
     contentType(contentType) {
@@ -277,9 +291,14 @@ export default {
           }
         })
         .catch(error => {
-          this.showErrorInfo = true
-          this.errorInfo = error.message
-          console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          if(error.response && error.response.status === 502){
+            this.showErrorInfo = true
+            this.errorInfo = error.response.data.msg
+          }else{
+            this.showErrorInfo = true
+            this.errorInfo = error.message
+            console.log('接口异常,url:'+error.request.responseURL+',message:'+error.message)
+          }
         })
     },
     async getThumbnailBatch() {

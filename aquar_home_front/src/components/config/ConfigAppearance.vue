@@ -25,7 +25,7 @@
           </v-row>
           <v-row align="center" dense class="py-2">
             <v-col cols="12">
-              <v-text-field hide-details dense label="背景模糊" v-model="configData.appearance.bgBlur" size="2" name="bgBlur" ></v-text-field>
+              <v-text-field hide-details dense suffix="px" label="背景模糊" v-model="configData.appearance.bgBlur" size="2" name="bgBlur" ></v-text-field>
             </v-col>
           </v-row>
           <v-row align="center" dense class="py-2">

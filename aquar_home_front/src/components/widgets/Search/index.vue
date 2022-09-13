@@ -7,12 +7,20 @@
       <a v-for="(sugword,index) in suggests" :key="index" :class="selectedIndex===index? 'tbgcolor_info tcolor_reverse': ''" style="display:block; margin: 4px;" @click="search(sugword)" @mouseover="suggestMove(null,index)">{{sugword}}</a>
     </div>
     <div class="search_panel tbgcolor_main">
-      <v-select hide-details dense :items="sourceList" v-model="configData.data.source" @change="changeSource()" style="width: 120px;" ></v-select>
-      <input type="text" class="tbgcolor_main tcolor_main" style="flex-grow:1;" autofocus="autofocus" placeholder="输入要搜索的内容" 
+      <div style="flex-grow:0; flex-shrink: 0; width: 100px;" >
+        <v-select hide-details dense :items="sourceList" v-model="configData.data.source" @change="changeSource()"  ></v-select>
+      </div>
+      <v-divider style="margin: 2px 0;" vertical></v-divider>
+      <div style="flex-grow:1; flex-shrink: 1;" >
+        <v-text-field dense hide-details prepend-inner-icon="mdi-blank" type="text" class="search_input tbgcolor_main tcolor_main" autofocus="autofocus" placeholder="输入要搜索的内容" 
         :style="{backgroundImage: 'url('+ require('./img/' + configData.data.source + '.png') +')'  }" 
-        v-model="searchText" @keyup.enter="search()" @keyup.up="suggestMove(-1,null)" @keyup.down="suggestMove(1,null)" @input="prepareSuggest()" />
-      <button class="iconfont icon-search icon tcolor_sub tbgcolor_main" @click="search()"></button>
-      <div style="position:absolute; right: 12px; top: 2px; width: 8px;">
+        v-model="searchText" @keyup.enter="search()" @keyup.up="suggestMove(-1,null)" @keyup.down="suggestMove(1,null)" @input="prepareSuggest()" ></v-text-field>
+      </div>
+      <v-btn icon @click="search()" class="ml-2" title="搜索">
+        <v-icon class="tcolor_primary" style="font-size:32px;" >mdi-magnify</v-icon>
+      </v-btn>
+      <!-- <button class="iconfont icon-search icon tcolor_main tbgcolor_main" @click="search()"></button> -->
+      <div style="position:absolute; right: 12px; top: 2px; width: 8px; opacity: 40%;">
         <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" /> -->
         <v-btn v-show="showConfigIcon" icon x-small @click="toggleConfig()" title="设置">
           <v-icon class="tcolor_primary" style="font-size:12px;" >mdi-cog</v-icon>
@@ -158,18 +166,15 @@ button {
   user-select: none;
   border: 0px solid transparent;
 }
-input {
-  margin: 0 2px;
-  outline-color: #ccc;
+.search_input {
+  // margin: 0;
   background-image: url('./img/baidu.png');
   background-repeat: no-repeat;
   background-position: 2px;
   background-size: 20px;
   text-indent: 24px;
-  border: 0px solid #e5e6e7;
-  display: block;
-  padding: 6px 4px;
-  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  // padding: 0 0 0 26px;
+  padding: 0;
   width: 100%;
   font-size: 16px;
 }
@@ -183,6 +188,9 @@ select {
 .search_container {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .search_panel {
   flex-grow: 1;

@@ -1,12 +1,12 @@
 <template>
-  <div class="widget_container">
+  <div class="widget_container" :style="'background-color:'+bgColor">
     <div class="icon_panel">
       <div class="img_span" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
         <div style="flex-grow: 1; width: 8px;" />
         <a :target="configData.data.target_type" :href="href">
-          <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 48px;">
-          <img v-else-if="configData.data.ico_path" :src="configData.data.ico_path" style=" flex-grow: 1; width: 48px;">
-          <img v-else :src="logo_icon" style=" flex-grow: 1; width: 48px;">
+          <img v-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 52px;">
+          <img v-else-if="configData.data.ico_path" :src="configData.data.ico_path" style=" flex-grow: 1; width: 52px;">
+          <img v-else :src="logo_icon" style=" flex-grow: 1; width: 52px;">
         </a>
         <div style="flex-grow: 1; width: 8px;">
           <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_reverse" style="color: rgba(255,255,255,0.3); font-size: 6px; " title="设置" @click="toggleConfig" /> -->
@@ -15,7 +15,7 @@
           </v-btn>
         </div>
       </div>
-      <a :target="configData.data.target_type" :href="configData.href" class="icon_label tcolor_white">{{ configData.name }}</a>
+      <a :target="configData.data.target_type" :href="configData.href" class="icon_label" :style="'color:'+textColor">{{ configData.name }}</a>
     </div>
   </div>
 </template>
@@ -23,6 +23,10 @@
 <script>
 import logo_icon from './img/aquar.png'
 const REG_PIP = /(^127\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)/g
+const BG_TYPE_NONE = "0"
+const BG_TYPE_THEME = "1"
+const BG_TYPE_CUST = "2" 
+const BG_TYPE_AUTO = "3"
 export default {
   name: 'IconWidget',
   components: {
@@ -62,7 +66,9 @@ export default {
       },
       previews: {},
       downImg: '#',
-      previewStyle1: {}
+      previewStyle1: {},
+      bgColor: '#0000',
+      textColor: '#ffff'
     }
   },
   computed: {
@@ -76,6 +82,17 @@ export default {
       let domain = window.location.hostname
       if(domain && domain.match(REG_PIP)){
         this.href = this.configData.data.private_href
+      }
+    }
+    let bgType = this.configData.data.bg_type
+    if(!bgType || bgType === BG_TYPE_NONE){
+      this.bgColor = '#0000'
+    }else if(bgType === BG_TYPE_THEME){
+      this.bgColor = this.$vuetify.theme.current['--tbgcolor_main']
+      this.textColor = this.$vuetify.theme.current['--tcolor_main']
+    }else if(bgType === BG_TYPE_CUST){
+      if(this.configData.data.bg_color){
+        this.bgColor = this.configData.data.bg_color
       }
     }
   },
@@ -112,7 +129,9 @@ export default {
 .widget_container {
   width: 100%;
   height: 100%;
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon_warp {
@@ -145,7 +164,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  height: 48px;
+  height: 52px;
 }
 .icon_label {
   text-align: center;

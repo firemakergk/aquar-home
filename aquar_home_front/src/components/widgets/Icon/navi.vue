@@ -1,12 +1,12 @@
 <template>
-  <div class="widget_container" @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
-    <div style="position:absolute; right:12px; width: 8px;">
+  <div class="widget_container"  @mouseover="showConfigIcon=true" @mouseleave="showConfigIcon=false">
+    <div style="position:absolute; right:12px; width: 8px; top: 0;">
       <!-- <a v-show="showConfigIcon" class="iconfont icon-cog-fill icon tcolor_main" style=" font-size: 6px; opacity:0.2;" title="设置" @click="toggleConfig" /> -->
       <v-btn v-show="showConfigIcon" icon x-small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:8px; opacity: 40%;" >mdi-cog</v-icon>
       </v-btn>
     </div>
-    <div class="navi_panel tbgcolor_main">
+    <div class="navi_panel" :style="'background-color:'+bgColor">
       <div class="img_span">
         <img v-if="configData.data.ico_path" :src="configData.data.ico_path" style=" flex-grow: 1; width: 16px;">
         <img v-else-if="configData.data.img_path" :src="configData.data.img_path" style=" flex-grow: 1; width: 16px;">
@@ -19,6 +19,10 @@
 
 <script>
 import logo_icon from './img/aquar.png'
+const BG_TYPE_NONE = "0"
+const BG_TYPE_THEME = "1"
+const BG_TYPE_CUST = "2" 
+const BG_TYPE_AUTO = "3"
 export default {
   name: 'IconWidget',
   components: {
@@ -58,7 +62,9 @@ export default {
       },
       previews: {},
       downImg: '#',
-      previewStyle1: {}
+      previewStyle1: {},
+      bgColor: '#0000',
+      textColor: '#ffff'
     }
   },
   computed: {
@@ -72,6 +78,17 @@ export default {
       let domain = window.location.hostname
       if(domain && domain.match(REG_PIP)){
         this.href = this.configData.data.private_href
+      }
+    }
+    let bgType = this.configData.data.bg_type
+    if(!bgType || bgType === BG_TYPE_THEME){
+      this.bgColor = this.$vuetify.theme.current['--tbgcolor_main']
+      this.textColor = this.$vuetify.theme.current['--tcolor_main']
+    }else if(bgType === BG_TYPE_NONE){
+      this.bgColor = '#0000'
+    }else if(bgType === BG_TYPE_CUST){
+      if(this.configData.data.bg_color){
+        this.bgColor = this.configData.data.bg_color
       }
     }
   },
@@ -93,36 +110,24 @@ export default {
 .widget_container {
   width: 100%;
   height: 100%;
-}
-
-.icon_warp {
-  position: relative;
-  width: 100px;
-  height: 100px;
-}
-.icon_cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(95, 43, 43, 0.4);
-  color: white;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+
 .navi_panel {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 2px;
-  height: 36px;
+  height: 60px;
   white-space:nowrap; word-break:break-all; text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow: hidden;
 }
 .img_span {
-  margin: 0 4px;
+  margin: 0 16px;
   padding: 0;
   display: flex;
   justify-content: space-between;
@@ -132,6 +137,7 @@ export default {
 .icon_label {
   flex-grow: 1;
   text-align: left;
+  font-size: 16px;
 }
 
 </style>
