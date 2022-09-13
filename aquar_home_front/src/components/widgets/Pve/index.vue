@@ -5,6 +5,9 @@
       <span style="padding: 0 10px;"><a :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <!-- <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="getPveInfo()" title="刷新">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-reload</v-icon>
+      </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
       </v-btn>
@@ -262,7 +265,7 @@ export default {
       if (this.pveTimer == null) {
         this.timer = setInterval(() => {
           this.getPveInfo()
-        }, 10000)
+        }, 30000)
       }
     },
     getPveInfo() {

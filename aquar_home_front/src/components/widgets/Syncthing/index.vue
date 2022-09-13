@@ -5,6 +5,9 @@
       <span style="padding: 0 10px;"><a target="_blank" :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <!-- <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_sub" title="设置" @click="toggleConfig()" /> -->
+      <v-btn icon small @click="getSyncthingInfo()" title="刷新">
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-reload</v-icon>
+      </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
       </v-btn>
@@ -12,7 +15,7 @@
     <div class="widget_body">
       <div v-show="showErrorInfo" class="error_info tbgcolor_mask_error">
         <div style="width: 100%; height: 80px;  display: flex; flex-direction: column; justify-content: center;align-items: center;">
-          <span  class="iconfont icon-times-circle-fill icon tcolor_sub" style="font-size: 24px;"></span>
+          <v-icon class="tcolor_main" style="font-size: 32px;" >mdi-close-circle</v-icon>
           <span  style="font-size: 24px;">连接失败</span>
         </div>
         <div style="padding: 0 2px; word-wrap:break-word; display: flex; flex-direction: column; justify-content: center;align-items: center;">
