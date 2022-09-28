@@ -6,10 +6,11 @@
           <div style="width: 0; flex-grow: 1; display: flex; flex-direction: column; margin: 0 4px;">
             <div style="display: flex; flex-direction: row; margin: 4px 0;">
               <span style="flex-grow:1;">导入数据：</span>
-              <span><button @click="extractData()">解析数据</button></span>
+              <!-- <span><button @click="extractData()">解析数据</button></span> -->
+              <v-btn small color="primary" @click="extractData()" style="margin:0 2px; width: 100px;" title="解析数据" ><v-icon left>mdi-text-search-variant</v-icon>解析数据</v-btn>
             </div>
             <div>
-              <textarea v-model="importText" placeholder="谷歌,https://www.google.com/"></textarea>
+              <textarea class="tcolor_main" v-model="importText" placeholder="谷歌,https://www.google.com/"></textarea>
             </div>
           </div>
           <div style="width: 0; flex-grow: 1;  margin: 0 4px;">
@@ -24,9 +25,11 @@
       </div>
     </div>
     <div class="param_row" style="height: 80px;">
+      <div style="flex-grow: 1;"></div>
       <div class="submit_panel">
-        <button type="button" :disabled="loading" @click="addBatch()">批量添加</button>
+        <!-- <button type="button" :disabled="loading" @click="addBatch()">批量添加</button> -->
         <img v-show="loading" style="height: 20px;"  :src="loadingImg"/>
+        <v-btn small color="primary" :disabled="loading" @click="addBatch()" style="margin:0 2px; width: 100px;" title="批量添加" ><v-icon left>mdi-check-bold</v-icon>批量添加</v-btn>
       </div>
     </div>
   </div>

@@ -94,13 +94,17 @@
           <div style="flex-grow: 1;">
             <v-text-field :disabled='bgColorDisabled' dense hide-details label="背景色" v-model="configData.data.bg_color" ></v-text-field> 
           </div>
-          <div>
-            <v-btn :disabled='bgColorDisabled' small icon @click="toggleColorPicker(true)" title="选择颜色">
-              <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-palette-outline</v-icon>
-              <div v-show="showColorPicker"  style="position: absolute; top: -300px; left: -200px;">
-                <v-color-picker mode="hexa" dot-size="12" v-model="configData.data.bg_color"></v-color-picker>
-              </div>
-            </v-btn>
+          <div style="position: relative;">
+            <v-btn-toggle v-model="bgColorEditing" multiple>
+              <v-btn :disabled='bgColorDisabled' small icon @click="toggleColorPicker(true)" title="选择颜色">
+                <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-palette-outline</v-icon>
+              </v-btn>
+            </v-btn-toggle>
+            
+            <div v-show="showColorPicker" style="position: absolute; top: -310px; left: -260px;">
+              <v-color-picker mode="hexa" :value="configData.data.bg_color" dot-size="12" @update:color="updateColor" ></v-color-picker>
+              <!-- v-model="configData.data.bg_color" -->
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -185,6 +189,7 @@ export default {
         {text:"自定义", value: "2"}
       ],
       bgColorDisabled: true,
+      bgColorEditing: undefined,
       showColorPicker: false
     }
   },
@@ -327,6 +332,14 @@ export default {
     },
     toggleColorPicker(){
       this.showColorPicker = !this.showColorPicker
+      this.bgColorEditing = this.bgColorEditing===0 ? undefined: 0
+      
+    },
+    updateColor(color){
+      if(!this.showColorPicker){
+        return
+      }
+      this.configData.data.bg_color = color.hexa
     }
   }
 }
