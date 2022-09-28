@@ -6,7 +6,7 @@
       <span style="flex-grow: 1;" />
       <!-- <a style="padding: 0 0px;" class="iconfont icon-cog-fill icon tcolor_sub " title="设置" @click="toggleConfig()" /> -->
       <v-btn icon small @click="init()" title="刷新">
-        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-reload</v-icon>
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-refresh</v-icon>
       </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>

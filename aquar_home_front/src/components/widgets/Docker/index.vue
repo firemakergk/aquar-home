@@ -5,7 +5,7 @@
       <span style="padding: 0 10px;"><a target="_blank" :href="configData.href">{{ configData.name }}</a></span>
       <span style="flex-grow: 1;" />
       <v-btn icon small @click="getContainerList()" title="刷新">
-        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-reload</v-icon>
+        <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-refresh</v-icon>
       </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-cog</v-icon>
