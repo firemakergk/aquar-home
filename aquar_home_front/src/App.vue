@@ -177,7 +177,7 @@ div:focus {
   left: var(--bgOffset,0);
   right: var(--bgOffset,0);
   background:transparent center center no-repeat fixed;
-  background-image: var(--bgUrl,null);
+  background-image: var(--bgUrl);
   background-color: var(--bgColor);
   background-size: cover;
   background-position: center;
