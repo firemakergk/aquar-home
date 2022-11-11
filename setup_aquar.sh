@@ -69,6 +69,7 @@ EOF
 chmod +x /usr/local/bin/aqserv
 
 echo '********安装docker********'
+sudo apt-get install -y software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 $(lsb_release -cs) \
@@ -110,25 +111,25 @@ services:
     depends_on:
       - "mariadb"
     restart: unless-stopped
-  # jellyfin:
-  #   image: ghcr.io/linuxserver/jellyfin
-  #   container_name: jellyfin
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ="Asia/Shanghai"
-  #     # - UMASK_SET=<022> #optional
-  #   volumes:
-  #   - /opt/aquar/storages/apps/jellyfin/config:/config
-  #   - /opt/aquar/storages/apps/jellyfin/data/tvshows:/data/tvshows
-  #   - /opt/aquar/storages/aquarpool/movies:/data/movies
-  #   # - /opt/vc/lib:/opt/vc/lib #optional
-  #   ports:
-  #   - 8096:8096
-  #   - 8920:8920 #optional
-  #   - 7359:7359/udp #optional
-  #   - 1900:1900/udp #optional
-  #   restart: unless-stopped
+  jellyfin:
+    image: ghcr.io/linuxserver/jellyfin
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ="Asia/Shanghai"
+      # - UMASK_SET=<022> #optional
+    volumes:
+      - /opt/aquar/storages/apps/jellyfin/config:/config
+      - /opt/aquar/storages/apps/jellyfin/data/tvshows:/data/tvshows
+      - /opt/aquar/storages/aquarpool/movies:/data/movies
+      # - /opt/vc/lib:/opt/vc/lib #optional
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    restart: unless-stopped
   syncthing:
     image: ghcr.io/linuxserver/syncthing
     container_name: syncthing
@@ -146,49 +147,49 @@ services:
       - 22000:22000
       - 21027:21027/udp
     restart: unless-stopped
-  # photoprism:
-  #   image: photoprism/photoprism:latest
-  #   depends_on:
-  #     - "mariadb"
-  #   # restart: unless-stopped
-  #   security_opt:
-  #     - seccomp:unconfined
-  #     - apparmor:unconfined
-  #   ports:
-  #     - 8042:2342 # [local port]:[container port]
-  #   environment:
-  #     PHOTOPRISM_ADMIN_PASSWORD: "<utf-8>"
-  #     PHOTOPRISM_HTTP_PORT: 2342
-  #     PHOTOPRISM_HTTP_COMPRESSION: "gzip"
-  #     PHOTOPRISM_DEBUG: "false"
-  #     PHOTOPRISM_PUBLIC: "false"
-  #     PHOTOPRISM_READONLY: "false"
-  #     PHOTOPRISM_EXPERIMENTAL: "false"
-  #     PHOTOPRISM_DISABLE_WEBDAV: "false"
-  #     PHOTOPRISM_DISABLE_SETTINGS: "false"
-  #     PHOTOPRISM_DISABLE_TENSORFLOW: "false"
-  #     PHOTOPRISM_DARKTABLE_PRESETS: "false"
-  #     PHOTOPRISM_DETECT_NSFW: "false"
-  #     PHOTOPRISM_UPLOAD_NSFW: "true"
-  #     PHOTOPRISM_DATABASE_DRIVER: "mysql"
-  #     PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"
-  #     PHOTOPRISM_DATABASE_NAME: "photoprism"
-  #     PHOTOPRISM_DATABASE_USER: "root"
-  #     PHOTOPRISM_DATABASE_PASSWORD: "root"
-  #     PHOTOPRISM_SITE_URL: "http://39.100.115.231:8142/"
-  #     PHOTOPRISM_SITE_TITLE: "PhotoPrism"
-  #     PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
-  #     PHOTOPRISM_SITE_DESCRIPTION: ""
-  #     PHOTOPRISM_SITE_AUTHOR: ""
-  #   volumes:
-  #     - "/opt/aquar/storages/aquarpool/images:/photoprism/originals"
-  #     # Multiple folders can be indexed by mounting them as sub-folders of /photoprism/originals:
-  #     # - "/mnt/Family:/photoprism/originals/Family"    # [folder_1]:/photoprism/originals/[folder_1]
-  #     # - "/mnt/Friends:/photoprism/originals/Friends"  # [folder_2]:/photoprism/originals/[folder_2]
-  #     # Mounting an import folder is optional (see docs):
-  #     # - "~/Import:/photoprism/import"
-  #     # Permanent storage for settings, index & sidecar files (DON'T REMOVE):
-  #     - "/opt/aquar/storages/apps/photoprism/storage:/photoprism/storage"
+  photoprism:
+    image: photoprism/photoprism:latest
+    depends_on:
+      - "mariadb"
+    # restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    ports:
+      - 8042:2342 # [local port]:[container port]
+    environment:
+      PHOTOPRISM_ADMIN_PASSWORD: "admin"
+      PHOTOPRISM_HTTP_PORT: 2342
+      PHOTOPRISM_HTTP_COMPRESSION: "gzip"
+      PHOTOPRISM_DEBUG: "false"
+      PHOTOPRISM_PUBLIC: "false"
+      PHOTOPRISM_READONLY: "false"
+      PHOTOPRISM_EXPERIMENTAL: "false"
+      PHOTOPRISM_DISABLE_WEBDAV: "false"
+      PHOTOPRISM_DISABLE_SETTINGS: "false"
+      PHOTOPRISM_DISABLE_TENSORFLOW: "false"
+      PHOTOPRISM_DARKTABLE_PRESETS: "false"
+      PHOTOPRISM_DETECT_NSFW: "false"
+      PHOTOPRISM_UPLOAD_NSFW: "true"
+      PHOTOPRISM_DATABASE_DRIVER: "mysql"
+      PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"
+      PHOTOPRISM_DATABASE_NAME: "photoprism"
+      PHOTOPRISM_DATABASE_USER: "root"
+      PHOTOPRISM_DATABASE_PASSWORD: "root"
+      PHOTOPRISM_SITE_URL: "http://39.100.115.231:8142/"
+      PHOTOPRISM_SITE_TITLE: "PhotoPrism"
+      PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
+      PHOTOPRISM_SITE_DESCRIPTION: ""
+      PHOTOPRISM_SITE_AUTHOR: ""
+    volumes:
+      - "/opt/aquar/storages/aquarpool/images:/photoprism/originals"
+      # Multiple folders can be indexed by mounting them as sub-folders of /photoprism/originals:
+      # - "/mnt/Family:/photoprism/originals/Family"    # [folder_1]:/photoprism/originals/[folder_1]
+      # - "/mnt/Friends:/photoprism/originals/Friends"  # [folder_2]:/photoprism/originals/[folder_2]
+      # Mounting an import folder is optional (see docs):
+      # - "~/Import:/photoprism/import"
+      # Permanent storage for settings, index & sidecar files (DON'T REMOVE):
+      - "/opt/aquar/storages/apps/photoprism/storage:/photoprism/storage"
   mariadb:
     image: mariadb:10.4
     volumes:
@@ -226,22 +227,6 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
-  # gitlab:
-  #   image: 'gitlab/gitlab-ce:latest'
-  #   restart: unless-stopped
-  #   hostname: 'gitlab'
-  #   environment:
-  #     GITLAB_OMNIBUS_CONFIG: |
-  #       external_url 'https://39.100.115.231/'
-  #       # Add any other gitlab.rb configuration here, each on its own line
-  #   ports:
-  #     - '8083:80'
-  #     - '8084:443'
-  #     - '8822:22'
-  #   volumes:
-  #     - '/opt/aquar/storages/apps/gitlab/config:/etc/gitlab'
-  #     - '/opt/aquar/storages/apps/gitlab/logs:/var/log/gitlab'
-  #     - '/opt/aquar/storages/apps/gitlab/data:/var/opt/gitlab'
   filerun:
     image: filerun/filerun
     container_name: filerun
@@ -291,7 +276,6 @@ services:
       - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs
     ports:
       - 8172:8172
-      - 10000-10100:10000-10100
     restart: unless-stopped
 EOF
 mkdir -p /opt/aquar/src/docker-compose/mariadb.init.d
