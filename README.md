@@ -63,20 +63,20 @@ AquarHome的部署推荐使用docker-compose方式。
 version: "3"
 services:
   aquarhome:
-  image: finetu/aquarhome:latest
-  container_name: aquarhome 
-  environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Shanghai
-  volumes:
-      - your/path/to/data:/var/aquardata #数据目录，包含核心配置数据，缓存/上传文件等
-      - your/path/to/aquarpool:/opt/aquarpool #供文件同步功能使用，若不需要此功能可选择一个空文件夹填写
-      - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs #日志文件
-  ports:
-      - 8172:8172
-      - 10000-10100:10000-10100 #视频聊天组件需要预留100个端口作为流媒体的数据通道
-  restart: unless-stopped
+    image: finetu/aquarhome:latest
+    container_name: aquarhome 
+    environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Asia/Shanghai
+    volumes:
+        - your/path/to/data:/var/aquardata #数据目录，包含核心配置数据，缓存/上传文件等
+        - your/path/to/aquarpool:/opt/aquarpool #供文件同步功能使用，若不需要此功能可选择一个空文件夹填写
+        - /opt/aquar/storages/apps/aquarhome/logs:/root/.pm2/logs #日志文件
+    ports:
+        - 8172:8172
+        - 10000-10100:10000-10100 #视频聊天组件需要预留100个端口作为流媒体的数据通道
+    restart: unless-stopped
 ```
 
 4.在aquarhome目录下，执行使用docker-compose启动容器。顺便一提，由于docker-compose是一个python工具，而python有时会使用虚拟环境，如果你发现自己安装了docker-compose后仍然无法使用docker-compose命令，可以确认一下自己当前所在的pyhton环境到底是哪一个。
