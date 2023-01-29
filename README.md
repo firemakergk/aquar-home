@@ -1,11 +1,11 @@
 # Aquar Home
 ### 高度可定制的个人Home页，同时是强大的NAS服务控制台。
 
-![responsive](https://gitee.com/firemaker/aquar-home-helper/raw/master/images/readme_muti_client.png)
+![responsive](https://raw.githubusercontent.com/firemakergk/aquar-home-helper/master/images/screenshot.jpg)
 
 AquarHome(水瓶Home页)是一个强大可定制，其本身具备基础导航功能（如搜索框、导航链接）的同时还适配了多种NAS常用服务的API，集成了NextCloud、Docker、Syncthing、TrueNas等服务，可以在同一页面直接看到各个服务的核心数据与最新状态。
 
-![action](https://gitee.com/firemaker/aquar-home-helper/raw/master/images/readme_action.gif)
+![action](https://raw.githubusercontent.com/firemakergk/aquar-home-helper/master/images/readme_action.gif)
 
 AquarHome的核心特性：
 - 适配各种开源服务api的组件
@@ -208,20 +208,5 @@ AquarHome的开发理念是尽可能轻量化，所以采用了纯javascript的�
 
 ## 更多详细文档
 
-[系统安装与整体介绍](./app/OverView.md "系统安装与整体介绍")
-
-[图标链接配置说明](./app/Icon.md "图标链接配置说明")
-
-[Docker配置说明](./app/Docker.md "Docker配置说明")
-
-[NextCloud配置说明](./app/NextCloud.md "NextCloud配置说明")
-
-[TrueNas配置说明](./app/TrueNas.md "TrueNas配置说明")
-
-[Syncthing配置说明](./app/Syncthing.md "Syncthing配置说明")
-
-[增量备份组件配置说明](./app/ArchivePhase.md  "增量备份组件配置说明")
-
-[Transmission组件配置说明](./app/Transmission.md  "Transmission组件配置说明")
-
-[视频聊天组件配置说明](./app/ChatRoom.md  "视频聊天组件配置说明")
+详细使用文档请参考
+[https://github.com/firemakergk/aquar-home-helper](https://github.com/firemakergk/aquar-home-helper)
