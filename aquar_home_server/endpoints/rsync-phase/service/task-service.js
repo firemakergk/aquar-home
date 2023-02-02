@@ -19,7 +19,7 @@ class RsyncTaskService{
       try{
           task = new cron.CronJob(cr.cron, function(){
           console.log(`task executing,time:${new Date().toISOString()},id:${cr.id},name:${cr.name}`)
-          rsyncService.execSync(cr.source,cr.archive_dir_name,cr.phase_name).then((res) =>{
+          rsyncService.execSync(cr.source,cr.archive_dir_name).then((res) =>{
             console.log(`task executed,time:${new Date().toISOString()},id:${cr.id},name:${cr.name},out:${res}`)
             rsyncService.updateLastSyncTime(null,cr.widgetId,cr.id)
           })

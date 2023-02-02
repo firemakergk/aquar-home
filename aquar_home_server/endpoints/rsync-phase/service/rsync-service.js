@@ -70,36 +70,36 @@ class RsyncService {
       db.write()
     }
 
-    async execSync(source,archiveDir,archiveName ){
-      let cmd = this.genScript(source,archiveDir,archiveName)
+    async execSync(source,archiveDir){
+      let cmd = this.genScript(source,archiveDir)
       console.log(`executing rsync cmd: ${cmd}`)
       let res = await new Promise((resolve,reject) => resolve(exec(cmd).toString()))
 
       return res
     }
 
-    genScript(sourceDir,targetDir,archiveName){
+    genScript(sourceDir,targetDir){
       if(!sourceDir || !targetDir){
         return null
       }
-      if(!archiveName){
-        archiveName = ""
-      }
-      archiveName = StringUtil.parseFormatDateString(archiveName)
+      // if(!archiveName){
+      //   archiveName = ""
+      // }
+      // archiveName = StringUtil.parseFormatDateString(archiveName)
       sourceDir = baseDir + sourceDir
       sourceDir = _.endsWith(sourceDir,'/') ? sourceDir.subStr(0,sourceDir.length-1) : sourceDir
       targetDir = baseDir + targetDir
       targetDir = _.endsWith(targetDir,'/') ? targetDir.subStr(0,targetDir.length-1) : targetDir
 
-      let compareCmd = ''
-      if(archiveName != ""){
-        let compareParams = fs.readdirSync(targetDir, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
-        .map(dirent => `--compare-dest=${targetDir}/${dirent.name}`)
-        compareParams.splice(0, 0, '--compare-dest='+targetDir)
-        compareCmd = compareParams.join(' ')
-      }
-      let script = `rsync -avry --itemize-changes --size-only ${compareCmd} ${sourceDir}/ ${targetDir}/${archiveName}`
+      // let compareCmd = ''
+      // if(archiveName != ""){
+      //   let compareParams = fs.readdirSync(targetDir, { withFileTypes: true })
+      //   .filter(dirent => dirent.isDirectory())
+      //   .map(dirent => `--compare-dest=${targetDir}/${dirent.name}`)
+      //   compareParams.splice(0, 0, '--compare-dest='+targetDir)
+      //   compareCmd = compareParams.join(' ')
+      // }
+      let script = `rsync -avry --itemize-changes --size-only  ${sourceDir}/ ${targetDir}`
       return script
     }
 

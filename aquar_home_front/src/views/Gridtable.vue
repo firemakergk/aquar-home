@@ -554,6 +554,7 @@ export default {
 }
 .vue-grid-item {
   margin: 0;
+  transition: all .1s ease !important;
 }
 /* .vue-grid-item:not(.vue-grid-placeholder) {
   background: #ccc;

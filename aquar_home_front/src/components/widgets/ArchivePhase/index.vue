@@ -9,7 +9,7 @@
       <span style="flex-grow: 1;" />
       <!-- <a style="margin: 0 4px;" class="iconfont icon-plus icon" title="新增" @click="toggleAddItem()" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon" title="设置" @click="toggleConfig()" /> -->
-      <v-btn icon small @click="toggleConfig()" title="新增">
+      <v-btn icon small @click="toggleAddItem()" title="新增">
         <v-icon class="tcolor_primary" style="font-size:20px;" >mdi-plus</v-icon>
       </v-btn>
       <v-btn icon small @click="toggleConfig()" title="设置">
@@ -25,24 +25,24 @@
         </div>
         <div style="flex-grow: 1;" class="config_body">
           <div class="config_row">
-            <div style="width:80px; text-align: right; margin: 0 4px;">名称：</div>
+            <div style="width:80px; text-align: right; margin: 0 4px;">名称<span style="color:red;">*</span>：</div>
             <div style="flex-grow: 1;">
               <input v-model="newItem.name" type="text" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px; text-align: right; margin: 0 4px;">归档源：</div>
+            <div style="width:80px; text-align: right; margin: 0 4px;">归档源<span style="color:red;">*</span>：</div>
             <div style="flex-grow: 1;">
               <input v-model="newItem.source" type="text" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">
-            <div style="width:80px; text-align: right; margin: 0 4px;">输出路径：</div>
+            <div style="width:80px; text-align: right; margin: 0 4px;">输出路径<span style="color:red;">*</span>：</div>
             <div style="flex-grow: 1;">
               <input v-model="newItem.archive_dir_name" type="text" style="display: inline-block; width: 100%;">
             </div>
           </div>
-          <div class="config_row">
+          <!-- <div class="config_row">
             <div style="width:80px; text-align: right; margin: 0 4px;">归档名称：</div>
             <div style="flex-grow: 1;">
               <input v-model="newItem.phase_name" type="text" style="display: inline-block; width: 100%;">
@@ -61,7 +61,7 @@
                 </span>
               </v-tooltip>
             </div>
-          </div>
+          </div> -->
           <div class="config_row">
             <div style="width:80px; text-align: right; margin: 0 4px;">定时表达式：</div>
             <div style="flex-grow: 1;">
@@ -178,7 +178,7 @@
                   <input v-model="item.archive_dir_name" type="text" name="name" style="display: inline-block; width: 100%;">
                 </div>
               </div>
-              <div class="config_row">
+              <!-- <div class="config_row">
                 <div class="config_left">归档名称：</div>
                 <div style="flex-grow: 1;">
                   <input v-model="item.phase_name" type="text" name="name" style="display: inline-block; width: 100%;">
@@ -197,7 +197,7 @@
                     </span>
                   </v-tooltip>
                 </div>
-              </div>
+              </div> -->
               <div class="config_row">
                 <div class="config_left">定时表达式：</div>
                 <div style="flex-grow: 1;">
@@ -229,7 +229,7 @@
               </div>
             </div>
             <div style="display: flex; justify-content: end;">
-              <v-btn small outlined color="primary" @click="submitConfigSingle(item.id)" style="margin:0 2px; " title="更新" ><v-icon left>mdi-check-bold</v-icon>更新</v-btn>
+              <v-btn small outlined color="primary" @click="submitConfigSingle(item.id,index)" style="margin:0 2px; " title="更新" ><v-icon left>mdi-check-bold</v-icon>更新</v-btn>
               <v-btn small outlined @click="removeItem(item.id)" style="margin:0 2px; " title="删除" ><v-icon left>mdi-delete</v-icon>删除</v-btn>
             </div>
           </div>
@@ -321,7 +321,7 @@ export default {
       this.$forceUpdate()
       console.log(this.configBarTable)
     },
-    submitConfigSingle(itemId) {
+    submitConfigSingle(itemId,index) {
       let item = _.find(this.configData.data.items, it => {return it.id === itemId})
       const reqData = { tabIndex:this.tabIndex, id: this.configData.id, item: item }
       this.$axios.post('/api/endpoints/archive_phase/updateItem', reqData)
