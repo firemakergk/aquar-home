@@ -4,7 +4,7 @@ const reg = /(\d{4}-\d{2}-\d{2}).+?(d{2}:\d{2}:d{2})/i
 export default async function getFoldersInfo(baseUrl, appKey){
     let folderList = await axios({
         method: 'get',
-        url: baseUrl+"/rest/config/folders",
+        url: baseUrl.replace(/\/$/, '')+"/rest/config/folders",
         params: null,
         headers: {
           'X-API-Key': appKey
@@ -20,7 +20,7 @@ export default async function getFoldersInfo(baseUrl, appKey){
     for(var i = 0;i< folderList.length;i++){
         let [status,localFiles,globalFiles,lastActiveTime] = await axios({
             method: 'get',
-            url: baseUrl+"/rest/db/status?folder="+folderList[i].id,
+            url: encodeURI(baseUrl.replace(/\/$/, '')+"/rest/db/status?folder="+folderList[i].id),
             params: null,
             headers: {
               'X-API-Key': appKey
