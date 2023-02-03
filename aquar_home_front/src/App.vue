@@ -368,11 +368,11 @@ div:focus {
   flex-direction:column;
 }
 .init_config{
-  position: relative;
-  top: 40%; /*偏移*/
-  transform: translateY(-80%);
+  // position: relative;
+  // top: 40%; /*偏移*/
+  // transform: translateY(-80%);
   text-align: center;
-  vertical-align: center;
+  // vertical-align: center;
 }
 
 .border_bt{

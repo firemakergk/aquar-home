@@ -29,8 +29,8 @@
               </div>
             </div>
             <div v-show="showPoll" style="margin: 10px;">
-              <span style="margin: 10px;"><a @click="getLoginUrl" >重新授权</a></span>
-              <span style="margin: 10px;"><a style="margin: 10px;" @click="poll" class="tcolor_main">授权成功</a></span>
+              <span style="margin: 10px;"><a @click="getLoginUrl" class="tcolor_main">授权失败</a></span>
+              <span style="margin: 10px;"><a style="margin: 10px;" @click="poll" >授权成功</a></span>
             </div>
           </div>
         </div>
