@@ -17,7 +17,7 @@
       <a v-else-if="editing" style="margin: 0 4px;" class="iconfont icon-check icon tcolor_reserve" title="确定布局" @click="confirmLayout()" />
       <a style="margin: 0 4px;" class="iconfont icon-cog-fill icon tcolor_reserve" title="设置" @click="toggleConfigPanel()" /> -->
       <div>
-        <v-btn icon small target="_blank" href="https://gitee.com/firemaker/aquar-home-helper" title="帮助">
+        <v-btn icon small target="_blank" href="https://github.com/firemakergk/aquar-home-helper" title="帮助">
         <v-icon class="tcolor_sub" style="font-size:20px;" >mdi-help-circle-outline</v-icon>
         </v-btn>
         <v-divider class="mx-1" vertical></v-divider>
