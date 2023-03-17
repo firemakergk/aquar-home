@@ -50,10 +50,12 @@
       <div class="widget_content">
         <div v-for="(item,index) in containerList" :key="'con_'+index" :class="index != containerList.length-1? 'border_bt':''">
           <div class="row_base" >
-            <span style="flex-grow: 1; flex-shrink:1;  overflow: hidden; text-overflow: ellipsis;">{{ item.name }}</span>
-            <span style="flex-shrink:0; margin-right:10px; ">{{ item.status }}</span>
+            <span style="flex-grow: 1; flex-shrink:1;  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ item.name }}</span>
+            <span style="flex-shrink:1; margin-right:10px; max-width: 120px; min-width: 60px; text-align: right; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ item.status }}</span>
             <!-- <span class="state_span" :class="item.statClass">{{ item.state.toUpperCase() }}</span> -->
-            <v-chip small label :class="item.statClass" class="mx-1" >{{ item.state.toUpperCase() }}</v-chip>
+            <span style="flex-shrink:0; text-align: right; margin-right:10px; width: 90px; ">
+              <v-chip small label :class="item.statClass" class="mx-1" >{{ item.state.toUpperCase() }}</v-chip>
+            </span>
           </div>
         </div>
       </div>

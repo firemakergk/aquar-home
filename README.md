@@ -86,7 +86,7 @@ cd aquarhome
 docker-compose up -d
 ```
 
-5.docker-compose正常启动后，访问宿主机在内网中的地址，如https://192.168.0.117:8172，注意是HTTPS协议，如果部署成功，第一次打开页面时浏览器会报告SSL证书不安全，原因是AquarHome内置了默认的自签名证书，点击“继续前往”如果可以看到AquarHome的登录页面就可以开始设置属于自己的AquarHome了。
+5.docker-compose正常启动后，访问宿主机在内网中的地址，如[https://192.168.0.117:8172](#)，注意是HTTPS协议，如果部署成功，第一次打开页面时浏览器会报告SSL证书不安全，原因是AquarHome内置了默认的自签名证书，点击“继续前往”如果可以看到AquarHome的登录页面就可以开始设置属于自己的AquarHome了。
 
 ### 源码方式
 

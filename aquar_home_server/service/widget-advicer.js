@@ -1,11 +1,13 @@
 import iconAdvicer from "../endpoints/icon/service/icon-advicer.js" 
 import transmissionAdvicer from "../endpoints/transmission/service/transmission-advicer.js" 
+import qBittorrentAdvicer from "../endpoints/qbittorrent/service/qbittorrent-advicer.js"
 class WidgetAdvicer {
   widgetAddedAdvicers = []
   widgetAdvicerMap = {}
   constructor() {
     this.widgetAdvicerMap["IconWidget"] = iconAdvicer
     this.widgetAdvicerMap["TransmissionWidget"] = transmissionAdvicer 
+    this.widgetAdvicerMap["QBittorrentWidget"] = qBittorrentAdvicer 
   }
 
   async afterWidgetAdded(tabIndex,widgetData) {

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import appDao from '../../../service/db/app-dao.js'
 
-class TransmissionAdvicer {
+class QBittorrentAdvicer {
   
   async afterWidgetAdded (tabIndex,widgetData) {  
     var id = widgetData.id
@@ -37,5 +37,5 @@ class TransmissionAdvicer {
     }
   }
 }
-const transmissionAdvicer = new TransmissionAdvicer()
-export default transmissionAdvicer
+const qBittorrentAdvicer = new QBittorrentAdvicer()
+export default qBittorrentAdvicer

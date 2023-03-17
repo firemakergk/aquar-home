@@ -15,6 +15,7 @@
             <img v-if="widget.widget === 'SearchWidget'" :src="logo_search" style="width: 60px;">
             <img v-if="widget.widget === 'TransmissionWidget'" :src="logo_transmission" style="width: 60px;">
             <img v-if="widget.widget === 'ChatRoomWidget'" :src="logo_chatroom" style="width: 60px;">
+            <img v-if="widget.widget === 'QBittorrentWidget'" :src="logo_qbittorrent" style="width: 60px;">
           </div>
           <div>{{ widget.name }}</div>
         </a>
@@ -72,6 +73,7 @@ import logo_docker from '../widgets/Docker/img/docker.png'
 import logo_search from '../widgets/Search/img/search.png'
 import logo_transmission from '../widgets/Transmission/img/transmission.png'
 import logo_chatroom from '../widgets/ChatRoom/img/chatroom.png'
+import logo_qbittorrent from '../widgets/QBittorrent/img/qbittorrent.png'
 
 import meta_syncthing from '../widgets/Syncthing/template.json'
 import meta_archivephase from '../widgets/ArchivePhase/template.json'
@@ -83,6 +85,7 @@ import meta_docker from '../widgets/Docker/template.json'
 import meta_search from '../widgets/Search/template.json'
 import meta_transmission from '../widgets/Transmission/template.json'
 import meta_chatroom from '../widgets/ChatRoom/template.json'
+import meta_qbittorrent from '../widgets/QBittorrent/template.json'
 
 import BatchImport from '../widgets/Icon/batchimport.vue'
 
@@ -104,7 +107,8 @@ export default {
         meta_docker,
         meta_search,
         meta_transmission,
-        meta_chatroom
+        meta_chatroom,
+        meta_qbittorrent
       ],
       logo_syncthing,
       logo_archivephase,
@@ -116,6 +120,7 @@ export default {
       logo_search,
       logo_transmission,
       logo_chatroom,
+      logo_qbittorrent,
       configDetail: false,
       curWidget: null
     }
