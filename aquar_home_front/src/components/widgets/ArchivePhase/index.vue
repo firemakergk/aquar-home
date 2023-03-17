@@ -230,7 +230,7 @@
             </div>
             <div style="display: flex; justify-content: end;">
               <v-btn small outlined color="primary" @click="submitConfigSingle(item.id,index)" style="margin:0 2px; " title="更新" ><v-icon left>mdi-check-bold</v-icon>更新</v-btn>
-              <v-btn small outlined @click="removeItem(item.id)" style="margin:0 2px; " title="删除" ><v-icon left>mdi-delete</v-icon>删除</v-btn>
+              <v-btn small outlined @click="removeItem(item.id,index)" style="margin:0 2px; " title="删除" ><v-icon left>mdi-delete</v-icon>删除</v-btn>
             </div>
           </div>
         </div>
@@ -349,7 +349,7 @@ export default {
       this.configData.data.items = items
       this.$forceUpdate()
     },
-    removeItem(itemId) {
+    removeItem(itemId,index) {
       const reqData = { tabIndex:this.tabIndex, id: this.configData.id, itemId: itemId }
       this.$axios.post('/api/endpoints/archive_phase/removeItem', reqData)
         .then(response => {

@@ -76,7 +76,7 @@ async function getSession(tabindex, id, server,widget,auth) {
       if(reason.response.status === 409){
         var sessionId = reason.response.headers['x-transmission-session-id']
         widget.data.sessionId = sessionId
-        appDao.updateById(tabindex, id, widget)
+        appDao.updateWithId(tabindex, id, widget)
         return sessionId
       }else{
         return null
@@ -105,7 +105,7 @@ async function torrentInfo(tabindex, id, server,widget,auth,trSession) {
       if(reason.response.status === 409){
         var sessionId = reason.response.headers['x-transmission-session-id']
         widget.data.sessionId = sessionId
-        appDao.updateById(tabindex, id, widget)
+        appDao.updateWithId(tabindex, id, widget)
         return {code: 1, data: sessionId}
       }else{
         return null
@@ -140,7 +140,7 @@ async function operate(tabindex, id, server,widget,auth,trSession,optData) {
       if(reason.response.status === 409){
         var sessionId = reason.response.headers['x-transmission-session-id']
         widget.data.sessionId = sessionId
-        appDao.updateById(tabindex, id, widget)
+        appDao.updateWithId(tabindex, id, widget)
         return {code: 1, data: sessionId}
       }else{
         return null

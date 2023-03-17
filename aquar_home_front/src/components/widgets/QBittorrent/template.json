@@ -1,0 +1,19 @@
+{
+  "name": "qBittorrent",
+  "widget": "QBittorrentWidget",
+  "href": "",
+  "layout": {
+    "w": 5,
+    "h": 6
+  },
+  "data": {
+    "server": null,
+    "userName": null,
+    "password": null
+  },
+  "required_params": [
+    ["server","text"],
+    ["userName","text"],
+    ["password","password"]
+  ]
+}

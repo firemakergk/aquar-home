@@ -66,11 +66,27 @@ class AppDao {
     }
     return resList 
   }
-  updateById(tabIndex,id,item) {
+  updateWithId(tabIndex,id,item) {
     this.db.chain.get('tabs['+tabIndex+'].widgets')
     .find({ id: id })
     .assign(item).value()
     this.db.write()
+  }
+  updateById(id,item) {
+    let tabs = this.db.chain.get('tabs').value()
+    for(let i=0;i<tabs.length;i++){
+      let tab = tabs[i]
+      let resList = _.filter(tab.widgets,{'id':id})
+      if(!resList || resList.length === 0){
+        continue
+      }else{
+        this.db.chain.get('tabs['+i+'].widgets')
+        .find({ id: id })
+        .assign(item).value()
+        this.db.write()
+      }
+    }
+    
   }
   updateBatch(widgetList) {
     for(let {tabIndex, widget} of widgetList){

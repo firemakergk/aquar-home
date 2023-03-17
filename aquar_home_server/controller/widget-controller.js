@@ -23,7 +23,7 @@ class WidgetController {
     var data = ctx.request.body
     // data = JSON.parse(data)
     console.log(data)
-    appDao.updateById(data.tabIndex,data.widget.id,data.widget)
+    appDao.updateWithId(data.tabIndex,data.widget.id,data.widget)
     var res = await appDao.findOne(data.tabIndex,data.widget.id)
     await widgetAdvicer.afterWidgetUpdated(data.tabIndex,res)
     ctx.body = res

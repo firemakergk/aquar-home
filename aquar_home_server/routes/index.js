@@ -11,6 +11,7 @@ import pveController from '../endpoints/pve/controller/pve-controller.js'
 import dockerController from '../endpoints/docker/controller/docker-controller.js'
 import searchController from '../endpoints/search/controller/search-controller.js'
 import transmissionController from '../endpoints/transmission/controller/transmission-controller.js'
+import qbittorrentController from '../endpoints/qbittorrent/controller/qbittorrent-controller.js'
 
 const router = koarouter()
 router.get('/', async (ctx, next) => {
@@ -81,5 +82,18 @@ router.get('/api/endpoints/search/suggest',searchController.suggest)
 router.post('/api/endpoints/search/changeSource',searchController.changeSource)
 router.get('/api/endpoints/transmission/torrentList',transmissionController.torrentList)
 router.post('/api/endpoints/transmission/operate',transmissionController.operateTorrent)
+router.post('/api/endpoints/qbittorrent/torrentList',qbittorrentController.torrentList)
+router.post('/api/endpoints/qbittorrent/operateTorrent',qbittorrentController.operateTorrent)
+router.post('/api/endpoints/qbittorrent/deleteTorrent',qbittorrentController.deleteTorrent)
+router.post('/api/endpoints/qbittorrent/addTorrent', qbittorrentController.torrentUpload.fields([
+  {
+    name: 'file',
+    maxCount: 1
+  },
+  {
+    name: 'data',
+    maxCount: 1
+  }
+]),qbittorrentController.addTorrent)
 
 export default router

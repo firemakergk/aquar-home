@@ -1,5 +1,10 @@
 # cp /root/.pydistutils.cfg /root/.pydistutils.cfg.bak
 # cp /root/.pip/pip.conf /root/.pip/pip.conf.bak
+gitrepo=$1
+if [ "$gitrepo" == "" ]; then
+    echo "ERROR:未传入aquarhome仓库地址作为脚本参数"
+    exit 0
+fi
 echo '********开始初始化aquar环境********'
 apt update
 apt install -y vim 
@@ -145,3 +150,17 @@ mv aquar-home-master aquar-home
 cd /opt/aquar/src/aquar-home
 ./deploy_docker.sh
 COMMENT
+
+# pythone3.9
+
+
+# 源码编译环境
+git config --global http.sslverify false
+git clone $gitrepo
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+source /root/.bashrc
+nvm install 16
+nvm alias default 16
+nvm use 16
+cd /root/aquar-home/aquar_home_server/
+npm install

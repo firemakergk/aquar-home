@@ -60,9 +60,9 @@
         @resize="resizeEvent"
       >
         <div v-show="editing" class="vue-draggable-handle tbgcolor_mask_error">
-          <span style="font-size: 14px; margin: 1px 0px; flex-grow: 1;" class="tcolor_reverse">点此拖动</span>
-          <a @click="preMoveWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-arrow-right-top-bold</v-icon></a>
-          <a @click="removeWidget(widget.id)" ><v-icon class="tcolor_reverse" style="font-size: 14px;  margin: 2px;">mdi-delete</v-icon></a>
+          <span style="font-size: 14px; margin: 1px 0px; flex-grow: 1; color:white;">点此拖动</span>
+          <a @click="preMoveWidget(widget.id)" ><v-icon style="font-size: 14px;  margin: 2px; color:white;">mdi-arrow-right-top-bold</v-icon></a>
+          <a @click="removeWidget(widget.id)" ><v-icon style="font-size: 14px;  margin: 2px; color:white;">mdi-delete</v-icon></a>
           <!-- TODO 二次确认 -->
         </div>
         <keep-alive>
@@ -94,6 +94,7 @@ import PveWidget from '../components/widgets/Pve'
 import DockerWidget from '../components/widgets/Docker'
 import SearchWidget from '../components/widgets/Search'
 import TransmissionWidget from '../components/widgets/Transmission'
+import QBittorrentWidget from '../components/widgets/QBittorrent'
 import ChatRoomWidget from '../components/widgets/ChatRoom'
 import Config from '../components/config/Config.vue' 
 import WidgetConfig from '../components/WidgetConfig.vue' 
@@ -112,6 +113,7 @@ export default {
     DockerWidget,
     SearchWidget,
     TransmissionWidget,
+    QBittorrentWidget,
     ChatRoomWidget,
     Config,
     WidgetConfig

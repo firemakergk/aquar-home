@@ -110,7 +110,7 @@ axios.prototype.ifLogDetail = function(contentType) {
 axios.interceptors.request.use(function (config) {
   
   var logStr = `${moment().format()} axios request-- url:[${config.method}] ${config.url}`
-  if(axios.prototype.ifLogDetail(config.headers.common.Accept)){
+  if(axios.prototype.ifLogDetail(config.headers.Accept)){
     var body = JSON.stringify(config.data)
     var params = JSON.stringify(config.params)
     var auth = JSON.stringify(config.auth)

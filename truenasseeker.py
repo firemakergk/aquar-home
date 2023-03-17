@@ -78,7 +78,7 @@ def scan():
             resList = seq(list(ipInfo['scan'].items())).map(lambda i: (i[0],seq(list(i[1]['tcp'].items())).filter(lambda p: p[1]['state'] == "open").map(lambda pi: pi[0] )))
             for res in resList:
                 logger.info("%s: %s" % (res[0],res[1]))
-                if 22 not in res[1] and 80 in res[1] and 111 in res[1] and 139 in res[1] and 443 in res[1] and 445 in res[1]:
+                if 80 in res[1] and 111 in res[1] and 139 in res[1] and 443 in res[1] and 445 in res[1]:
                     nfsAddress = res[0]
 
         return nfsAddress

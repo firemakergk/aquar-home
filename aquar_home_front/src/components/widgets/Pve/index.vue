@@ -58,7 +58,7 @@
           <div class="config_row">
             <div style="width:80px; text-align: right; padding: 0 2px;">token secret：</div>
             <div style="flex-grow: 1;">
-              <input v-model="configData.data.token_secret" type="text" name="app_key" disabled="disabled" style="display: inline-block; width: 100%;">
+              <input v-model="configData.data.token_secret" type="text" name="app_key" style="display: inline-block; width: 100%;">
             </div>
           </div>
           <div class="config_row">

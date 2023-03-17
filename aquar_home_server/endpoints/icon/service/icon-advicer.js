@@ -48,7 +48,7 @@ class IconAdvicer {
     })
     var curConfig = appDao.findOne(tabIndex,widgetData.id)
     curConfig.data.ico_path = configPath
-    appDao.updateById(tabIndex,widgetData.id,curConfig)
+    appDao.updateWithId(tabIndex,widgetData.id,curConfig)
     return curConfig
   }
   async afterWidgetUpdated(tabIndex,widgetData){

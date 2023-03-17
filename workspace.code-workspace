@@ -1,13 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "aquar_home_server"
-		},
-		{
 			"path": "aquar_home_front"
 		},
 		{
-			"path": "../../mediasoup-sfu-webrtc-video-rooms"
+			"path": "aquar_home_server"
 		}
 	],
 	"settings": {}
