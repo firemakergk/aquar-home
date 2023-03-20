@@ -45,6 +45,7 @@
     "socket.io": "^4.4.0",
     "stream-to-string": "^1.2.1",
     "uuid": "^8.3.2",
+    "webdav": "^5.0.0-r3",
     "xmldom": "^0.6.0",
     "xpath": "0.0.32"
   },
