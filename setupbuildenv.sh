@@ -5,6 +5,24 @@ if [ "$gitrepo" == "" ]; then
     echo "ERROR:未传入aquarhome仓库地址作为脚本参数"
     exit 0
 fi
+
+echo '********清理被阿里云污染的源配置信息********'
+/dev/null > /root/.pip/pip.conf
+/dev/null > /root/.pydistutils.cfg
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+cat > /etc/apt/sources.list <<EOF
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy main restricted
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy-updates main restricted
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy universe
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy-updates universe
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy-updates multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ jammy-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu jammy-security main restricted
+deb http://security.ubuntu.com/ubuntu jammy-security universe
+deb http://security.ubuntu.com/ubuntu jammy-security multiverse
+
+EOF
 echo '********开始初始化aquar环境********'
 apt update
 apt install -y vim 
@@ -142,19 +160,19 @@ WantedBy=multi-user.target
 EOF
 systemctl enable aquar
 
-# 从gitlab下载源码包
-# rz 选择aquar-home-master.zip
-<<COMMENT
-unzip -q aquar-home-master.zip
-mv aquar-home-master aquar-home
+# 
+# 生产环境打包
+echo <<COMMENT
+cd /opt/aquar/src
+git config --global http.sslverify false
+git clone $gitrepo
 cd /opt/aquar/src/aquar-home
 ./deploy_docker.sh
 COMMENT
 
-# pythone3.9
-
-
+#
 # 源码编译环境
+<<COMMENT
 git config --global http.sslverify false
 git clone $gitrepo
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
@@ -164,3 +182,4 @@ nvm alias default 16
 nvm use 16
 cd /root/aquar-home/aquar_home_server/
 npm install
+COMMENT
